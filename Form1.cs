@@ -37,38 +37,10 @@ namespace LuaEditor
 
             m_types.add(new Type("int"));
             m_types.add(new Type("void"));
-            
-            Type Number = new Type("Number");
-            m_types.add(Number);
-            
-            Type Vector = new Type("Vector");
-            Vector.addMember("x",Number);
-            Vector.addMember("y",Number);
-            Function length = new Function("Length");
-            length.ReturnType = Number;
-            Vector.addMethod(length);
-            Function clone = new Function("clone");
-            clone.ReturnType = Vector;
-            Vector.addMethod(clone);
-            m_types.add(Vector);
-
-            Type Rect = new Type("Rect");
-            Rect.addMember("TopLeft", Vector);
-            Rect.addMember("BottomRight", Vector);
-            m_types.add(Rect);
-
-            Variable var = new Variable("helloworld");
-            var.IsStatic = true;
-            var.Type = m_types.get("Rect");
-            m_variables.add(var);
-            var = new Variable("hello");
-            var.IsStatic = true;
-            var.Type = m_types.get("Rect");
-            m_variables.add(var);
-
-            Function f = new Function("Vector");
-            f.ReturnType = Vector;
-            m_variables.add(f);
+            m_types.add(new Type("char"));
+            m_types.add(new Type("float"));
+            m_types.add(new Type("double"));
+            m_types.add(new Type("string"));
 
             loadXML();
             
