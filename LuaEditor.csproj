@@ -87,6 +87,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="all.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="SciLexer.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

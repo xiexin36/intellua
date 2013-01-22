@@ -1,0 +1,97 @@
+<?xml version="1.0" standalone="yes"?>
+<doxygen version="1.8.3.1">
+<compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="class_test_class" kind="class" prot="public">
+    <compoundname>TestClass</compoundname>
+    <includes refid="test_8h" local="no">test.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_test_class_1a0279179cf4a8d6ef14039c702bed2409" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int TestClass::TestMember1</definition>
+        <argsstring/>
+        <name>TestMember1</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="4" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="4" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_test_class_1a09903432ed60c7c38f1beccc4cf18987" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type/>
+        <definition>TestClass::TestClass</definition>
+        <argsstring>()</argsstring>
+        <name>TestClass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="3"/>
+      </memberdef>
+      <memberdef kind="function" id="class_test_class_1abe537a2d94b66300c4ac7dd5035a00b4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void TestClass::TestMethod</definition>
+        <argsstring>()</argsstring>
+        <name>TestMethod</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="5"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="2" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="2" bodyend="6"/>
+    <listofallmembers>
+      <member refid="class_test_class_1a09903432ed60c7c38f1beccc4cf18987" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestClass</name></member>
+      <member refid="class_test_class_1a0279179cf4a8d6ef14039c702bed2409" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMember1</name></member>
+      <member refid="class_test_class_1abe537a2d94b66300c4ac7dd5035a00b4" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMethod</name></member>
+    </listofallmembers>
+  </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="test_8h" kind="file">
+    <compoundname>test.h</compoundname>
+    <innerclass refid="class_test_class" prot="public">TestClass</innerclass>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="test_8h_1a073987470063ca6cfa68587c33ac762e" prot="public" static="no" mutable="no">
+        <type><ref refid="class_test_class" kindref="compound">TestClass</ref></type>
+        <definition>TestClass testInstance</definition>
+        <argsstring/>
+        <name>testInstance</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="8" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="8" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="test_8h_1a8998e662fe0f546ba0617cea9ee5428d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="class_test_class" kindref="compound">TestClass</ref></type>
+        <definition>TestClass TestClass</definition>
+        <argsstring>()</argsstring>
+        <name>TestClass</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="9"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/hg/LuaEditor/Doxygen/test.h"/>
+  </compounddef></doxygen>

@@ -94,7 +94,8 @@ namespace LuaEditor
         }
 
         public Type get(string name) {
-            return m_types[name];
+            if(m_types.ContainsKey(name)) return m_types[name];
+            return null;
         }
     }
 }
