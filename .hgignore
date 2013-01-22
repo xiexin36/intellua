@@ -5,3 +5,4 @@ syntax: glob
 *.dll
 obj/*
 bin/*
+Doxygen/xml/*
