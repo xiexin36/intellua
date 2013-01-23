@@ -117,7 +117,7 @@
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
-    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="4" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="4" bodyend="8"/>
+    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="4" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="4" bodyend="9"/>
     <listofallmembers>
       <member refid="class_test_class_1a09903432ed60c7c38f1beccc4cf18987" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestClass</name></member>
       <member refid="class_test_class_1a0279179cf4a8d6ef14039c702bed2409" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMember1</name></member>
@@ -176,22 +176,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="10" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="10" bodyend="-1"/>
-      </memberdef>
-      </sectiondef>
-      <sectiondef kind="func">
-      <memberdef kind="function" id="test_8h_1a8998e662fe0f546ba0617cea9ee5428d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type><ref refid="class_test_class" kindref="compound">TestClass</ref></type>
-        <definition>TestClass TestClass</definition>
-        <argsstring>()</argsstring>
-        <name>TestClass</name>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="11"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="11" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="11" bodyend="-1"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -206,10 +191,10 @@
 <codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="class_test_class" kindref="compound">TestClass</ref>();</highlight></codeline>
 <codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>TestMember1;</highlight></codeline>
 <codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>TestMethod();</highlight></codeline>
-<codeline lineno="8"><highlight class="normal">};</highlight></codeline>
-<codeline lineno="9"><highlight class="normal"/></codeline>
-<codeline lineno="10"><highlight class="normal"><ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>testInstance;</highlight></codeline>
-<codeline lineno="11"><highlight class="normal"><ref refid="class_test_class" kindref="compound">TestClass</ref><sp/><ref refid="class_test_class" kindref="compound">TestClass</ref>();</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"/></codeline>
+<codeline lineno="9"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"/></codeline>
+<codeline lineno="11"><highlight class="normal"><ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>testInstance;</highlight></codeline>
     </programlisting>
     <location file="C:/hg/LuaEditor/Doxygen/test.h"/>
   </compounddef></doxygen>

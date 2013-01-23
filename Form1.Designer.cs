@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.scintilla1 = new ScintillaNET.Scintilla();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.scintilla1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,9 +49,15 @@
             this.scintilla1.Styles.LineNumber.Size = 9F;
             this.scintilla1.Styles.Max.Size = 9F;
             this.scintilla1.TabIndex = 0;
+            this.scintilla1.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.scintilla1_AutoCompleteAccepted);
             this.scintilla1.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.scintilla1_CharAdded);
             this.scintilla1.TextDeleted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextDeleted);
             this.scintilla1.TextInserted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextInserted);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
@@ -68,6 +76,7 @@
         #endregion
 
         private ScintillaNET.Scintilla scintilla1;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

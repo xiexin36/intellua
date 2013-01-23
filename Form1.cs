@@ -9,11 +9,35 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using System.IO;
+using System.Reflection;
+				
+using System.Runtime.InteropServices;
+
+
 namespace LuaEditor
 {
     public partial class Form1 : Form
     {
+        [DllImport("user32.dll", CharSet = CharSet.Ansi)]
+        static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;        // x position of upper-left corner
+            public int Top;         // y position of upper-left corner
+            public int Right;       // x position of lower-right corner
+            public int Bottom;      // y position of lower-right corner
+        }
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd,
+           StringBuilder lpClassName,
+           int nMaxCount
+        );
         private TypeManager m_types;
         private VariableManager m_variables;
 
@@ -34,7 +58,7 @@ namespace LuaEditor
             scintilla1.Margins[1].Width = 20;
             scintilla1.Margins[2].Width = 20;
             scintilla1.AutoComplete.IsCaseSensitive = false;
-
+            scintilla1.AutoComplete.AutoHide = false;
             m_types.add(new Type("int"));
             m_types.add(new Type("void"));
             m_types.add(new Type("char"));
@@ -42,9 +66,22 @@ namespace LuaEditor
             m_types.add(new Type("double"));
             m_types.add(new Type("string"));
 
+            List<Bitmap> list = new List<Bitmap>();
+            Assembly asm = Assembly.GetExecutingAssembly();
+            Stream str;
+            str = asm.GetManifestResourceStream("LuaEditor.member.png");
+            list.Add(new Bitmap(str));
+            str = asm.GetManifestResourceStream("LuaEditor.method.png");
+            list.Add(new Bitmap(str));
+            str = asm.GetManifestResourceStream("LuaEditor.function.png");
+            list.Add(new Bitmap(str));
+
+            scintilla1.AutoComplete.RegisterImages(list);
+
             loadXML();
-            
-            
+
+
+            timer1.Start();
             
         }
         private void loadXML() {
@@ -80,12 +117,23 @@ namespace LuaEditor
                             string memberName = member.Element("name").Value;
                             string memberType = member.Element("type").Value;
 
-                            Type mt = m_types.get(memberType);
-                            Function f = new Function(memberName);
-                            f.ReturnType = mt;
+                            if (memberName == name)
+                            {
+                                Function f = new Function(memberName);
+                                f.ReturnType = t;
+                                m_variables.add(f);
+                                System.Diagnostics.Debug.Print("Constructor added: " + name + ":" + f.ToString());
+                            }
+                            else
+                            {
 
-                            t.addMethod(f);
-                            System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.ToString());
+                                Type mt = m_types.get(memberType);
+                                Function f = new Function(memberName);
+                                f.ReturnType = mt;
+
+                                t.addMethod(f);
+                                System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.ToString());
+                            }
                         }
                     }
 
@@ -144,6 +192,7 @@ namespace LuaEditor
 
         private void scintilla1_CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
+            
             const string newline = "\r\n";
             if (newline.Contains(e.Ch)) return;
             Chain chain = Chain.ParseBackward(scintilla1);
@@ -153,7 +202,7 @@ namespace LuaEditor
 
                 bool isFunction = false;
                 string str=  scintilla1.Text;
-                for (int i = chain.EndPos+1; i < str.Length; i++) {
+                for (int i = chain.EndPos+1; i < scintilla1.CurrentPos; i++) {
                     char c = str[i];
                     if (Parser.isString(scintilla1, i) || Parser.isComment(scintilla1, i)) continue;
                     if (char.IsWhiteSpace(c)) continue;
@@ -186,18 +235,17 @@ namespace LuaEditor
                         if (list.Count > 0)
                         {
                             scintilla1.AutoComplete.Show(0, list);
+                            
                         }
                     }
-                    return;
                 }
-                else if (word.Length >= 3)
+                else if (char.IsLetterOrDigit(e.Ch) &&word.Length >= 3)
                 {
                     List<string> list = m_variables.getList(word);
                     if (list.Count > 0)
                     {
                         scintilla1.AutoComplete.Show(word.Length, list);
                     }
-                    return;
                 }
             }
             else {
@@ -209,6 +257,19 @@ namespace LuaEditor
                         scintilla1.AutoComplete.Show(chain.getLastElement().Length, list);
                     }
                 }
+            }
+
+            IntPtr hwnd = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "ListBoxX", null);
+
+
+            if (hwnd != IntPtr.Zero)
+            {
+                RECT rect;
+                GetWindowRect(hwnd, out rect);
+                System.Diagnostics.Debug.Print(rect.Left + "," + rect.Top);
+
+                ToolTip tooltip = new ToolTip(rect.Right, rect.Top, 100, 32, "helloworld", 10);
+                tooltip.Show();
             }
             
         }
@@ -264,6 +325,20 @@ namespace LuaEditor
         private void scintilla1_TextInserted(object sender, ScintillaNET.TextModifiedEventArgs e)
         {
             parseFile(scintilla1.Lines.Current.StartPosition);
+        }
+
+        private void scintilla1_AutoCompleteAccepted(object sender, ScintillaNET.AutoCompleteAcceptedEventArgs e)
+        {
+            
+            
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+           
+           
+            timer1.Start();
         }
     }
 }

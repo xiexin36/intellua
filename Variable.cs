@@ -85,12 +85,12 @@ namespace LuaEditor
             List<string> rst = new List<string>();
             foreach (Variable var in Variables.Values) {
                 if (var.Name.StartsWith(partialName,true,null)) {
-                    rst.Add(var.Name);
+                    rst.Add(var.Name + "?0");
                 }
             }
             foreach(Function func in GlobalFunctions.Values){
                 if(func.Name.StartsWith(partialName,true,null)){
-                    rst.Add(func.ToString());
+                    rst.Add(func.Name + "?1");
                 }
             }
             rst.Sort();
