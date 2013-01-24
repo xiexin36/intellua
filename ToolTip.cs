@@ -10,51 +10,62 @@ namespace LuaEditor
 {
     class ToolTip : System.Windows.Forms.Form
     {
-        public int Duration { get; set; }
-
-        public ToolTip(int x, int y, int width, int height, string message, int duration)
+        private Label label1;
+        private IWin32Window m_owner;
+        public void ShowToolTip(int x, int y, string message) {
+            label1.Text = message;
+            Location = new Point(x, y);
+            if(!Visible)
+            Show(m_owner);
+        }
+        
+        public ToolTip(IWin32Window owner)
     {
+        m_owner = owner;
         this.FormBorderStyle = FormBorderStyle.None;
         this.ShowInTaskbar = false;
-        this.Width = width;
-        this.Height = height;
-        this.Duration = duration;
-        this.Location = new Point(x, y);
         this.StartPosition = FormStartPosition.Manual;
         this.BackColor = Color.LightYellow;
-
-        Label label = new Label();
-        label.Text = message;
-        label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-        label.Dock = DockStyle.Fill;
-
-        this.Padding = new Padding(5);
-        this.Controls.Add(label);
+        InitializeComponent();
     }
         protected override bool ShowWithoutActivation
         {
             get { return true; }
         }
-    protected override void OnShown(System.EventArgs e)
-    {
-        base.OnShown(e);
 
-        TaskScheduler ui = TaskScheduler.FromCurrentSynchronizationContext();
+        private void InitializeComponent()
+        {
+            this.label1 = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Name = "label1";
+            this.label1.Padding = new System.Windows.Forms.Padding(2);
+            this.label1.Size = new System.Drawing.Size(41, 19);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "label1";
+            this.label1.Resize += new System.EventHandler(this.label1_Resize);
+            // 
+            // ToolTip
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Name = "ToolTip";
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
-        Task.Factory.StartNew(() => CloseAfter(this.Duration, ui));
-    }
+        }
 
-    private void CloseAfter(int duration, TaskScheduler ui)
-    {
-        Thread.Sleep(duration * 1000);
-
-        Form form = this;
-
-        Task.Factory.StartNew(
-            () => form.Close(),
-            CancellationToken.None,
-            TaskCreationOptions.None,
-            ui);
-    }
+        private void label1_Resize(object sender, EventArgs e)
+        {
+            Size = label1.Size;
+        }
+   
     }
 }

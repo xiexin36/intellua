@@ -28,17 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.scintilla1 = new ScintillaNET.Scintilla();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.scintilla1)).BeginInit();
             this.SuspendLayout();
             // 
             // scintilla1
             // 
-            this.scintilla1.Location = new System.Drawing.Point(54, 12);
+            this.scintilla1.Location = new System.Drawing.Point(54, 13);
             this.scintilla1.Name = "scintilla1";
-            this.scintilla1.Size = new System.Drawing.Size(587, 375);
+            this.scintilla1.Size = new System.Drawing.Size(587, 406);
             this.scintilla1.Styles.BraceBad.Size = 9F;
             this.scintilla1.Styles.BraceLight.Size = 9F;
             this.scintilla1.Styles.ControlChar.Size = 9F;
@@ -50,20 +48,16 @@
             this.scintilla1.Styles.Max.Size = 9F;
             this.scintilla1.TabIndex = 0;
             this.scintilla1.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.scintilla1_AutoCompleteAccepted);
+            this.scintilla1.AutoCompleteCancelled += new System.EventHandler<ScintillaNET.NativeScintillaEventArgs>(this.scintilla1_AutoCompleteCancelled);
             this.scintilla1.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.scintilla1_CharAdded);
             this.scintilla1.TextDeleted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextDeleted);
             this.scintilla1.TextInserted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextInserted);
             // 
-            // timer1
-            // 
-            this.timer1.Enabled = true;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(933, 432);
+            this.ClientSize = new System.Drawing.Size(933, 468);
             this.Controls.Add(this.scintilla1);
             this.Name = "Form1";
             this.Text = "Form1";
@@ -76,7 +70,6 @@
         #endregion
 
         private ScintillaNET.Scintilla scintilla1;
-        private System.Windows.Forms.Timer timer1;
     }
 }
 

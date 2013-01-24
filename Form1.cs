@@ -40,7 +40,7 @@ namespace LuaEditor
         );
         private TypeManager m_types;
         private VariableManager m_variables;
-
+        private ToolTip m_tooltip;
         public Form1()
         {
             InitializeComponent();
@@ -48,6 +48,7 @@ namespace LuaEditor
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            m_tooltip = new ToolTip(this);
             m_types = new TypeManager();
             m_variables = new VariableManager();
             scintilla1.ConfigurationManager.CustomLocation = "ScintillaNET.xml";
@@ -78,10 +79,9 @@ namespace LuaEditor
 
             scintilla1.AutoComplete.RegisterImages(list);
 
+            
             loadXML();
 
-
-            timer1.Start();
             
         }
         private void loadXML() {
@@ -168,25 +168,6 @@ namespace LuaEditor
                     }
                 }
             }
-            /*foreach (XmlNode node in root.ChildNodes)
-            {
-                if (node.Attributes["kind"].InnerText == "class")
-                {
-                    string name = node["compoundname"].InnerText;
-                    Type t = m_types.get(name);
-
-                    foreach (XmlElement in node.)
-                    {
-                        if (member.Name != "member") continue;
-                        if (member.Attributes["kind"].InnerText == "variable") { 
-                            
-                        }
-                    }
-
-                    System.Diagnostics.Debug.Print("Type added: " + name);
-                    m_types.add(t);
-                }
-            }*/
 
         }
 
@@ -222,7 +203,7 @@ namespace LuaEditor
                             List<string> list = t.getList();
                             if (list.Count > 0)
                             {
-                                scintilla1.AutoComplete.Show(0, list);
+                                ShowAutoComplete(0, list);
                             }
                         }
                     }
@@ -234,7 +215,7 @@ namespace LuaEditor
                         List<string> list = var.Type.getList();
                         if (list.Count > 0)
                         {
-                            scintilla1.AutoComplete.Show(0, list);
+                            ShowAutoComplete(0, list);
                             
                         }
                     }
@@ -244,7 +225,7 @@ namespace LuaEditor
                     List<string> list = m_variables.getList(word);
                     if (list.Count > 0)
                     {
-                        scintilla1.AutoComplete.Show(word.Length, list);
+                        ShowAutoComplete(word.Length, list);
                     }
                 }
             }
@@ -254,10 +235,17 @@ namespace LuaEditor
                     List<string> list = t.getList();
                     if (list.Count > 0)
                     {
-                        scintilla1.AutoComplete.Show(chain.getLastElement().Length, list);
+                        ShowAutoComplete(chain.getLastElement().Length, list);
                     }
                 }
             }
+
+            
+            
+        }
+
+        private void ShowAutoComplete(int lengthEntered, IEnumerable<string> list) {
+            scintilla1.AutoComplete.Show(lengthEntered, list);
 
             IntPtr hwnd = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "ListBoxX", null);
 
@@ -266,12 +254,9 @@ namespace LuaEditor
             {
                 RECT rect;
                 GetWindowRect(hwnd, out rect);
-                System.Diagnostics.Debug.Print(rect.Left + "," + rect.Top);
-
-                ToolTip tooltip = new ToolTip(rect.Right, rect.Top, 100, 32, "helloworld", 10);
-                tooltip.Show();
+                m_tooltip.ShowToolTip(rect.Right,rect.Top,"helloworld");
+                
             }
-            
         }
 
         private void parseFile(int pos) {
@@ -329,16 +314,15 @@ namespace LuaEditor
 
         private void scintilla1_AutoCompleteAccepted(object sender, ScintillaNET.AutoCompleteAcceptedEventArgs e)
         {
-            
+            m_tooltip.Hide();
             
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void scintilla1_AutoCompleteCancelled(object sender, EventArgs e)
         {
-
-           
-           
-            timer1.Start();
+            m_tooltip.Hide();
         }
+
+
     }
 }
