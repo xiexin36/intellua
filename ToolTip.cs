@@ -18,6 +18,10 @@ namespace LuaEditor
             if(!Visible)
             Show(m_owner);
         }
+
+        public void setText(string text) {
+            label1.Text = text;
+        }
         
         public ToolTip(IWin32Window owner)
     {
@@ -44,6 +48,7 @@ namespace LuaEditor
             this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(2);
             this.label1.Size = new System.Drawing.Size(41, 19);
@@ -53,10 +58,13 @@ namespace LuaEditor
             // 
             // ToolTip
             // 
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ToolTip";
+            this.Load += new System.EventHandler(this.ToolTip_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -65,6 +73,11 @@ namespace LuaEditor
         private void label1_Resize(object sender, EventArgs e)
         {
             Size = label1.Size;
+        }
+
+        private void ToolTip_Load(object sender, EventArgs e)
+        {
+
         }
    
     }

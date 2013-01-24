@@ -254,7 +254,7 @@ namespace LuaEditor
             {
                 RECT rect;
                 GetWindowRect(hwnd, out rect);
-                m_tooltip.ShowToolTip(rect.Right,rect.Top,"helloworld");
+                m_tooltip.ShowToolTip(rect.Right,rect.Top,scintilla1.AutoComplete.SelectedText);
                 
             }
         }
@@ -321,6 +321,23 @@ namespace LuaEditor
         private void scintilla1_AutoCompleteCancelled(object sender, EventArgs e)
         {
             m_tooltip.Hide();
+        }
+
+        private void scintilla1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (scintilla1.AutoComplete.IsActive) {
+                int delta = 0;
+                if(e.KeyCode == Keys.Up) delta = -1;
+                else if(e.KeyCode == Keys.Down) delta = 1;
+                else return;
+                int index = scintilla1.AutoComplete.SelectedIndex + delta;
+                if (index < 0) index = 0;
+                if (index == scintilla1.AutoComplete.List.Count) index = scintilla1.AutoComplete.List.Count - 1;
+
+
+                
+                m_tooltip.setText(scintilla1.AutoComplete.List[index]);
+            }
         }
 
 
