@@ -195,7 +195,7 @@ void ScintillaBase::AutoCompleteDoubleClick(void *p) {
 
 void ScintillaBase::AutoCompleteStart(int lenEntered, const char *list) {
 	//Platform::DebugPrintf("AutoComplete %s\n", list);
-	ct.CallTipCancel();
+	//ct.CallTipCancel();
 
 	if (ac.chooseSingle && (listType == 0)) {
 		if (list && !strchr(list, ac.GetSeparator())) {
@@ -397,7 +397,7 @@ int ScintillaBase::AutoCompleteGetCurrentText(char *buffer) {
 }
 
 void ScintillaBase::CallTipShow(Point pt, const char *defn) {
-	ac.Cancel();
+	//ac.Cancel();
 	// If container knows about STYLE_CALLTIP then use it in place of the
 	// STYLE_DEFAULT for the face name, size and character set. Also use it
 	// for the foreground and background colour.
@@ -418,7 +418,7 @@ void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 	// space
 	PRectangle rcClient = GetClientRectangle();
 	int offset = vs.lineHeight + rc.Height();
-	// adjust so it displays below the text.
+	/*// adjust so it displays below the text.
 	if (rc.top < rcClient.top) {
 		rc.top += offset;
 		rc.bottom += offset;
@@ -427,7 +427,7 @@ void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 	if (rc.bottom > rcClient.bottom) {
 		rc.top -= offset;
 		rc.bottom -= offset;
-	}
+	}*/
 	// Now display the window.
 	CreateCallTipWindow(rc);
 	ct.wCallTip.SetPositionRelative(rc, wMain);

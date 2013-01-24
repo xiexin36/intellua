@@ -30,7 +30,7 @@ CallTip::CallTip() {
 	startHighlight = 0;
 	endHighlight = 0;
 	tabSize = 0;
-	above = false;
+	above = true;
 	useStyleCallTip = false;    // for backwards compatibility
 
 	insetX = 5;

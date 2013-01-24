@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace LuaEditor
 {
-    class Variable
+    class Variable : IAutoCompleteItem
     {
         public Variable(string name) {
             Name = name;
@@ -24,7 +24,12 @@ namespace LuaEditor
             get { return m_Type; }
             set { m_Type = value; }
         }
-
+        private Type m_Class;
+        public LuaEditor.Type Class
+        {
+            get { return m_Class; }
+            set { m_Class = value; }
+        }
         private bool m_isStatic;
         public bool IsStatic
         {
@@ -42,6 +47,26 @@ namespace LuaEditor
         {
             get { return m_endPos; }
             set { m_endPos = value; }
+        }
+
+        private string m_desc;
+        public string Desc
+        {
+            get { return m_desc; }
+            set { m_desc = value; }
+        }
+
+        public override string getName()
+        {
+            return Name;
+        }
+        public override string getACString()
+        {
+            return Name + "?0";
+        }
+        public override string getToolTipString()
+        {
+            return Type.Name + " " + (Class == null ? "" : Class.Name + ":")+ Name + "\n\n" + Desc;
         }
     }
 
@@ -81,16 +106,16 @@ namespace LuaEditor
             return null;
         }
 
-        public List<string> getList(string partialName) {
-            List<string> rst = new List<string>();
+        public List<IAutoCompleteItem> getList(string partialName) {
+            List<IAutoCompleteItem> rst = new List<IAutoCompleteItem>();
             foreach (Variable var in Variables.Values) {
                 if (var.Name.StartsWith(partialName,true,null)) {
-                    rst.Add(var.Name + "?0");
+                    rst.Add(var);
                 }
             }
             foreach(Function func in GlobalFunctions.Values){
                 if(func.Name.StartsWith(partialName,true,null)){
-                    rst.Add(func.Name + "?1");
+                    rst.Add(func);
                 }
             }
             rst.Sort();

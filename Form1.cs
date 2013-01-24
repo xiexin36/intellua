@@ -7,8 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Linq;
+
 using System.IO;
 using System.Reflection;
 				
@@ -60,6 +59,9 @@ namespace LuaEditor
             scintilla1.Margins[2].Width = 20;
             scintilla1.AutoComplete.IsCaseSensitive = false;
             scintilla1.AutoComplete.AutoHide = false;
+
+            
+
             m_types.add(new Type("int"));
             m_types.add(new Type("void"));
             m_types.add(new Type("char"));
@@ -80,100 +82,15 @@ namespace LuaEditor
             scintilla1.AutoComplete.RegisterImages(list);
 
             
-            loadXML();
+            DoxygenXMLParser.Parse("all.xml",m_variables,m_types);
 
             
         }
-        private void loadXML() {
-            XDocument doc = XDocument.Load("all.xml");
-
-            //scan all classes first.
-            foreach(XElement node in doc.Descendants("compounddef")){
-                if (node.Attribute("kind").Value == "class") {
-                    string name = node.Element("compoundname").Value;
-                    Type t = new Type(name);
-                    System.Diagnostics.Debug.Print("Type added: " + name);
-                    m_types.add(t);
-                }
-            }
-            foreach (XElement node in doc.Descendants("compounddef"))
-            {
-                if (node.Attribute("kind").Value == "class")
-                {
-                    string name = node.Element("compoundname").Value;
-                    Type t = m_types.get(name);
-
-                    foreach (XElement member in node.Descendants("memberdef"))
-                    {
-                        if (member.Attribute("kind").Value == "variable") {
-                            string memberName = member.Element("name").Value;
-                            string memberType = member.Element("type").Value;
-
-                            Type mt = m_types.get(memberType);
-                            t.addMember(memberName, mt);
-                            System.Diagnostics.Debug.Print("Member added: " + memberType + " " + name + ":" + memberName);
-                        }
-                        else if (member.Attribute("kind").Value == "function") {
-                            string memberName = member.Element("name").Value;
-                            string memberType = member.Element("type").Value;
-
-                            if (memberName == name)
-                            {
-                                Function f = new Function(memberName);
-                                f.ReturnType = t;
-                                m_variables.add(f);
-                                System.Diagnostics.Debug.Print("Constructor added: " + name + ":" + f.ToString());
-                            }
-                            else
-                            {
-
-                                Type mt = m_types.get(memberType);
-                                Function f = new Function(memberName);
-                                f.ReturnType = mt;
-
-                                t.addMethod(f);
-                                System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.ToString());
-                            }
-                        }
-                    }
-
-
-                }
-                else if (node.Attribute("kind").Value == "file") {
-                    foreach (XElement member in node.Descendants("memberdef"))
-                    {
-                        if (member.Attribute("kind").Value == "variable")
-                        {
-                            string memberName = member.Element("name").Value;
-                            string memberType = member.Element("type").Value;
-
-                            Type mt = m_types.get(memberType);
-                            Variable var = new Variable(memberName);
-                            var.Type = mt;
-                            var.IsStatic = true;
-                            m_variables.add(var);
-                            System.Diagnostics.Debug.Print("Static variable added: " + memberType + " " + memberName);
-                        }
-                        else if (member.Attribute("kind").Value == "function")
-                        {
-                            string memberName = member.Element("name").Value;
-                            string memberType = member.Element("type").Value;
-
-                            Type mt = m_types.get(memberType);
-                            Function f = new Function(memberName);
-                            f.ReturnType = mt;
-                            m_variables.add(f);
-                            System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.ToString());
-                        }
-                    }
-                }
-            }
-
-        }
+       
 
         private void scintilla1_CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
-            
+            scintilla1.CallTip.Show("helloworld!");
             const string newline = "\r\n";
             if (newline.Contains(e.Ch)) return;
             Chain chain = Chain.ParseBackward(scintilla1);
@@ -200,7 +117,7 @@ namespace LuaEditor
                         Type t = func.ReturnType;
                         if (t != null)
                         {
-                            List<string> list = t.getList();
+                            List<IAutoCompleteItem> list = t.getList();
                             if (list.Count > 0)
                             {
                                 ShowAutoComplete(0, list);
@@ -212,7 +129,7 @@ namespace LuaEditor
                 else if (e.Ch == '.' || e.Ch == ':') {
                     Variable var = m_variables.getVariable(word);
                     if (var != null) {
-                        List<string> list = var.Type.getList();
+                        List<IAutoCompleteItem> list = var.Type.getList();
                         if (list.Count > 0)
                         {
                             ShowAutoComplete(0, list);
@@ -222,7 +139,7 @@ namespace LuaEditor
                 }
                 else if (char.IsLetterOrDigit(e.Ch) &&word.Length >= 3)
                 {
-                    List<string> list = m_variables.getList(word);
+                    List<IAutoCompleteItem> list = m_variables.getList(word);
                     if (list.Count > 0)
                     {
                         ShowAutoComplete(word.Length, list);
@@ -232,7 +149,7 @@ namespace LuaEditor
             else {
                 Type t = chain.getType(m_variables);
                 if (t!=null) {
-                    List<string> list = t.getList();
+                    List<IAutoCompleteItem> list = t.getList();
                     if (list.Count > 0)
                     {
                         ShowAutoComplete(chain.getLastElement().Length, list);
@@ -240,21 +157,31 @@ namespace LuaEditor
                 }
             }
 
+            if (!scintilla1.AutoComplete.IsActive) {
+                m_tooltip.Hide();
+            }
             
             
         }
+        private List<IAutoCompleteItem> m_autocompleteList;
+        private void ShowAutoComplete(int lengthEntered, List<IAutoCompleteItem> list)
+        {
+            m_autocompleteList = list;
+            List<string> str = new List<string>();
+            foreach (IAutoCompleteItem item in list) {
+                str.Add(item.getACString());
+            }
+            scintilla1.AutoComplete.Show(lengthEntered, str);
 
-        private void ShowAutoComplete(int lengthEntered, IEnumerable<string> list) {
-            scintilla1.AutoComplete.Show(lengthEntered, list);
-
+            if (scintilla1.AutoComplete.SelectedIndex < 0) return;
             IntPtr hwnd = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "ListBoxX", null);
-
 
             if (hwnd != IntPtr.Zero)
             {
                 RECT rect;
                 GetWindowRect(hwnd, out rect);
-                m_tooltip.ShowToolTip(rect.Right,rect.Top,scintilla1.AutoComplete.SelectedText);
+
+                m_tooltip.ShowToolTip(rect.Right, rect.Top, m_autocompleteList[scintilla1.AutoComplete.SelectedIndex].getToolTipString());
                 
             }
         }
@@ -330,7 +257,7 @@ namespace LuaEditor
 
         private void scintilla1_AutoCompleteMoved(object sender, ScintillaNET.NativeScintillaEventArgs e)
         {
-            m_tooltip.setText(scintilla1.AutoComplete.SelectedText);
+            m_tooltip.setText(m_autocompleteList[scintilla1.AutoComplete.SelectedIndex].getToolTipString());
         }
 
 

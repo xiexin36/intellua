@@ -9,7 +9,7 @@ namespace LuaEditor
     {
         public Type(string name) {
             Name = name;
-            m_members = new Dictionary<string, Type>();
+            m_members = new Dictionary<string, Variable>();
             m_methods = new Dictionary<string, Function>();
         }
         private string m_name;
@@ -18,14 +18,15 @@ namespace LuaEditor
             get { return m_name; }
             set { m_name = value; }
         }
-        private Dictionary<string, Type> m_members;
-        public Dictionary<string, Type> Members
+        private Dictionary<string, Variable> m_members;
+        public Dictionary<string, Variable> Members
         {
             get { return m_members; }
             set { m_members = value; }
         }
-        public void addMember(string name, Type type) {
-            m_members[name] = type;
+        public void addMember(Variable var) {
+            var.Class = this;
+            m_members[var.Name] = var;
         }
         private Dictionary<string, Function> m_methods;
         public Dictionary<string, Function> Methods
@@ -34,49 +35,24 @@ namespace LuaEditor
             set { m_methods = value; }
         }
         public void addMethod(Function method) {
+            method.Class = this;
             m_methods[method.Name] = method;
         }
-        public List<string> getList() { 
-            List<string> rst = new List<string>();
+        public List<IAutoCompleteItem> getList() {
+            List<IAutoCompleteItem> rst = new List<IAutoCompleteItem>();
 
-            foreach (string key in m_members.Keys) {
+            foreach (Variable key in m_members.Values) {
                 rst.Add(key);
             }
             foreach (Function key in m_methods.Values) {
-                rst.Add(key.ToString());
+                rst.Add(key);
             }
             rst.Sort();
             return rst;
         }
     }
 
-    class Function {
-        public Function(string name) {
-            m_name = name;
-        }
-        private string m_name;
-        public string Name
-        {
-            get { return m_name; }
-            set { m_name = value; }
-        }
-        private Type m_returnType;
-        public LuaEditor.Type ReturnType
-        {
-            get { return m_returnType; }
-            set { m_returnType = value; }
-        }
-        private string m_param;
-        public string Param
-        {
-            get { return m_param; }
-            set { m_param = value; }
-        }
-
-        public override string ToString() {
-            return Name + "()";
-        }
-    }
+    
 
     class TypeManager {
         public TypeManager() { 

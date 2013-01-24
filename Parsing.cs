@@ -85,7 +85,7 @@ namespace LuaEditor
                 string name = Elements[i];
                 if (t.Members.ContainsKey(name))
                 {
-                    t = t.Members[name];
+                    t = t.Members[name].Type;
                 }
                 else if (t.Methods.ContainsKey(name))
                 {
@@ -97,7 +97,7 @@ namespace LuaEditor
             string last = getLastElement();
             if (t.Members.ContainsKey(last))
             {
-                return t.Members[last];
+                return t.Members[last].Type;
             }
             else if (t.Methods.ContainsKey(last))
             {

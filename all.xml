@@ -1,56 +1,5 @@
 <?xml version="1.0" standalone="yes"?>
-<doxygen version="1.8.3.1"><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="class_____l_u_a___m_a_t_h" kind="class" prot="public">
-    <compoundname>__LUA_MATH</compoundname>
-      <sectiondef kind="private-func">
-      <memberdef kind="function" id="class_____l_u_a___m_a_t_h_1a5fb27ccd9317e99d376bb81f11ff834f" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>double</type>
-        <definition>double __LUA_MATH::abs</definition>
-        <argsstring>(double x)</argsstring>
-        <name>abs</name>
-        <param>
-          <type>double</type>
-          <declname>x</declname>
-        </param>
-        <briefdescription>
-<para>Returns the absolute value of x. </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/luadefault.h" line="5"/>
-      </memberdef>
-      <memberdef kind="function" id="class_____l_u_a___m_a_t_h_1a6ab39204b399f73deb7777a53f72e79d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
-        <type>double</type>
-        <definition>double __LUA_MATH::atan2</definition>
-        <argsstring>(double y, double x)</argsstring>
-        <name>atan2</name>
-        <param>
-          <type>double</type>
-          <declname>y</declname>
-        </param>
-        <param>
-          <type>double</type>
-          <declname>x</declname>
-        </param>
-        <briefdescription>
-<para>Returns the arc tangent of y/x (in radians), but uses the signs of both parameters to find the quadrant of the result. (It also handles correctly the case of x being zero.) </para>        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/luadefault.h" line="14"/>
-      </memberdef>
-      </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <location file="C:/hg/LuaEditor/Doxygen/luadefault.h" line="1" bodyfile="C:/hg/LuaEditor/Doxygen/luadefault.h" bodystart="1" bodyend="15"/>
-    <listofallmembers>
-      <member refid="class_____l_u_a___m_a_t_h_1a5fb27ccd9317e99d376bb81f11ff834f" prot="private" virt="non-virtual"><scope>__LUA_MATH</scope><name>abs</name></member>
-      <member refid="class_____l_u_a___m_a_t_h_1a6ab39204b399f73deb7777a53f72e79d" prot="private" virt="non-virtual"><scope>__LUA_MATH</scope><name>atan2</name></member>
-    </listofallmembers>
-  </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="classint" kind="class" prot="public">
+<doxygen version="1.8.3.1"><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="classint" kind="class" prot="public">
     <compoundname>int</compoundname>
     <briefdescription>
     </briefdescription>
@@ -77,7 +26,7 @@
         <argsstring/>
         <name>TestMember1</name>
         <briefdescription>
-        </briefdescription>
+<para>TestMember1 desc. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -86,26 +35,34 @@
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-func">
-      <memberdef kind="function" id="class_test_class_1a09903432ed60c7c38f1beccc4cf18987" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="class_test_class_1a993d35904f35e6d684692b3475e54e39" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type/>
         <definition>TestClass::TestClass</definition>
-        <argsstring>()</argsstring>
+        <argsstring>(int i)</argsstring>
         <name>TestClass</name>
+        <param>
+          <type><ref refid="classint" kindref="compound">int</ref></type>
+          <declname>i</declname>
+        </param>
         <briefdescription>
-        </briefdescription>
+<para>constructor desc. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
         <location file="C:/hg/LuaEditor/Doxygen/test.h" line="5"/>
       </memberdef>
-      <memberdef kind="function" id="class_test_class_1abe537a2d94b66300c4ac7dd5035a00b4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="class_test_class_1ae46ee57abacff0bef0a08f4697441de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void TestClass::TestMethod</definition>
-        <argsstring>()</argsstring>
+        <argsstring>(TestClass test)</argsstring>
         <name>TestMethod</name>
+        <param>
+          <type><ref refid="class_test_class" kindref="compound">TestClass</ref></type>
+          <declname>test</declname>
+        </param>
         <briefdescription>
-        </briefdescription>
+<para>TestMethod desc. </para>        </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
@@ -113,50 +70,57 @@
         <location file="C:/hg/LuaEditor/Doxygen/test.h" line="7"/>
       </memberdef>
       </sectiondef>
-    <briefdescription>
-    </briefdescription>
-    <detaileddescription>
-    </detaileddescription>
-    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="4" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="4" bodyend="9"/>
-    <listofallmembers>
-      <member refid="class_test_class_1a09903432ed60c7c38f1beccc4cf18987" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestClass</name></member>
-      <member refid="class_test_class_1a0279179cf4a8d6ef14039c702bed2409" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMember1</name></member>
-      <member refid="class_test_class_1abe537a2d94b66300c4ac7dd5035a00b4" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMethod</name></member>
-    </listofallmembers>
-  </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="luadefault_8h" kind="file">
-    <compoundname>luadefault.h</compoundname>
-    <innerclass refid="class_____l_u_a___m_a_t_h" prot="public">__LUA_MATH</innerclass>
-      <sectiondef kind="var">
-      <memberdef kind="variable" id="luadefault_8h_1a4920170239eff69ed78c9a36841d7457" prot="public" static="no" mutable="no">
-        <type><ref refid="class_____l_u_a___m_a_t_h" kindref="compound">__LUA_MATH</ref></type>
-        <definition>__LUA_MATH math</definition>
-        <argsstring/>
-        <name>math</name>
+      <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_test_class_1a31363d6f4c4ce6149a9d56052ee29987" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void TestClass::StaticMethod</definition>
+        <argsstring>()</argsstring>
+        <name>StaticMethod</name>
         <briefdescription>
         </briefdescription>
         <detaileddescription>
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/luadefault.h" line="17" bodyfile="C:/hg/LuaEditor/Doxygen/luadefault.h" bodystart="17" bodyend="-1"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="8"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
     </briefdescription>
     <detaileddescription>
     </detaileddescription>
+    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="4" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="4" bodyend="10"/>
+    <listofallmembers>
+      <member refid="class_test_class_1a31363d6f4c4ce6149a9d56052ee29987" prot="private" virt="non-virtual"><scope>TestClass</scope><name>StaticMethod</name></member>
+      <member refid="class_test_class_1a993d35904f35e6d684692b3475e54e39" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestClass</name></member>
+      <member refid="class_test_class_1a0279179cf4a8d6ef14039c702bed2409" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMember1</name></member>
+      <member refid="class_test_class_1ae46ee57abacff0bef0a08f4697441de7" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMethod</name></member>
+    </listofallmembers>
+  </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="luadefault_8h" kind="file">
+    <compoundname>luadefault.h</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
     <programlisting>
-<codeline lineno="1" refid="class_____l_u_a___m_a_t_h" refkind="compound"><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_____l_u_a___m_a_t_h" kindref="compound">__LUA_MATH</ref>{</highlight></codeline>
-<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>abs(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x);</highlight></codeline>
-<codeline lineno="6"><highlight class="normal"/></codeline>
-<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline lineno="8"><highlight class="normal"/></codeline>
-<codeline lineno="9"><highlight class="normal"/></codeline>
-<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>atan2(</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>y,</highlight><highlight class="keywordtype">double</highlight><highlight class="normal"><sp/>x);</highlight></codeline>
-<codeline lineno="15"><highlight class="normal">};</highlight></codeline>
-<codeline lineno="16"><highlight class="normal"/></codeline>
-<codeline lineno="17"><highlight class="normal"><ref refid="class_____l_u_a___m_a_t_h" kindref="compound">__LUA_MATH</ref><sp/>math;</highlight></codeline>
+<codeline lineno="1"><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">class<sp/>__LUA_MATH{</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/><sp/><sp/><sp/>/<sp/>**<sp/>\brief<sp/>Returns<sp/>the<sp/>absolute<sp/>value<sp/>of<sp/>x.<sp/></highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/><sp/><sp/><sp/>*<sp/>/</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/><sp/><sp/><sp/>double<sp/>abs(double<sp/>x);</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"/></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="9"><highlight class="comment"/></codeline>
+<codeline lineno="10"><highlight class="comment"/></codeline>
+<codeline lineno="11"><highlight class="comment"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="12"><highlight class="comment"><sp/><sp/><sp/><sp/>/<sp/>**<sp/>\brief<sp/>Returns<sp/>the<sp/>arc<sp/>tangent<sp/>of<sp/>y/x<sp/>(in<sp/>radians),<sp/>but<sp/>uses<sp/>the<sp/>signs<sp/>of<sp/>both<sp/>parameters<sp/>to<sp/>find<sp/>the<sp/>quadrant<sp/>of<sp/>the<sp/>result.<sp/>(It<sp/>also<sp/>handles<sp/>correctly<sp/>the<sp/>case<sp/>of<sp/>x<sp/>being<sp/>zero.)<sp/></highlight></codeline>
+<codeline lineno="13"><highlight class="comment"/></codeline>
+<codeline lineno="14"><highlight class="comment"><sp/><sp/><sp/><sp/>*<sp/>/</highlight></codeline>
+<codeline lineno="15"><highlight class="comment"><sp/><sp/><sp/><sp/>double<sp/>atan2(double<sp/>y,double<sp/>x);</highlight></codeline>
+<codeline lineno="16"><highlight class="comment">};</highlight></codeline>
+<codeline lineno="17"><highlight class="comment"/></codeline>
+<codeline lineno="18"><highlight class="comment">__LUA_MATH<sp/>math;*/</highlight><highlight class="normal"/></codeline>
     </programlisting>
     <location file="C:/hg/LuaEditor/Doxygen/luadefault.h"/>
   </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="test_8h" kind="file">
@@ -176,7 +140,22 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="11" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="11" bodyend="-1"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="12" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="test_8h_1a80d1710ede0ec8a89456fb7834c1bd83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void GlobalFunction</definition>
+        <argsstring>()</argsstring>
+        <name>GlobalFunction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="11"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -188,13 +167,14 @@
 <codeline lineno="2" refid="classtest2" refkind="compound"><highlight class="normal"/><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classtest2" kindref="compound">test2</ref>{};</highlight></codeline>
 <codeline lineno="3" refid="classint" refkind="compound"><highlight class="normal"/><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classint" kindref="compound">int</ref>{};</highlight></codeline>
 <codeline lineno="4" refid="class_test_class" refkind="compound"><highlight class="normal"/><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_test_class" kindref="compound">TestClass</ref>{</highlight></codeline>
-<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="class_test_class" kindref="compound">TestClass</ref>();</highlight></codeline>
-<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>TestMember1;</highlight></codeline>
-<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>TestMethod();</highlight></codeline>
-<codeline lineno="8"><highlight class="normal"/></codeline>
-<codeline lineno="9"><highlight class="normal">};</highlight></codeline>
-<codeline lineno="10"><highlight class="normal"/></codeline>
-<codeline lineno="11"><highlight class="normal"><ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>testInstance;</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="class_test_class" kindref="compound">TestClass</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>TestMember1;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>TestMethod(<ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>test);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>StaticMethod();</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"/></codeline>
+<codeline lineno="10"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"/><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>GlobalFunction();</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>testInstance;</highlight></codeline>
     </programlisting>
     <location file="C:/hg/LuaEditor/Doxygen/test.h"/>
   </compounddef></doxygen>
