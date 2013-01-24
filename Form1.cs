@@ -90,7 +90,17 @@ namespace LuaEditor
 
         private void scintilla1_CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
-            scintilla1.CallTip.Show("helloworld!");
+            FunctionCall fc = FunctionCall.Parse(scintilla1, m_variables,scintilla1.CurrentPos-1);
+            if (fc != null)
+            {
+                scintilla1.CallTip.Show(fc.CalltipString,fc.HighLightStart,fc.HighLightEnd);
+            }
+            else {
+                scintilla1.CallTip.Hide();
+            }
+            
+
+
             const string newline = "\r\n";
             if (newline.Contains(e.Ch)) return;
             Chain chain = Chain.ParseBackward(scintilla1);
@@ -102,7 +112,7 @@ namespace LuaEditor
                 string str=  scintilla1.Text;
                 for (int i = chain.EndPos+1; i < scintilla1.CurrentPos; i++) {
                     char c = str[i];
-                    if (Parser.isString(scintilla1, i) || Parser.isComment(scintilla1, i)) continue;
+                    if (!Parser.isCode(scintilla1, i)) continue;
                     if (char.IsWhiteSpace(c)) continue;
                     if (c == '(')
                     {
@@ -194,7 +204,7 @@ namespace LuaEditor
 
                 //search for assignment operator
 
-                if(Parser.isComment(scintilla1,pos) || Parser.isString(scintilla1,pos)){
+                if(!Parser.isCode(scintilla1,pos)){
                     continue;
                 }
 

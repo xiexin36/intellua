@@ -20,9 +20,9 @@
   </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="class_test_class" kind="class" prot="public">
     <compoundname>TestClass</compoundname>
       <sectiondef kind="private-attrib">
-      <memberdef kind="variable" id="class_test_class_1a0279179cf4a8d6ef14039c702bed2409" prot="private" static="no" mutable="no">
-        <type><ref refid="classint" kindref="compound">int</ref></type>
-        <definition>int TestClass::TestMember1</definition>
+      <memberdef kind="variable" id="class_test_class_1a83f07250ac888a4f4c67a67035028cab" prot="private" static="no" mutable="no">
+        <type><ref refid="class_test_class" kindref="compound">TestClass</ref></type>
+        <definition>TestClass TestClass::TestMember1</definition>
         <argsstring/>
         <name>TestMember1</name>
         <briefdescription>
@@ -52,14 +52,26 @@
         </inbodydescription>
         <location file="C:/hg/LuaEditor/Doxygen/test.h" line="5"/>
       </memberdef>
-      <memberdef kind="function" id="class_test_class_1ae46ee57abacff0bef0a08f4697441de7" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="class_test_class_1ac2f08fa3d639d99944700ee0a5c50181" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
         <definition>void TestClass::TestMethod</definition>
-        <argsstring>(TestClass test)</argsstring>
+        <argsstring>(TestClass test, int a, int b, int c)</argsstring>
         <name>TestMethod</name>
         <param>
           <type><ref refid="class_test_class" kindref="compound">TestClass</ref></type>
           <declname>test</declname>
+        </param>
+        <param>
+          <type><ref refid="classint" kindref="compound">int</ref></type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type><ref refid="classint" kindref="compound">int</ref></type>
+          <declname>b</declname>
+        </param>
+        <param>
+          <type><ref refid="classint" kindref="compound">int</ref></type>
+          <declname>c</declname>
         </param>
         <briefdescription>
 <para>TestMethod desc. </para>        </briefdescription>
@@ -93,8 +105,8 @@
     <listofallmembers>
       <member refid="class_test_class_1a31363d6f4c4ce6149a9d56052ee29987" prot="private" virt="non-virtual"><scope>TestClass</scope><name>StaticMethod</name></member>
       <member refid="class_test_class_1a993d35904f35e6d684692b3475e54e39" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestClass</name></member>
-      <member refid="class_test_class_1a0279179cf4a8d6ef14039c702bed2409" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMember1</name></member>
-      <member refid="class_test_class_1ae46ee57abacff0bef0a08f4697441de7" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMethod</name></member>
+      <member refid="class_test_class_1a83f07250ac888a4f4c67a67035028cab" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMember1</name></member>
+      <member refid="class_test_class_1ac2f08fa3d639d99944700ee0a5c50181" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMethod</name></member>
     </listofallmembers>
   </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="luadefault_8h" kind="file">
     <compoundname>luadefault.h</compoundname>
@@ -168,8 +180,8 @@
 <codeline lineno="3" refid="classint" refkind="compound"><highlight class="normal"/><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classint" kindref="compound">int</ref>{};</highlight></codeline>
 <codeline lineno="4" refid="class_test_class" refkind="compound"><highlight class="normal"/><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_test_class" kindref="compound">TestClass</ref>{</highlight></codeline>
 <codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="class_test_class" kindref="compound">TestClass</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>TestMember1;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
-<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>TestMethod(<ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>test);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>TestMember1;<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>TestMethod(<ref refid="class_test_class" kindref="compound">TestClass</ref><sp/>test,</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>a,</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>b,</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>c);<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
 <codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>StaticMethod();</highlight></codeline>
 <codeline lineno="9"><highlight class="normal"/></codeline>
 <codeline lineno="10"><highlight class="normal">};</highlight></codeline>

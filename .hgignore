@@ -19,3 +19,4 @@ scintilla/win32/scintilla_vc6.mak
 *UpgradeLog*
 *.log
 *.lib
+Doxygen/html/*
