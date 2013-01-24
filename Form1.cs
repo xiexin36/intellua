@@ -325,19 +325,12 @@ namespace LuaEditor
 
         private void scintilla1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (scintilla1.AutoComplete.IsActive) {
-                int delta = 0;
-                if(e.KeyCode == Keys.Up) delta = -1;
-                else if(e.KeyCode == Keys.Down) delta = 1;
-                else return;
-                int index = scintilla1.AutoComplete.SelectedIndex + delta;
-                if (index < 0) index = 0;
-                if (index == scintilla1.AutoComplete.List.Count) index = scintilla1.AutoComplete.List.Count - 1;
+           
+        }
 
-
-                
-                m_tooltip.setText(scintilla1.AutoComplete.List[index]);
-            }
+        private void scintilla1_AutoCompleteMoved(object sender, ScintillaNET.NativeScintillaEventArgs e)
+        {
+            m_tooltip.setText(scintilla1.AutoComplete.SelectedText);
         }
 
 

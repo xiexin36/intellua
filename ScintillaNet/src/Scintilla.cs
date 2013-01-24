@@ -41,6 +41,8 @@ namespace ScintillaNET
 
         private static readonly object _annotationChangedEventKey = new object();
         private static readonly object _autoCompleteAcceptedEventKey = new object();
+        private static readonly object _autoCompleteCancelledEventKey = new object();
+        private static readonly object _autoCompleteMovedEventKey = new object();
         private static readonly object _beforeTextDeleteEventKey = new object();
         private static readonly object _beforeTextInsertEventKey = new object();
         private static readonly object _borderStyleChangedEventKey = new object();
@@ -724,9 +726,15 @@ namespace ScintillaNET
                 AutoComplete.Cancel();
         }
 
-        protected virtual void OnAutoCompleteCancelled(EventArgs e)
+        protected virtual void OnAutoCompleteCancelled(NativeScintillaEventArgs e)
         {
-            EventHandler<EventArgs> handler = Events[_autoCCancelledEventKey] as EventHandler<EventArgs>;
+            EventHandler<NativeScintillaEventArgs> handler = Events[_autoCompleteCancelledEventKey] as EventHandler<NativeScintillaEventArgs>;
+            if (handler != null)
+                handler(this, e);
+        }
+        protected virtual void OnAutoCompleteMoved(NativeScintillaEventArgs e)
+        {
+            EventHandler<NativeScintillaEventArgs> handler = Events[_autoCompleteMovedEventKey] as EventHandler<NativeScintillaEventArgs>;
             if (handler != null)
                 handler(this, e);
         }
@@ -2014,6 +2022,10 @@ namespace ScintillaNET
                     break;
                 case Constants.SCN_AUTOCCANCELLED:
                     FireAutoCCancelled(nsea);
+                    break;
+                
+                case Constants.SCN_AUTOCMOVED:
+                    FireAutoCMoved(nsea);
                     break;
 
                 case Constants.SCN_CALLTIPCLICK:
@@ -3366,8 +3378,14 @@ namespace ScintillaNET
         [Category("Scintilla"), Description("Occurs when the user cancelled the auto-complete list.")]
         public event EventHandler<NativeScintillaEventArgs> AutoCompleteCancelled
         {
-            add { Events.AddHandler(_autoCCancelledEventKey, value); }
-            remove { Events.RemoveHandler(_autoCCancelledEventKey, value); }
+            add { Events.AddHandler(_autoCompleteCancelledEventKey, value); }
+            remove { Events.RemoveHandler(_autoCompleteCancelledEventKey, value); }
+        }
+        [Category("Scintilla"), Description("Occurs when the user changed the auto-complete list selection.")]
+        public event EventHandler<NativeScintillaEventArgs> AutoCompleteMoved
+        {
+            add { Events.AddHandler(_autoCompleteMovedEventKey, value); }
+            remove { Events.RemoveHandler(_autoCompleteMovedEventKey, value); }
         }
 
         /// <summary>

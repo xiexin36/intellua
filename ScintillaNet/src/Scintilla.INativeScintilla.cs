@@ -16,6 +16,7 @@ namespace ScintillaNET
 
         private static readonly object _autoCSelectionEventKey = new object();
         private static readonly object _autoCCancelledEventKey = new object();
+        private static readonly object _autoCMovedEventKey = new object();
         private static readonly object _callTipClickEventKeyNative = new object();
         private static readonly object _charAddedEventKeyNative = new object();
         private static readonly object _doubleClickEventKey = new object();
@@ -60,7 +61,14 @@ namespace ScintillaNET
             if (Events[_autoCCancelledEventKey] != null)
                 ((EventHandler<NativeScintillaEventArgs>)Events[_autoCCancelledEventKey])(this, ea);
 
-            OnAutoCompleteCancelled(new EventArgs());
+            OnAutoCompleteCancelled(ea);
+        }
+        internal void FireAutoCMoved(NativeScintillaEventArgs ea)
+        {
+            if (Events[_autoCMovedEventKey] != null)
+                ((EventHandler<NativeScintillaEventArgs>)Events[_autoCMovedEventKey])(this, ea);
+
+            OnAutoCompleteMoved(ea);
         }
 
         internal void FireCallTipClick(NativeScintillaEventArgs ea)
@@ -3413,7 +3421,11 @@ namespace ScintillaNET
             remove { Events.RemoveHandler(_autoCCancelledEventKey, value); }
         }
 
-
+        event EventHandler<NativeScintillaEventArgs> INativeScintilla.AutoCMoved
+        {
+            add { Events.AddHandler(_autoCMovedEventKey, value); }
+            remove { Events.RemoveHandler(_autoCMovedEventKey, value); }
+        }
         event EventHandler<NativeScintillaEventArgs> INativeScintilla.CallTipClick
         {
             add { Events.AddHandler(_callTipClickEventKeyNative, value); }

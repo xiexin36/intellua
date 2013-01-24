@@ -622,6 +622,7 @@ namespace ScintillaNET
         public const uint SCN_CALLTIPCLICK = 2021;
         public const uint SCN_AUTOCSELECTION = 2022;
         public const uint SCN_AUTOCCANCELLED = 2025;
+        public const uint SCN_AUTOCMOVED = 2028;
         public const uint SCI_STYLEGETFORE = 2481;
         public const uint SCI_STYLEGETBACK = 2482;
         public const uint SCI_STYLEGETBOLD = 2483;

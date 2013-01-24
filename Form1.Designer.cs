@@ -34,9 +34,9 @@
             // 
             // scintilla1
             // 
-            this.scintilla1.Location = new System.Drawing.Point(54, 13);
+            this.scintilla1.Location = new System.Drawing.Point(54, 12);
             this.scintilla1.Name = "scintilla1";
-            this.scintilla1.Size = new System.Drawing.Size(587, 406);
+            this.scintilla1.Size = new System.Drawing.Size(587, 375);
             this.scintilla1.Styles.BraceBad.Size = 9F;
             this.scintilla1.Styles.BraceLight.Size = 9F;
             this.scintilla1.Styles.ControlChar.Size = 9F;
@@ -49,6 +49,7 @@
             this.scintilla1.TabIndex = 0;
             this.scintilla1.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.scintilla1_AutoCompleteAccepted);
             this.scintilla1.AutoCompleteCancelled += new System.EventHandler<ScintillaNET.NativeScintillaEventArgs>(this.scintilla1_AutoCompleteCancelled);
+            this.scintilla1.AutoCompleteMoved += new System.EventHandler<ScintillaNET.NativeScintillaEventArgs>(this.scintilla1_AutoCompleteMoved);
             this.scintilla1.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.scintilla1_CharAdded);
             this.scintilla1.TextDeleted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextDeleted);
             this.scintilla1.TextInserted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextInserted);
@@ -56,9 +57,9 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(933, 468);
+            this.ClientSize = new System.Drawing.Size(933, 432);
             this.Controls.Add(this.scintilla1);
             this.Name = "Form1";
             this.Text = "Form1";

@@ -500,6 +500,7 @@ namespace ScintillaNET
 
         event EventHandler<NativeScintillaEventArgs> AutoCSelection;
         event EventHandler<NativeScintillaEventArgs> AutoCCancelled;
+        event EventHandler<NativeScintillaEventArgs> AutoCMoved;
         event EventHandler<NativeScintillaEventArgs> CallTipClick;
         event EventHandler<NativeScintillaEventArgs> CharAdded;
         event EventHandler<NativeScintillaEventArgs> DoubleClick;
