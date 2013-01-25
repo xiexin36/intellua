@@ -25,5 +25,27 @@ namespace LuaEditor
                 throw new ArgumentException("Object is not a IAutoCompleteItem");
             }
         }
+
+       
+
+    }
+
+    class AutoCompleteItemComparer : EqualityComparer<IAutoCompleteItem> {
+        public override bool Equals(IAutoCompleteItem b1, IAutoCompleteItem b2)
+        {
+            if (b1.getName() == b2.getName())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode(IAutoCompleteItem item)
+        {
+            return item.getName().GetHashCode();
+        }
     }
 }

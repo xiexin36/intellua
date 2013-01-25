@@ -30,6 +30,11 @@ namespace LuaEditor
                     string name = node.Element("compoundname").Value;
                     Type t = typeManager.get(name);
 
+                    if (node.Element("basecompoundref") != null)
+                    {
+                        t.Base = typeManager.get(node.Element("basecompoundref").Value);
+                    }
+
                     foreach (XElement member in node.Descendants("memberdef"))
                     {
                         if (member.Attribute("kind").Value == "variable")

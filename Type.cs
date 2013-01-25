@@ -18,6 +18,13 @@ namespace LuaEditor
             get { return m_name; }
             set { m_name = value; }
         }
+
+        private Type m_base;
+        public LuaEditor.Type Base
+        {
+            get { return m_base; }
+            set { m_base = value; }
+        }
         private Dictionary<string, Variable> m_members;
         public Dictionary<string, Variable> Members
         {
@@ -39,8 +46,26 @@ namespace LuaEditor
             m_methods[method.Name] = method;
         }
         public List<IAutoCompleteItem> getList() {
-            List<IAutoCompleteItem> rst = new List<IAutoCompleteItem>();
-
+            List<IAutoCompleteItem> rst;
+            if (Base != null)
+            {
+                rst = Base.getList();
+                AutoCompleteItemComparer comparer = new AutoCompleteItemComparer();
+                List<IAutoCompleteItem> rm = new List<IAutoCompleteItem>();
+                foreach (IAutoCompleteItem item in rst) {
+                    if (m_methods.Values.Contains(item,comparer)) {
+                        rm.Add(item);
+                    }
+                }
+                foreach (IAutoCompleteItem item in rm)
+                {
+                    rst.Remove(item);
+                }
+            }
+            else
+            {
+                rst = new List<IAutoCompleteItem>();
+            }
             foreach (Variable key in m_members.Values) {
                 rst.Add(key);
             }
