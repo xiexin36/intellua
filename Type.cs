@@ -42,8 +42,15 @@ namespace LuaEditor
             set { m_methods = value; }
         }
         public void addMethod(Function method) {
-            method.Class = this;
-            m_methods[method.Name] = method;
+            if (!m_methods.ContainsKey(method.Name))
+            {
+                method.Class = this;
+                m_methods[method.Name] = method;
+            }
+            else {
+                m_methods[method.Name].Param.Add(method.Param[0]);
+                m_methods[method.Name].Desc.Add(method.Desc[0]);
+            }
         }
         public List<IAutoCompleteItem> getList() {
             List<IAutoCompleteItem> rst;

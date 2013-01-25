@@ -8,6 +8,11 @@ namespace LuaEditor
     class FunctionCall
     {
         private Function m_func;
+        public LuaEditor.Function Func
+        {
+            get { return m_func; }
+            private set { m_func = value; }
+        }
         private string m_calltipString;
         public string CalltipString
         {
@@ -37,6 +42,38 @@ namespace LuaEditor
         }
         private FunctionCall() { 
         
+        }
+
+        public void update() {
+            Function func = Func;
+            CalltipString = "";
+            if (func.Param.Count > 1) {
+                CalltipString += "[" + (func.CurrentOverloadIndex+1) + " of " + func.Param.Count + "]\n";
+            }
+            CalltipString += func.ReturnType.Name + " " + (func.Class == null ? "" : func.Class.Name + ":")
+                                           + func.Name;
+            int offset = CalltipString.Length;
+            CalltipString += func.Param[func.CurrentOverloadIndex];
+            if(func.Desc[func.CurrentOverloadIndex].Length > 0)
+                CalltipString += "\n\n" + func.Desc[func.CurrentOverloadIndex];
+
+            string str = func.Param[func.CurrentOverloadIndex];
+            int pos = 1;
+            int paramIndex = ParamIndex;
+            while (paramIndex > 0 && pos < str.Length)
+            {
+                if (str[pos] == ',') paramIndex--;
+                pos++;
+            }
+
+            if (pos != str.Length)
+            {
+                HighLightStart = pos + offset;
+
+                while (pos < str.Length - 1 && str[pos] != ',') pos++;
+                HighLightEnd = pos + offset;
+            }
+
         }
 
         public static FunctionCall Parse(ScintillaNET.Scintilla scintilla,VariableManager variables, int pos) {
@@ -102,28 +139,10 @@ namespace LuaEditor
                     
                     if (chain.LastFunction == null) return null;
                     FunctionCall fc = new FunctionCall();
-                    Function func = fc.m_func = chain.LastFunction;
+                    fc.m_func = chain.LastFunction;
                     fc.ParamIndex = paramIndex;
-                    fc.CalltipString = func.ReturnType.Name + " " + (func.Class == null ? "" : func.Class.Name + ":")
-                                       + func.Name;
-                    int offset = fc.CalltipString.Length;
-                    fc.CalltipString += func.Param;
 
-                    str = func.Param;
-                    pos = 1;
-                    while (paramIndex > 0 && pos < str.Length) {
-                        if (str[pos] == ',') paramIndex--;
-                        pos++;
-                    }
-
-                    if (pos != str.Length) {
-                        fc.HighLightStart = pos + offset;
-
-                        while (pos < str.Length -1&& str[pos] != ',') pos++;
-                        fc.HighLightEnd = pos + offset;
-                    }
-
-
+                   fc.update();
                     return fc;
 
                 }

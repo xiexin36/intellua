@@ -90,14 +90,8 @@ namespace LuaEditor
 
         private void scintilla1_CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
-            FunctionCall fc = FunctionCall.Parse(scintilla1, m_variables,scintilla1.CurrentPos-1);
-            if (fc != null)
-            {
-                scintilla1.CallTip.Show(fc.CalltipString,fc.HighLightStart,fc.HighLightEnd);
-            }
-            else {
-                scintilla1.CallTip.Hide();
-            }
+            ShowCalltip();
+
             
 
 
@@ -172,6 +166,20 @@ namespace LuaEditor
             }
             
             
+        }
+        private FunctionCall m_calltipFuncion;
+        private void ShowCalltip()
+        {
+            FunctionCall fc = FunctionCall.Parse(scintilla1, m_variables, scintilla1.CurrentPos - 1);
+            if (fc != null)
+            {
+                m_calltipFuncion = fc;
+                scintilla1.CallTip.Show(fc.CalltipString, fc.HighLightStart, fc.HighLightEnd);
+            }
+            else
+            {
+                scintilla1.CallTip.Hide();
+            }
         }
         private List<IAutoCompleteItem> m_autocompleteList;
         private void ShowAutoComplete(int lengthEntered, List<IAutoCompleteItem> list)
@@ -268,6 +276,19 @@ namespace LuaEditor
         private void scintilla1_AutoCompleteMoved(object sender, ScintillaNET.NativeScintillaEventArgs e)
         {
             m_tooltip.setText(m_autocompleteList[scintilla1.AutoComplete.SelectedIndex].getToolTipString());
+        }
+
+        private void scintilla1_CallTipClick(object sender, ScintillaNET.CallTipClickEventArgs e)
+        {
+            Function func = m_calltipFuncion.Func;
+            func.CurrentOverloadIndex++;
+            if (func.CurrentOverloadIndex == func.Param.Count) {
+                func.CurrentOverloadIndex = 0;
+            }
+            m_calltipFuncion.update();
+
+            scintilla1.CallTip.Show(m_calltipFuncion.CalltipString, m_calltipFuncion.HighLightStart, m_calltipFuncion.HighLightEnd);
+
         }
 
 

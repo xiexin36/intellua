@@ -50,6 +50,7 @@
             this.scintilla1.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.scintilla1_AutoCompleteAccepted);
             this.scintilla1.AutoCompleteCancelled += new System.EventHandler<ScintillaNET.NativeScintillaEventArgs>(this.scintilla1_AutoCompleteCancelled);
             this.scintilla1.AutoCompleteMoved += new System.EventHandler<ScintillaNET.NativeScintillaEventArgs>(this.scintilla1_AutoCompleteMoved);
+            this.scintilla1.CallTipClick += new System.EventHandler<ScintillaNET.CallTipClickEventArgs>(this.scintilla1_CallTipClick);
             this.scintilla1.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.scintilla1_CharAdded);
             this.scintilla1.TextDeleted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextDeleted);
             this.scintilla1.TextInserted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.scintilla1_TextInserted);

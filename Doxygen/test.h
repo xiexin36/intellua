@@ -5,6 +5,7 @@ class TestClass{
 	TestClass(int i);			///< constructor desc.
 	TestClass TestMember1;		///< TestMember1 desc.
 	void TestMethod(TestClass test,int a,int b,int c);		///< TestMethod desc.
+	void TestMethod();		///< TestMethod desc overloaded.
 	static void StaticMethod();
 	virtual void VirtualMethod();
 };

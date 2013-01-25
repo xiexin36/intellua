@@ -55,8 +55,8 @@ namespace LuaEditor
                             string memberType = member.Element("type").Value;
 
                             Function f = new Function(memberName);
-                            f.Param = member.Element("argsstring").Value;
-                            f.Desc = member.Element("briefdescription").Value; 
+                            f.Param.Add( member.Element("argsstring").Value);
+                            f.Desc.Add( member.Element("briefdescription").Value); 
 
                             if (memberName == name)
                             {
@@ -106,9 +106,10 @@ namespace LuaEditor
 
                             Type mt = typeManager.get(memberType);
                             Function f = new Function(memberName);
-                            f.Param = member.Element("argsstring").Value;
+                            f.Param.Add( member.Element("argsstring").Value);
                             f.ReturnType = mt;
-                            f.Desc = member.Element("briefdescription").Value; 
+                            f.Desc.Add(member.Element("briefdescription").Value);
+                            f.Static = true;
                             variableManager.add(f);
                             System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.ToString());
                         }

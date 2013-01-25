@@ -85,6 +85,19 @@
         </inbodydescription>
         <location file="C:/hg/LuaEditor/Doxygen/test.h" line="7"/>
       </memberdef>
+      <memberdef kind="function" id="class_test_class_1abe537a2d94b66300c4ac7dd5035a00b4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void TestClass::TestMethod</definition>
+        <argsstring>()</argsstring>
+        <name>TestMethod</name>
+        <briefdescription>
+<para>TestMethod desc. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="8"/>
+      </memberdef>
       <memberdef kind="function" id="class_test_class_1a3a1456620ba4504974e3042290fe7e62" prot="private" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type>void</type>
         <definition>virtual void TestClass::VirtualMethod</definition>
@@ -97,7 +110,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="9"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="10"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="private-static-func">
@@ -112,7 +125,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="8"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="9"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -140,12 +153,13 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="4" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="4" bodyend="10"/>
+    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="4" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="4" bodyend="11"/>
     <listofallmembers>
       <member refid="class_test_class_1a31363d6f4c4ce6149a9d56052ee29987" prot="private" virt="non-virtual"><scope>TestClass</scope><name>StaticMethod</name></member>
       <member refid="class_test_class_1a993d35904f35e6d684692b3475e54e39" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestClass</name></member>
       <member refid="class_test_class_1a83f07250ac888a4f4c67a67035028cab" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMember1</name></member>
       <member refid="class_test_class_1ac2f08fa3d639d99944700ee0a5c50181" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMethod</name></member>
+      <member refid="class_test_class_1abe537a2d94b66300c4ac7dd5035a00b4" prot="private" virt="non-virtual"><scope>TestClass</scope><name>TestMethod</name></member>
       <member refid="class_test_class_1a3a1456620ba4504974e3042290fe7e62" prot="private" virt="virtual"><scope>TestClass</scope><name>VirtualMethod</name></member>
     </listofallmembers>
   </compounddef><compounddef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="class_test_derived" kind="class" prot="public">
@@ -164,7 +178,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="13"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="14"/>
       </memberdef>
       <memberdef kind="function" id="class_test_derived_1a162fe093406c27d67130603f6882b069" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -177,7 +191,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="14"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="15"/>
       </memberdef>
       <memberdef kind="function" id="class_test_derived_1aa4dbce49a2bc6af3e9481a5ac09459c6" prot="private" static="no" const="no" explicit="no" inline="no" virt="virtual">
         <type>void</type>
@@ -191,7 +205,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="15"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="16"/>
       </memberdef>
       </sectiondef>
     <briefdescription>
@@ -225,7 +239,7 @@
         </childnode>
       </node>
     </collaborationgraph>
-    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="12" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="12" bodyend="16"/>
+    <location file="C:/hg/LuaEditor/Doxygen/test.h" line="13" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="13" bodyend="17"/>
     <listofallmembers>
       <member refid="class_test_derived_1a162fe093406c27d67130603f6882b069" prot="private" virt="non-virtual"><scope>TestDerived</scope><name>DerivedMethod</name></member>
       <member refid="class_test_derived_1a6f94a06e63d729366e11d0b2e535de09" prot="private" virt="non-virtual"><scope>TestDerived</scope><name>TestDerived</name></member>
@@ -256,7 +270,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="18" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="18" bodyend="-1"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="19" bodyfile="C:/hg/LuaEditor/Doxygen/test.h" bodystart="19" bodyend="-1"/>
       </memberdef>
       </sectiondef>
       <sectiondef kind="func">
@@ -271,7 +285,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="17"/>
+        <location file="C:/hg/LuaEditor/Doxygen/test.h" line="18"/>
       </memberdef>
       </sectiondef>
     <briefdescription>

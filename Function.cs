@@ -33,15 +33,20 @@ namespace LuaEditor
                 get { return m_class; }
                 set { m_class = value; }
             }
-            private string m_param = "()";
-            public string Param
+            private List<string> m_param = new List<string>();
+            public List<string> Param
             {
                 get { return m_param; }
                 set { m_param = value; }
             }
-
-            private string m_desc;
-            public string Desc
+            private int m_currentOverloadIndex = 0;
+            public int CurrentOverloadIndex
+            {
+                get { return m_currentOverloadIndex; }
+                set { m_currentOverloadIndex = value; }
+            }
+            private List<string> m_desc = new List<string>();
+            public List<string> Desc
             {
                 get { return m_desc; }
                 set { m_desc = value; }
@@ -63,7 +68,13 @@ namespace LuaEditor
             }
             public override string getToolTipString()
             {
-                return ReturnType.Name + " " + (Class == null ? "" : Class.Name + ":") + Name + Param + "\n\n" + Desc;
+                string rst = ReturnType.Name + " " + (Class == null ? "" : Class.Name + ":") + Name + Param[0];
+                if (Param.Count > 1) {
+                    rst += " (" + Param.Count + " overloads)";
+                }
+                if(Desc[CurrentOverloadIndex].Length >0)
+                    rst += "\n\n" + Desc[CurrentOverloadIndex];
+                return rst;
             }
         }
     
