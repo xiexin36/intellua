@@ -3,24 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LuaEditor
+namespace Intellua
 {
     class Type
     {
         public Type(string name) {
-            Name = name;
+            DisplayName = InternalName = name;
             m_members = new Dictionary<string, Variable>();
             m_methods = new Dictionary<string, Function>();
         }
+
+        private bool m_hideDeclare = false;
+        public bool HideDeclare
+        {
+            get { return m_hideDeclare; }
+            set { m_hideDeclare = value; }
+        }
+        private string m_displayName;
+        public string DisplayName
+        {
+            get { return m_displayName; }
+            set { m_displayName = value; }
+        }
         private string m_name;
-        public string Name
+        public string InternalName
         {
             get { return m_name; }
             set { m_name = value; }
         }
 
         private Type m_base;
-        public LuaEditor.Type Base
+        public Type Base
         {
             get { return m_base; }
             set { m_base = value; }
@@ -98,7 +111,7 @@ namespace LuaEditor
         }
 
         public void add(Type t){
-            m_types[t.Name] = t;
+            m_types[t.InternalName] = t;
         }
 
         public Type get(string name) {

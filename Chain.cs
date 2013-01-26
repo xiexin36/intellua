@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LuaEditor
+namespace Intellua
 {
     class Chain
     {
@@ -35,7 +35,7 @@ namespace LuaEditor
         }
 
         private Function m_lastFunction;
-        public LuaEditor.Function LastFunction
+        public Function LastFunction
         {
             get { return m_lastFunction; }
             private set { m_lastFunction = value; }

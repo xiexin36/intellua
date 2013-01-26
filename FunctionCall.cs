@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LuaEditor
+namespace Intellua
 {
     class FunctionCall
     {
         private Function m_func;
-        public LuaEditor.Function Func
+        public Function Func
         {
             get { return m_func; }
             private set { m_func = value; }
@@ -50,8 +50,7 @@ namespace LuaEditor
             if (func.Param.Count > 1) {
                 CalltipString += "[" + (func.CurrentOverloadIndex+1) + " of " + func.Param.Count + "]\n";
             }
-            CalltipString += (func.ReturnType != null ? func.ReturnType.Name + " " : "") + (func.Class == null ? "" : func.Class.Name + ":")
-                                           + func.Name;
+            CalltipString += func.getTypeName() + func.Name;
             int offset = CalltipString.Length;
             CalltipString += func.Param[func.CurrentOverloadIndex];
             if(func.Desc[func.CurrentOverloadIndex].Length > 0)

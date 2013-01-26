@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Intellua.Properties {
+namespace Test.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

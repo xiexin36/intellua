@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-namespace LuaEditor
+namespace Intellua
 {
     class DoxygenXMLParser
     {
@@ -20,6 +20,11 @@ namespace LuaEditor
                     string name = node.Element("compoundname").Value;
                     Type t = new Type(name);
                     System.Diagnostics.Debug.Print("Type added: " + name);
+                    if (name.StartsWith("__")) {
+                        int pos = name.LastIndexOf('_');
+                        t.DisplayName = name.Substring(pos + 1).ToLower();
+                        t.HideDeclare = true;
+                    }
                     typeManager.add(t);
                 }
             }

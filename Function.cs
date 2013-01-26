@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LuaEditor
+namespace Intellua
 {
  
         class Function : IAutoCompleteItem
@@ -21,14 +21,14 @@ namespace LuaEditor
                 set { m_name = value; }
             }
             private Type m_returnType;
-            public LuaEditor.Type ReturnType
+            public Type ReturnType
             {
                 get { return m_returnType; }
                 set { m_returnType = value; }
             }
 
             private Type m_class;
-            public LuaEditor.Type Class
+            public Type Class
             {
                 get { return m_class; }
                 set { m_class = value; }
@@ -58,6 +58,12 @@ namespace LuaEditor
                 get { return m_static; }
                 set { m_static = value; }
             }
+
+            public string getTypeName() {
+                string rst = (ReturnType != null ? ReturnType.InternalName + " " : "") + (Class == null ? "" : Class.DisplayName + (Static ? "." : ":"));
+                return rst;
+            }
+
             public override string getName()
             {
                 return Name;
@@ -68,7 +74,7 @@ namespace LuaEditor
             }
             public override string getToolTipString()
             {
-                string rst =(ReturnType != null? ReturnType.Name + " " : "") + (Class == null ? "" : Class.Name + (Static?".":":")) + Name + Param[0];
+                string rst = getTypeName()+ Name + Param[0];
                 if (Param.Count > 1) {
                     rst += " (" + Param.Count + " overloads)";
                 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LuaEditor
+namespace Intellua
 {
     class Parser {
         public static bool isString(ScintillaNET.Scintilla scintilla, int pos) { 

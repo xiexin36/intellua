@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaEditor", "LuaEditor.csproj", "{4A13DA78-292A-43E1-964E-EB679CB77AE9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intellua", "Intellua.csproj", "{4A13DA78-292A-43E1-964E-EB679CB77AE9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8B2D2683-45B6-4B1C-885A-33E93C6FA87C} = {8B2D2683-45B6-4B1C-885A-33E93C6FA87C}
 		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB} = {F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}
@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScintillaNET", "ScintillaNe
 	ProjectSection(ProjectDependencies) = postProject
 		{8B2D2683-45B6-4B1C-885A-33E93C6FA87C} = {8B2D2683-45B6-4B1C-885A-33E93C6FA87C}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{E239A4FD-DA3D-4225-B584-20708E1BB320}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,18 @@ Global
 		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|Win32.ActiveCfg = Release|Any CPU
 		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|x86.ActiveCfg = Release|Any CPU
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Debug|Win32.ActiveCfg = Debug|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Debug|x86.ActiveCfg = Debug|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Debug|x86.Build.0 = Debug|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Release|Any CPU.ActiveCfg = Release|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Release|Mixed Platforms.Build.0 = Release|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Release|Win32.ActiveCfg = Release|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Release|x86.ActiveCfg = Release|x86
+		{E239A4FD-DA3D-4225-B584-20708E1BB320}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

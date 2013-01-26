@@ -6,22 +6,19 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
-
-using System.IO;
-using System.Reflection;
-				
-using System.Runtime.InteropServices;
-
-
-namespace Intellua
+using Intellua;
+namespace Test
 {
     public partial class Form1 : Form
     {
-        public Form1() {
+        public Form1()
+        {
             InitializeComponent();
+        }
 
-            Controls.Add(new Intellua());
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            intellua1.LoadDoxygenXML("all.xml");
         }
     }
 }

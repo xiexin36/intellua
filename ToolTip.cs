@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Threading;
-namespace LuaEditor
+namespace Intellua
 {
     class ToolTip : System.Windows.Forms.Form
     {

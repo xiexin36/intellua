@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 
-namespace LuaEditor
+namespace Intellua
 {
     class Variable : IAutoCompleteItem
     {
@@ -19,13 +19,13 @@ namespace LuaEditor
             set { m_name = value; }
         }
         private Type m_Type;
-        public LuaEditor.Type Type
+        public Type Type
         {
             get { return m_Type; }
             set { m_Type = value; }
         }
         private Type m_Class;
-        public LuaEditor.Type Class
+        public Type Class
         {
             get { return m_Class; }
             set { m_Class = value; }
@@ -66,7 +66,9 @@ namespace LuaEditor
         }
         public override string getToolTipString()
         {
-            return (Type.Name.StartsWith("__")? "" :Type.Name + " ") + (Class == null  || Class.Name.StartsWith("__")? "" : Class.Name + ":")+ Name + "\n\n" + Desc;
+            return (Type.HideDeclare ? "" :Type.DisplayName + " ") +
+                   (Class == null  ?  "" : Class.DisplayName + "::")
+                   + Name + "\n\n" + Desc;
         }
     }
 
