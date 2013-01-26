@@ -68,7 +68,7 @@ namespace LuaEditor
             }
             public override string getToolTipString()
             {
-                string rst = ReturnType.Name + " " + (Class == null ? "" : Class.Name + ":") + Name + Param[0];
+                string rst =(ReturnType != null? ReturnType.Name + " " : "") + (Class == null ? "" : Class.Name + (Static?".":":")) + Name + Param[0];
                 if (Param.Count > 1) {
                     rst += " (" + Param.Count + " overloads)";
                 }

@@ -50,7 +50,7 @@ namespace LuaEditor
             if (func.Param.Count > 1) {
                 CalltipString += "[" + (func.CurrentOverloadIndex+1) + " of " + func.Param.Count + "]\n";
             }
-            CalltipString += func.ReturnType.Name + " " + (func.Class == null ? "" : func.Class.Name + ":")
+            CalltipString += (func.ReturnType != null ? func.ReturnType.Name + " " : "") + (func.Class == null ? "" : func.Class.Name + ":")
                                            + func.Name;
             int offset = CalltipString.Length;
             CalltipString += func.Param[func.CurrentOverloadIndex];
@@ -146,6 +146,7 @@ namespace LuaEditor
                     return fc;
 
                 }
+                break;
             }
 
             

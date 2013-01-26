@@ -66,7 +66,7 @@ namespace LuaEditor
         }
         public override string getToolTipString()
         {
-            return Type.Name + " " + (Class == null ? "" : Class.Name + ":")+ Name + "\n\n" + Desc;
+            return (Type.Name.StartsWith("__")? "" :Type.Name + " ") + (Class == null  || Class.Name.StartsWith("__")? "" : Class.Name + ":")+ Name + "\n\n" + Desc;
         }
     }
 

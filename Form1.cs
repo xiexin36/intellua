@@ -67,8 +67,13 @@ namespace LuaEditor
             m_types.add(new Type("char"));
             m_types.add(new Type("float"));
             m_types.add(new Type("double"));
-            m_types.add(new Type("string"));
-
+            //m_types.add(new Type("string"));
+            //m_types.add(new Type("table"));
+            m_types.add(new Type("number"));
+            m_types.add(new Type("boolean"));
+            m_types.add(new Type("function"));
+            m_types.add(new Type("thread"));
+            m_types.add(new Type("userdata"));
             List<Bitmap> list = new List<Bitmap>();
             Assembly asm = Assembly.GetExecutingAssembly();
             Stream str;

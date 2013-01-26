@@ -49,9 +49,10 @@ namespace LuaEditor
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
+            this.label1.MaximumSize = new System.Drawing.Size(400, 0);
             this.label1.Name = "label1";
             this.label1.Padding = new System.Windows.Forms.Padding(2);
-            this.label1.Size = new System.Drawing.Size(41, 19);
+            this.label1.Size = new System.Drawing.Size(39, 18);
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             this.label1.Resize += new System.EventHandler(this.label1_Resize);
