@@ -76,6 +76,8 @@ namespace Intellua
         }
 
         public static FunctionCall Parse(ScintillaNET.Scintilla scintilla,VariableManager variables, int pos) {
+
+            const string luaOperators = "+-*/^%<>=~";
             int paramIndex = 0;
             string str = scintilla.Text;
             bool running = true;
@@ -111,6 +113,10 @@ namespace Intellua
                     }
                     if (str[pos] == ',') {
                         paramIndex++;
+                        pos--;
+                        break;
+                    }
+                    if(luaOperators.Contains(str[pos])){
                         pos--;
                         break;
                     }
