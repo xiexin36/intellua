@@ -1,0 +1,23 @@
+syntax: glob
+*.exe
+*.pdb
+*.exe.*
+*.dll
+obj/*
+bin/*
+Doxygen/xml/*
+*.user
+SciLexer.lib
+*.exp
+LuaEditor.sdf
+*.opensdf
+scintilla/.hgeol
+*.obj
+*.sdf
+scintilla/win32/scintilla_vc6.mak
+*UpgradeReport*
+*UpgradeLog*
+*.log
+*.lib
+Doxygen/html/*
+*.suo
