@@ -106,7 +106,7 @@ namespace Intellua
         private void intellua_CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
             ShowCalltip();
-
+            const string brackets = "()[]{}";
             const string newline = "\r\n";
             if (newline.Contains(e.Ch))
             {
@@ -122,6 +122,8 @@ namespace Intellua
                 
                 return;
             }
+            if (brackets.Contains(e.Ch)) return;
+
             MemberChain chain = MemberChain.ParseBackward(this);
             if (chain.Elements.Count == 1)
             {

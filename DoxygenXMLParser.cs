@@ -52,7 +52,7 @@ namespace Intellua
                             var.Type = mt;
                             var.Desc = member.Element("briefdescription").Value;
                             t.addMember(var);
-                            System.Diagnostics.Debug.Print("Member added: " + memberType + " " + name + ":" + memberName);
+                            System.Diagnostics.Debug.Print("Member added: " + memberType + " " + name + "::" + memberName);
                         }
                         else if (member.Attribute("kind").Value == "function")
                         {
@@ -68,7 +68,7 @@ namespace Intellua
                                 f.ReturnType = t;
                                 f.Static = true;
                                 variableManager.add(f);
-                                System.Diagnostics.Debug.Print("Constructor added: " + name + ":" + f.ToString());
+                                System.Diagnostics.Debug.Print("Constructor added: " + name + "::" + f.getName() + member.Element("argsstring").Value);
                             }
                             else
                             {
@@ -80,7 +80,7 @@ namespace Intellua
                                 f.ReturnType = mt;
 
                                 t.addMethod(f);
-                                System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.ToString());
+                                System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.getName() + member.Element("argsstring").Value);
                             }
                         }
                     }
@@ -116,7 +116,7 @@ namespace Intellua
                             f.Desc.Add(member.Element("briefdescription").Value);
                             f.Static = true;
                             variableManager.add(f);
-                            System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.ToString());
+                            System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.getName() + member.Element("argsstring").Value);
                         }
                     }
                 }
