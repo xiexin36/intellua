@@ -231,7 +231,7 @@ namespace Intellua
             }
         }
 
-        private void parseFile(int pos) {
+        public void parseFile(int pos) {
             string str = Text;
             m_variables.purge(pos);
             for (; pos< str.Length; pos++) {

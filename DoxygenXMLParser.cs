@@ -10,7 +10,7 @@ namespace Intellua
     {
         public static void Parse(string filename, VariableManager variableManager,TypeManager typeManager)
         {
-            XDocument doc = XDocument.Load("all.xml");
+            XDocument doc = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + filename);
 
             //scan all classes first.
             foreach (XElement node in doc.Descendants("compounddef"))

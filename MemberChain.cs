@@ -241,7 +241,7 @@ namespace Intellua
             const string seperator = ".:";
             const string lbracket = "([{";
             const string rbracket = ")]}";
-
+            const string operators = "=+-*/";
             string str = scintilla.Text;
 
             PaserState state = PaserState.searchWordStart;
@@ -293,6 +293,7 @@ namespace Intellua
 
                     case PaserState.searchWordStart:
                         if (isString) return rst;
+                        if (operators.Contains(c)) return rst;
                         if (isComment)
                         {
                             pos++;
@@ -341,7 +342,7 @@ namespace Intellua
                                 bracketLevel--;
                                 if (bracketLevel == 0)
                                 {
-                                    state = PaserState.searchWordStart;
+                                    state = PaserState.searchSeperator;
                                 }
                             }
                         }
