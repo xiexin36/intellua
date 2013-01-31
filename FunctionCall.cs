@@ -101,7 +101,7 @@ namespace Intellua
                 break;
             }
 
-            Chain chain = Chain.ParseBackward(scintilla,pos);
+            MemberChain chain = MemberChain.ParseBackward(scintilla,pos);
             
             while (chain.Elements.Count != 0 && running) {
                 pos = chain.StartPos;
@@ -128,7 +128,7 @@ namespace Intellua
 
                 }
                 if (pos <= 0) return null;
-                chain = Chain.ParseBackward(scintilla, pos);
+                chain = MemberChain.ParseBackward(scintilla, pos);
             }
 
             while (pos > 0) {
@@ -139,7 +139,7 @@ namespace Intellua
                 }
 
                 if (str[pos] == '(') {
-                    chain = Chain.ParseBackward(scintilla, pos - 1);
+                    chain = MemberChain.ParseBackward(scintilla, pos - 1);
                     chain.getType(variables);
                     
                     if (chain.LastFunction == null) return null;

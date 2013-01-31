@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Intellua
 {
-    class Chain
+    class MemberChain
     {
-        private Chain()
+        private MemberChain()
         {
             m_elements = new List<string>();
             m_startPos = m_endPos = -1;
@@ -118,7 +118,7 @@ namespace Intellua
             searchSeperator,
             searchBracket
         };
-        public static Chain ParseBackward(ScintillaNET.Scintilla scintilla, int pos = -1)
+        public static MemberChain ParseBackward(ScintillaNET.Scintilla scintilla, int pos = -1)
         {
             const string seperator = ".:";
             const string lbracket = "([{";
@@ -131,7 +131,7 @@ namespace Intellua
             }
             PaserState state = PaserState.searchWordEnd;
 
-            Chain rst = new Chain();
+            MemberChain rst = new MemberChain();
             int wordStart = pos;
             int wordEnd = pos;
 
@@ -233,7 +233,7 @@ namespace Intellua
             return rst;
         }
 
-        public static Chain ParseFoward(ScintillaNET.Scintilla scintilla, int pos)
+        public static MemberChain ParseFoward(ScintillaNET.Scintilla scintilla, int pos)
         {
             const string seperator = ".:";
             const string lbracket = "([{";
@@ -243,7 +243,7 @@ namespace Intellua
 
             PaserState state = PaserState.searchWordStart;
 
-            Chain rst = new Chain();
+            MemberChain rst = new MemberChain();
             int wordStart = pos;
             int wordEnd = pos;
 

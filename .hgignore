@@ -20,3 +20,4 @@ scintilla/win32/scintilla_vc6.mak
 *.log
 *.lib
 Doxygen/html/*
+*.suo

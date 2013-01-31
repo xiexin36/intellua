@@ -122,7 +122,7 @@ namespace Intellua
                 
                 return;
             }
-            Chain chain = Chain.ParseBackward(this);
+            MemberChain chain = MemberChain.ParseBackward(this);
             if (chain.Elements.Count == 1)
             {
                 string word = chain.Elements[0];
@@ -248,13 +248,13 @@ namespace Intellua
                 if(pos < str.Length -1){
                     if(str[pos+1] == '=') continue;
                 }
-                Chain v = Chain.ParseBackward(this,pos-1);
+                MemberChain v = MemberChain.ParseBackward(this,pos-1);
                 if(v.Elements.Count > 1) continue;
                 string varName = v.getLastElement();
                 Variable var = m_variables.getVariable(varName);
                 if (var != null) continue;
 
-                Chain e = Chain.ParseFoward(this,pos+1);
+                MemberChain e = MemberChain.ParseFoward(this,pos+1);
                 if(e == null) continue;
                 Type t = e.getType(m_variables);
                 if (t == null) continue;
