@@ -91,9 +91,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="all.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="function.png" />
     <EmbeddedResource Include="member.png" />
     <EmbeddedResource Include="method.png" />
