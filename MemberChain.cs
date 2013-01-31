@@ -180,6 +180,9 @@ namespace Intellua
                         }
                         if (rbracket.Contains(c))
                         {
+                            if (rst.Elements.Count == 0) {
+                                rst.Elements.Add("");
+                            }
                             state = PaserState.searchBracket;
                             break;
                         }
