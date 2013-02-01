@@ -337,7 +337,6 @@ namespace Intellua
 
             int bracketLevel = 0;
 
-            bool isFunction = false;
 
             while (pos < str.Length)
             {
@@ -364,8 +363,8 @@ namespace Intellua
                             }
                             word.Trim();
                             {
-                                rst.Elements.Add(new Word(word,isFunction));
-                                isFunction = false;
+                                rst.Elements.Add(new Word(word,false));
+
                                 rst.EndPos = pos;
                             }
                             state = PaserState.searchSeperator;
@@ -401,7 +400,11 @@ namespace Intellua
                         if (isString) return rst;
                         if (lbracket.Contains(c))
                         {
-                            if (c == '(') isFunction = true;
+                            if (c == '(') {
+                                if (rst.Elements.Count > 0) {
+                                    rst.Elements[rst.Elements.Count - 1].IsFunction = true;
+                                }
+                            }
                             state = PaserState.searchBracket;
                             break;
                         }
