@@ -10,19 +10,15 @@ namespace Intellua
 {
     class ToolTip : System.Windows.Forms.Form
     {
+		#region Fields (2) 
+
         private Label label1;
         private IWin32Window m_owner;
-        public void ShowToolTip(int x, int y, string message) {
-            label1.Text = message;
-            Location = new Point(x, y);
-            if(!Visible)
-            Show(m_owner);
-        }
 
-        public void setText(string text) {
-            label1.Text = text;
-        }
-        
+		#endregion Fields 
+
+		#region Constructors (1) 
+
         public ToolTip(IWin32Window owner)
     {
         m_owner = owner;
@@ -32,10 +28,33 @@ namespace Intellua
         this.BackColor = Color.LightYellow;
         InitializeComponent();
     }
+
+		#endregion Constructors 
+
+		#region Properties (1) 
+
         protected override bool ShowWithoutActivation
         {
             get { return true; }
         }
+
+		#endregion Properties 
+
+		#region Methods (5) 
+
+		// Public Methods (2) 
+
+        public void setText(string text) {
+            label1.Text = text;
+        }
+
+        public void ShowToolTip(int x, int y, string message) {
+            label1.Text = message;
+            Location = new Point(x, y);
+            if(!Visible)
+            Show(m_owner);
+        }
+		// Private Methods (3) 
 
         private void InitializeComponent()
         {
@@ -80,6 +99,7 @@ namespace Intellua
         {
 
         }
-   
+
+		#endregion Methods 
     }
 }

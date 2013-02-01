@@ -7,53 +7,76 @@ namespace Intellua
 {
     class Type
     {
+		#region Fields (6) 
+
+        private Type m_base;
+        private string m_displayName;
+        private bool m_hideDeclare = false;
+        private Dictionary<string, Variable> m_members;
+        private Dictionary<string, Function> m_methods;
+        private string m_name;
+
+		#endregion Fields 
+
+		#region Constructors (1) 
+
         public Type(string name) {
             DisplayName = InternalName = name;
             m_members = new Dictionary<string, Variable>();
             m_methods = new Dictionary<string, Function>();
         }
 
-        private bool m_hideDeclare = false;
-        public bool HideDeclare
+		#endregion Constructors 
+
+		#region Properties (6) 
+
+        public Type Base
         {
-            get { return m_hideDeclare; }
-            set { m_hideDeclare = value; }
+            get { return m_base; }
+            set { m_base = value; }
         }
-        private string m_displayName;
+
         public string DisplayName
         {
             get { return m_displayName; }
             set { m_displayName = value; }
         }
-        private string m_name;
+
+        public bool HideDeclare
+        {
+            get { return m_hideDeclare; }
+            set { m_hideDeclare = value; }
+        }
+
         public string InternalName
         {
             get { return m_name; }
             set { m_name = value; }
         }
 
-        private Type m_base;
-        public Type Base
-        {
-            get { return m_base; }
-            set { m_base = value; }
-        }
-        private Dictionary<string, Variable> m_members;
         public Dictionary<string, Variable> Members
         {
             get { return m_members; }
             set { m_members = value; }
         }
-        public void addMember(Variable var) {
-            var.Class = this;
-            m_members[var.Name] = var;
-        }
-        private Dictionary<string, Function> m_methods;
+
         public Dictionary<string, Function> Methods
         {
             get { return m_methods; }
             set { m_methods = value; }
         }
+
+		#endregion Properties 
+
+		#region Methods (3) 
+
+		// Public Methods (3) 
+
+        public void addMember(Variable var) {
+            var.Class = this;
+            m_members[var.Name] = var;
+        }
+
         public void addMethod(Function method) {
             if (!m_methods.ContainsKey(method.Name))
             {
@@ -65,6 +88,7 @@ namespace Intellua
                 m_methods[method.Name].Desc.Add(method.Desc[0]);
             }
         }
+
         public List<IAutoCompleteItem> getList() {
             List<IAutoCompleteItem> rst;
             if (Base != null)
@@ -95,20 +119,40 @@ namespace Intellua
             rst.Sort();
             return rst;
         }
+
+		#endregion Methods 
     }
 
     
 
     class TypeManager {
+		#region Fields (1) 
+
+        private Dictionary<string, Type> m_types;
+
+		#endregion Fields 
+
+		#region Constructors (1) 
+
         public TypeManager() { 
             m_types = new Dictionary<string, Type>();
         }
-        private Dictionary<string, Type> m_types;
+
+		#endregion Constructors 
+
+		#region Properties (1) 
+
         public Dictionary<string, Type> Types
         {
             get { return m_types; }
             set { m_types = value; }
         }
+
+		#endregion Properties 
+
+		#region Methods (2) 
+
+		// Public Methods (2) 
 
         public void add(Type t){
             m_types[t.InternalName] = t;
@@ -118,5 +162,7 @@ namespace Intellua
             if(m_types.ContainsKey(name)) return m_types[name];
             return null;
         }
+
+		#endregion Methods 
     }
 }

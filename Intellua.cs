@@ -12,28 +12,18 @@ namespace Intellua
 {
     public class Intellua: ScintillaNET.Scintilla
     {
-         [DllImport("user32.dll", CharSet = CharSet.Ansi)]
-        static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+		#region Fields (5) 
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int Left;        // x position of upper-left corner
-            public int Top;         // y position of upper-left corner
-            public int Right;       // x position of lower-right corner
-            public int Bottom;      // y position of lower-right corner
-        }
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int GetClassName(IntPtr hWnd,
-           StringBuilder lpClassName,
-           int nMaxCount
-        );
+        private List<IAutoCompleteItem> m_autocompleteList;
+        private FunctionCall m_calltipFuncion;
+        private ToolTip m_tooltip;
         private TypeManager m_types;
         private VariableManager m_variables;
-        private ToolTip m_tooltip;
+
+		#endregion Fields 
+
+		#region Constructors (1) 
+
         public Intellua()
         {
             this.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.intellua_AutoCompleteAccepted);
@@ -93,8 +83,100 @@ namespace Intellua
             
         }
 
+		#endregion Constructors 
+
+		#region Methods (14) 
+
+		// Public Methods (3) 
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd,
+           StringBuilder lpClassName,
+           int nMaxCount
+        );
+
         public void LoadDoxygenXML(string filename) {
             DoxygenXMLParser.Parse(filename, m_variables, m_types);
+        }
+
+        public void parseFile(int pos) {
+            string str = Text;
+            m_variables.purge(pos);
+            for (; pos< str.Length; pos++) {
+                char c = str[pos];
+
+                //search for assignment operator
+
+                if(!Parser.isCode(this,pos)){
+                    continue;
+                }
+
+                if(c != '=') continue;
+                if(pos>0){
+                    if(str[pos-1] == '=') continue;
+                }
+                if(pos < str.Length -1){
+                    if(str[pos+1] == '=') continue;
+                }
+                MemberChain v = MemberChain.ParseBackward(this,pos-1);
+                if(v.Elements.Count > 1) continue;
+                string varName = v.getLastElement();
+                Variable var = m_variables.getVariable(varName);
+                if (var != null) continue;
+
+                MemberChain e = MemberChain.ParseFoward(this,pos+1);
+                if(e == null) continue;
+                Type t = e.getType(m_variables);
+                if (t == null) continue;
+
+                //System.Diagnostics.Debug.Print(varName + " added");
+
+                var = new Variable(varName);
+                var.IsStatic = false;
+                var.Type = t;
+                var.StartPos = v.StartPos;
+                var.EndPos = e.EndPos;
+                m_variables.add(var);
+                
+            }
+
+        }
+		// Private Methods (11) 
+
+         [DllImport("user32.dll", CharSet = CharSet.Ansi)]
+        static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        private void intellua_AutoCompleteAccepted(object sender, ScintillaNET.AutoCompleteAcceptedEventArgs e)
+        {
+            m_tooltip.Hide();
+            
+        }
+
+        private void intellua_AutoCompleteCancelled(object sender, EventArgs e)
+        {
+            m_tooltip.Hide();
+        }
+
+        private void intellua_AutoCompleteMoved(object sender, ScintillaNET.NativeScintillaEventArgs e)
+        {
+            m_tooltip.setText(m_autocompleteList[AutoComplete.SelectedIndex].getToolTipString());
+        }
+
+        private void intellua_CallTipClick(object sender, ScintillaNET.CallTipClickEventArgs e)
+        {
+            Function func = m_calltipFuncion.Func;
+            func.CurrentOverloadIndex++;
+            if (func.CurrentOverloadIndex == func.Param.Count) {
+                func.CurrentOverloadIndex = 0;
+            }
+            m_calltipFuncion.update();
+
+            CallTip.Show(m_calltipFuncion.CalltipString, m_calltipFuncion.HighLightStart, m_calltipFuncion.HighLightEnd);
+
         }
 
         private void intellua_CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
@@ -148,21 +230,17 @@ namespace Intellua
             
             
         }
-        private FunctionCall m_calltipFuncion;
-        private void ShowCalltip()
+
+        private void intellua_TextDeleted(object sender, ScintillaNET.TextModifiedEventArgs e)
         {
-            FunctionCall fc = FunctionCall.Parse(this, m_variables, CurrentPos - 1);
-            if (fc != null)
-            {
-                m_calltipFuncion = fc;
-                CallTip.Show(fc.CalltipString, fc.HighLightStart, fc.HighLightEnd);
-            }
-            else
-            {
-                CallTip.Hide();
-            }
+            parseFile(Lines.Current.StartPosition);
         }
-        private List<IAutoCompleteItem> m_autocompleteList;
+
+        private void intellua_TextInserted(object sender, ScintillaNET.TextModifiedEventArgs e)
+        {
+            parseFile(Lines.Current.StartPosition);
+        }
+
         private void ShowAutoComplete(int lengthEntered, List<IAutoCompleteItem> list)
         {
             m_autocompleteList = list;
@@ -185,86 +263,39 @@ namespace Intellua
             }
         }
 
-        public void parseFile(int pos) {
-            string str = Text;
-            m_variables.purge(pos);
-            for (; pos< str.Length; pos++) {
-                char c = str[pos];
-
-                //search for assignment operator
-
-                if(!Parser.isCode(this,pos)){
-                    continue;
-                }
-
-                if(c != '=') continue;
-                if(pos>0){
-                    if(str[pos-1] == '=') continue;
-                }
-                if(pos < str.Length -1){
-                    if(str[pos+1] == '=') continue;
-                }
-                MemberChain v = MemberChain.ParseBackward(this,pos-1);
-                if(v.Elements.Count > 1) continue;
-                string varName = v.getLastElement();
-                Variable var = m_variables.getVariable(varName);
-                if (var != null) continue;
-
-                MemberChain e = MemberChain.ParseFoward(this,pos+1);
-                if(e == null) continue;
-                Type t = e.getType(m_variables);
-                if (t == null) continue;
-
-                //System.Diagnostics.Debug.Print(varName + " added");
-
-                var = new Variable(varName);
-                var.IsStatic = false;
-                var.Type = t;
-                var.StartPos = v.StartPos;
-                var.EndPos = e.EndPos;
-                m_variables.add(var);
-                
+        private void ShowCalltip()
+        {
+            FunctionCall fc = FunctionCall.Parse(this, m_variables, CurrentPos - 1);
+            if (fc != null)
+            {
+                m_calltipFuncion = fc;
+                CallTip.Show(fc.CalltipString, fc.HighLightStart, fc.HighLightEnd);
             }
-
-        }
-
-        private void intellua_TextDeleted(object sender, ScintillaNET.TextModifiedEventArgs e)
-        {
-            parseFile(Lines.Current.StartPosition);
-        }
-
-        private void intellua_TextInserted(object sender, ScintillaNET.TextModifiedEventArgs e)
-        {
-            parseFile(Lines.Current.StartPosition);
-        }
-
-        private void intellua_AutoCompleteAccepted(object sender, ScintillaNET.AutoCompleteAcceptedEventArgs e)
-        {
-            m_tooltip.Hide();
-            
-        }
-
-        private void intellua_AutoCompleteCancelled(object sender, EventArgs e)
-        {
-            m_tooltip.Hide();
-        }
-
-        private void intellua_AutoCompleteMoved(object sender, ScintillaNET.NativeScintillaEventArgs e)
-        {
-            m_tooltip.setText(m_autocompleteList[AutoComplete.SelectedIndex].getToolTipString());
-        }
-
-        private void intellua_CallTipClick(object sender, ScintillaNET.CallTipClickEventArgs e)
-        {
-            Function func = m_calltipFuncion.Func;
-            func.CurrentOverloadIndex++;
-            if (func.CurrentOverloadIndex == func.Param.Count) {
-                func.CurrentOverloadIndex = 0;
+            else
+            {
+                CallTip.Hide();
             }
-            m_calltipFuncion.update();
+        }
 
-            CallTip.Show(m_calltipFuncion.CalltipString, m_calltipFuncion.HighLightStart, m_calltipFuncion.HighLightEnd);
+		#endregion Methods 
 
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RECT
+        {
+		#region Data Members (4) 
+
+       // x position of lower-right corner
+            public int Bottom;
+            public int Left;
+         // y position of upper-left corner
+            public int Right;
+        // x position of upper-left corner
+            public int Top;
+
+		#endregion Data Members 
+
+      // y position of lower-right corner
         }
     }
 }

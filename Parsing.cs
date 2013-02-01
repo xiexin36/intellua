@@ -6,29 +6,9 @@ using System.Text;
 namespace Intellua
 {
     class Parser {
-        public static bool isString(ScintillaNET.Scintilla scintilla, int pos) { 
-            int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
-            switch (style)
-            {
-                case 6:
-                case 7:
-                case 12:
-                    return true;
-            }
-            return false;
-        }
+		#region Methods (3) 
 
-        public static bool isComment(ScintillaNET.Scintilla scintilla, int pos)
-        {
-            int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
-            switch (style)
-            {
-                case 1:
-                case 2:
-                    return true;
-            }
-            return false;
-        }
+		// Public Methods (3) 
 
         public static bool isCode(ScintillaNET.Scintilla scintilla, int pos) {
             int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
@@ -43,6 +23,32 @@ namespace Intellua
             }
             return true;
         }
+
+        public static bool isComment(ScintillaNET.Scintilla scintilla, int pos)
+        {
+            int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
+            switch (style)
+            {
+                case 1:
+                case 2:
+                    return true;
+            }
+            return false;
+        }
+
+        public static bool isString(ScintillaNET.Scintilla scintilla, int pos) { 
+            int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
+            switch (style)
+            {
+                case 6:
+                case 7:
+                case 12:
+                    return true;
+            }
+            return false;
+        }
+
+		#endregion Methods 
     }
     
 }
