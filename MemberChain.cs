@@ -6,22 +6,37 @@ using System.Text;
 namespace Intellua
 {
     class Word {
+		#region Fields (2) 
+
+        bool m_isFunction;
+        string m_name;
+
+		#endregion Fields 
+
+		#region Constructors (1) 
+
         public Word(string name,bool isFunction) {
             Name = name;
             IsFunction = isFunction;
         }
-        string m_name;
-        public string Name
-        {
-            get { return m_name; }
-            set { m_name = value; }
-        }
-        bool m_isFunction;
+
+		#endregion Constructors 
+
+		#region Properties (2) 
+
         public bool IsFunction
         {
             get { return m_isFunction; }
             set { m_isFunction = value; }
         }
+
+        public string Name
+        {
+            get { return m_name; }
+            set { m_name = value; }
+        }
+
+		#endregion Properties 
     }
     class MemberChain
     {

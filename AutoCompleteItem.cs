@@ -7,9 +7,9 @@ namespace Intellua
 {
     abstract class IAutoCompleteItem : IComparable
     {
-        public abstract string getName();
-        public abstract string getACString();
-        public abstract string getToolTipString();
+		#region Methods (5) 
+
+		// Public Methods (5) 
 
         public Int32 CompareTo(IAutoCompleteItem other)
         {
@@ -26,11 +26,20 @@ namespace Intellua
             }
         }
 
-       
+        public abstract string getACString();
 
+        public abstract string getName();
+
+        public abstract string getToolTipString();
+
+		#endregion Methods 
     }
 
     class AutoCompleteItemComparer : EqualityComparer<IAutoCompleteItem> {
+		#region Methods (2) 
+
+		// Public Methods (2) 
+
         public override bool Equals(IAutoCompleteItem b1, IAutoCompleteItem b2)
         {
             if (b1.getName() == b2.getName())
@@ -47,5 +56,7 @@ namespace Intellua
         {
             return item.getName().GetHashCode();
         }
+
+		#endregion Methods 
     }
 }

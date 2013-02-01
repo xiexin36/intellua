@@ -8,99 +8,142 @@ namespace Intellua
 {
     class Variable : IAutoCompleteItem
     {
+		#region Fields (7) 
+
+        private Type m_Class;
+        private string m_desc;
+        private int m_endPos;
+        private bool m_isStatic;
+        private string m_name;
+        private int m_startPos;
+        private Type m_Type;
+
+		#endregion Fields 
+
+		#region Constructors (1) 
+
         public Variable(string name) {
             Name = name;
             m_isStatic = false;
         }
-        private string m_name;
-        public string Name
-        {
-            get { return m_name; }
-            set { m_name = value; }
-        }
-        private Type m_Type;
-        public Type Type
-        {
-            get { return m_Type; }
-            set { m_Type = value; }
-        }
-        private Type m_Class;
+
+		#endregion Constructors 
+
+		#region Properties (7) 
+
         public Type Class
         {
             get { return m_Class; }
             set { m_Class = value; }
         }
-        private bool m_isStatic;
-        public bool IsStatic
-        {
-            get { return m_isStatic; }
-            set { m_isStatic = value; }
-        }
-        private int m_startPos;
-        public int StartPos
-        {
-            get { return m_startPos; }
-            set { m_startPos = value; }
-        }
-        private int m_endPos;
-        public int EndPos
-        {
-            get { return m_endPos; }
-            set { m_endPos = value; }
-        }
 
-        private string m_desc;
         public string Desc
         {
             get { return m_desc; }
             set { m_desc = value; }
         }
 
-        public override string getName()
+        public int EndPos
         {
-            return Name;
+            get { return m_endPos; }
+            set { m_endPos = value; }
         }
+
+        public bool IsStatic
+        {
+            get { return m_isStatic; }
+            set { m_isStatic = value; }
+        }
+
+        public string Name
+        {
+            get { return m_name; }
+            set { m_name = value; }
+        }
+
+        public int StartPos
+        {
+            get { return m_startPos; }
+            set { m_startPos = value; }
+        }
+
+        public Type Type
+        {
+            get { return m_Type; }
+            set { m_Type = value; }
+        }
+
+		#endregion Properties 
+
+		#region Methods (3) 
+
+		// Public Methods (3) 
+
         public override string getACString()
         {
             return Name + "?0";
         }
+
+        public override string getName()
+        {
+            return Name;
+        }
+
         public override string getToolTipString()
         {
             return (Type.HideDeclare ? "" :Type.DisplayName + " ") +
                    (Class == null  ?  "" : Class.DisplayName + "::")
                    + Name + "\n\n" + Desc;
         }
+
+		#endregion Methods 
     }
 
     class VariableManager {
+		#region Fields (2) 
+
+        private Dictionary<string, Function> m_globalFunctions;
+        private Dictionary<string, Variable> m_variables;
+
+		#endregion Fields 
+
+		#region Constructors (1) 
+
         public VariableManager() { 
             m_variables =new Dictionary<string,Variable>();
             m_globalFunctions = new Dictionary<string, Function>();
         }
-        private Dictionary<string, Variable> m_variables;
+
+		#endregion Constructors 
+
+		#region Properties (2) 
+
+        public Dictionary<string, Function> GlobalFunctions
+        {
+            get { return m_globalFunctions; }
+            set { m_globalFunctions = value; }
+        }
+
         public Dictionary<string, Variable> Variables
         {
             get { return m_variables; }
             set { m_variables = value; }
         }
 
-        private Dictionary<string, Function> m_globalFunctions;
-        public Dictionary<string, Function> GlobalFunctions
-        {
-            get { return m_globalFunctions; }
-            set { m_globalFunctions = value; }
-        }
+		#endregion Properties 
+
+		#region Methods (6) 
+
+		// Public Methods (6) 
+
         public void add(Variable var) {
             m_variables[var.Name] = var;
         }
+
         public void add(Function func) {
             m_globalFunctions[func.Name] = func;
         }
-        public Variable getVariable(string name) {
-            if(m_variables.ContainsKey(name))
-                return m_variables[name];
-            return null;
-        }
+
         public Function getFunction(string name)
         {
             if (m_globalFunctions.ContainsKey(name))
@@ -122,6 +165,12 @@ namespace Intellua
             }
             rst.Sort();
             return rst;
+        }
+
+        public Variable getVariable(string name) {
+            if(m_variables.ContainsKey(name))
+                return m_variables[name];
+            return null;
         }
 
         //purge all variables affected by changes made after pos
@@ -147,5 +196,7 @@ namespace Intellua
                 m_variables.Remove(name);
             }
         }
+
+		#endregion Methods 
     }
 }

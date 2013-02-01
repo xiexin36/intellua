@@ -8,6 +8,10 @@ namespace Intellua
 {
     class DoxygenXMLParser
     {
+		#region Methods (1) 
+
+		// Public Methods (1) 
+
         public static void Parse(string filename, VariableManager variableManager,TypeManager typeManager)
         {
             XDocument doc = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + filename);
@@ -123,5 +127,7 @@ namespace Intellua
             }
 
         }
+
+		#endregion Methods 
     }
 }
