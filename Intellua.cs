@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
-
 using System.IO;
+using System.Linq;
 using System.Reflection;
-				
 using System.Runtime.InteropServices;
+using System.Text;
 
 
 namespace Intellua
@@ -125,50 +119,9 @@ namespace Intellua
             if (brackets.Contains(e.Ch)) return;
 
             MemberChain chain = MemberChain.ParseBackward(this);
-            if (chain.Elements.Count == 1)
-            {
-                string word = chain.Elements[0];
-
-                bool isFunction = false;
-                string str=  Text;
-                for (int i = chain.EndPos+1; i < CurrentPos; i++) {
-                    char c = str[i];
-                    if (!Parser.isCode(this, i)) continue;
-                    if (char.IsWhiteSpace(c)) continue;
-                    if (c == '(')
-                    {
-                        isFunction = true;
-                    }
-                    break;
-                }
-                if (isFunction) {
-                    if (e.Ch != '.' && e.Ch != ':') return;
-                    Function func = m_variables.getFunction(word);
-                    if (func != null) {
-                        Type t = func.ReturnType;
-                        if (t != null)
-                        {
-                            List<IAutoCompleteItem> list = t.getList();
-                            if (list.Count > 0)
-                            {
-                                ShowAutoComplete(0, list);
-                            }
-                        }
-                    }
-                    return;
-                }
-                else if (e.Ch == '.' || e.Ch == ':') {
-                    Variable var = m_variables.getVariable(word);
-                    if (var != null) {
-                        List<IAutoCompleteItem> list = var.Type.getList();
-                        if (list.Count > 0)
-                        {
-                            ShowAutoComplete(0, list);
-                            
-                        }
-                    }
-                }
-                else if (char.IsLetterOrDigit(e.Ch) &&word.Length >= 3)
+            if (chain.Elements.Count == 1) {
+                string word = chain.Elements[0].Name;
+                if (char.IsLetterOrDigit(e.Ch) && word.Length >= 3)
                 {
                     List<IAutoCompleteItem> list = m_variables.getList(word);
                     if (list.Count > 0)
@@ -177,7 +130,8 @@ namespace Intellua
                     }
                 }
             }
-            else {
+            else
+            {
                 Type t = chain.getType(m_variables);
                 if (t!=null) {
                     List<IAutoCompleteItem> list = t.getList();

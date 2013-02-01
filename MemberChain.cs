@@ -5,15 +5,33 @@ using System.Text;
 
 namespace Intellua
 {
+    class Word {
+        public Word(string name,bool isFunction) {
+            Name = name;
+            IsFunction = isFunction;
+        }
+        string m_name;
+        public string Name
+        {
+            get { return m_name; }
+            set { m_name = value; }
+        }
+        bool m_isFunction;
+        public bool IsFunction
+        {
+            get { return m_isFunction; }
+            set { m_isFunction = value; }
+        }
+    }
     class MemberChain
     {
         private MemberChain()
         {
-            m_elements = new List<string>();
+            m_elements = new List<Word>();
             m_startPos = m_endPos = -1;
         }
-        private List<string> m_elements;
-        public List<string> Elements
+        private List<Word> m_elements;
+        public List<Word> Elements
         {
             get { return m_elements; }
             set { m_elements = value; }
@@ -40,17 +58,12 @@ namespace Intellua
             get { return m_lastFunction; }
             private set { m_lastFunction = value; }
         }
-        public Type getType(VariableManager variables)
+        public Type getType(VariableManager variables,bool lastAsFuncion =false)
         {
             if (Elements.Count == 0) return null;
-            string word = Elements[0];
+            string word = Elements[0].Name;
             Type t = null;
-            Variable var = variables.getVariable(word);
-            if (var != null)
-            {
-                t = var.Type;
-            }
-            else
+            if (Elements[0].IsFunction || (Elements.Count == 1 && lastAsFuncion))
             {
                 Function func = variables.getFunction(word);
                 if (func != null)
@@ -59,40 +72,71 @@ namespace Intellua
                     t = func.ReturnType;
                 }
             }
+            else
+            {
+                Variable var = variables.getVariable(word);
+                if (var != null)
+                {
+                    t = var.Type;
+                }
+            }
+            
             if (t == null) return null;
 
             if (Elements.Count == 1) return t;
 
             for (int i = 1; i < Elements.Count - 1; i++)
             {
-                string name = Elements[i];
-                if (t.Members.ContainsKey(name))
+                string name = Elements[i].Name;
+
+                if (Elements[i].IsFunction)
                 {
-                    t = t.Members[name].Type;
+                    if (t.Methods.ContainsKey(name))
+                    {
+                        t = t.Methods[name].ReturnType;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
-                else if (t.Methods.ContainsKey(name))
-                {
-                    t = t.Methods[name].ReturnType;
+                else {
+                    if (t.Members.ContainsKey(name))
+                    {
+                        t = t.Members[name].Type;
+                    }
+                    else return null;
                 }
-                else return null;
             }
             //last
             string last = getLastElement();
-            if (t.Members.ContainsKey(last))
+
+            if (lastAsFuncion || Elements[Elements.Count - 1].IsFunction)
             {
-                return t.Members[last].Type;
+                if (t.Methods.ContainsKey(last))
+                {
+                    LastFunction = t.Methods[last];
+                    return t.Methods[last].ReturnType;
+                }
+                else
+                {
+                    return t;
+                }
             }
-            else if (t.Methods.ContainsKey(last))
-            {
-                LastFunction = t.Methods[last];
-                return t.Methods[last].ReturnType;
+            else {
+                if (t.Members.ContainsKey(last))
+                {
+                    return t.Members[last].Type;
+                }
+                else {
+                    return t;
+                }
             }
-            else return t;
         }
 
         public string getLastElement()
         {
-            return Elements[Elements.Count - 1];
+            return Elements[Elements.Count - 1].Name;
         }
 
         public override string ToString()
@@ -137,6 +181,7 @@ namespace Intellua
 
             int bracketLevel = 0;
 
+            bool isFuncion = false;
 
 
             while (pos >= 0)
@@ -159,7 +204,8 @@ namespace Intellua
                             else word = str.Substring(wordStart, wordEnd - wordStart + 1);
                             word.Trim();
                             {
-                                rst.Elements.Insert(0, word);
+                                rst.Elements.Insert(0, new Word(word, isFuncion));
+                                isFuncion = false;
                                 rst.StartPos = pos;
                             }
                             state = PaserState.searchSeperator;
@@ -178,10 +224,17 @@ namespace Intellua
                             pos--;
                             break;
                         }
+                        if (seperator.Contains(c)) {
+                            if (rst.Elements.Count == 0)
+                            {
+                                rst.Elements.Add(new Word("", false));
+                            }
+                        }
+
                         if (rbracket.Contains(c))
                         {
                             if (rst.Elements.Count == 0) {
-                                rst.Elements.Add("");
+                                rst.Elements.Add(new Word("",false));
                             }
                             state = PaserState.searchBracket;
                             break;
@@ -223,6 +276,7 @@ namespace Intellua
                                 bracketLevel--;
                                 if (bracketLevel == 0)
                                 {
+                                    if (c == '(') isFuncion = true;
                                     state = PaserState.searchWordEnd;
                                 }
                             }
@@ -252,7 +306,7 @@ namespace Intellua
 
             int bracketLevel = 0;
 
-
+            bool isFunction = false;
 
             while (pos < str.Length)
             {
@@ -279,7 +333,8 @@ namespace Intellua
                             }
                             word.Trim();
                             {
-                                rst.Elements.Add(word);
+                                rst.Elements.Add(new Word(word,isFunction));
+                                isFunction = false;
                                 rst.EndPos = pos;
                             }
                             state = PaserState.searchSeperator;
@@ -315,6 +370,7 @@ namespace Intellua
                         if (isString) return rst;
                         if (lbracket.Contains(c))
                         {
+                            if (c == '(') isFunction = true;
                             state = PaserState.searchBracket;
                             break;
                         }
