@@ -204,6 +204,21 @@ namespace Intellua
             }
         }
 
+        public void removeEmptyNamespace() {
+            List<string> rm = new List<string>();
+            foreach (Variable var in m_variables.Values)
+            {
+                if (var.IsNamespace) {
+                    if (var.Type.getList(true).Count == 0) {
+                        rm.Add(var.Name);
+                    }
+                }
+            }
+            foreach (string str in rm) {
+                m_variables.Remove(str);
+            }
+        }
+
 		#endregion Methods 
     }
 }
