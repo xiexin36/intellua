@@ -1,4 +1,4 @@
-//#define LUA_DOCUMANTATION
+#define LUA_DOCUMANTATION
 
 
 #ifdef LUA_DOCUMANTATION
@@ -98,8 +98,8 @@ xpcall (f, err);
 
 #ifdef LUA_COROUTINE
 
-
-class __LUA_COROUTNE{
+//!The operations related to coroutines 
+class coroutine{
 	//! Creates a new coroutine, with body f.
 	static thread create(function f);
 
@@ -118,10 +118,6 @@ class __LUA_COROUTNE{
 	//! Suspends the execution of the calling coroutine.
 	static yield (...);
 };
-
-//!The operations related to coroutines 
-__LUA_COROUTNE coroutine; 
-
 #endif
 
 #ifdef LUA_MODULES
@@ -133,7 +129,7 @@ module (name [, ...]);
 require (modname);
 
 
-class __LUA_PACKAGE{
+class pacakge{
 	//! The path used by require to search for a C loader.
 	string cpath;
 
@@ -156,13 +152,13 @@ class __LUA_PACKAGE{
 	static seeall (module);
 
 };
-__LUA_PACKAGE package;
 #endif
 
 
 #ifdef LUA_STRING
 
-class __LUA_STRING{
+//!  Provides generic functions for string manipulation.
+class string{
 
 	//! Returns the internal numerical codes of the characters s[i], s[i+1], ..., s[j]. 
 	static byte (s [, i [, j]]);
@@ -207,15 +203,14 @@ class __LUA_STRING{
 	static upper (s);
 };
 
-//!  Provides generic functions for string manipulation.
-__LUA_STRING string;
+
 
 #endif
 
 
 #ifdef LUA_TABLE
-
-class __LUA_TABLE{
+//! Provides generic functions for table manipulation.
+class table{
 	
 	//! Given an array where all elements are strings or numbers, returns table[i]..sep..table[i+1] ... sep..table[j].
 	static concat (table [, sep [, i [, j]]]);
@@ -233,14 +228,11 @@ class __LUA_TABLE{
 	static sort (table [, comp]);
 
 };
-//! Provides generic functions for table manipulation.
-__LUA_TABLE table;
-
 #endif
 
 #ifdef LUA_MATH
-
-class __LUA_MATH{
+//! Interface to the standard C math library.
+class math{
 	//!Returns the absolute value of x. 
 	static abs(x);
 
@@ -338,8 +330,8 @@ class __LUA_MATH{
 	static tanh (x);
 
 };
-//! Interface to the standard C math library.
-__LUA_MATH math;
+
+
 
 #endif
 
@@ -368,7 +360,7 @@ class file{
 	write (...);
 };
 
-class __LUA_IO{
+class io{
 	//! closes the default output file. 
 	static close ();
 	
@@ -417,14 +409,11 @@ class __LUA_IO{
 	//! Equivalent to io.output():write. 
 	static write (...);
 };
-
-__LUA_IO io;
-
 #endif
 
 #ifdef LUA_OS
-
-class __LUA_OS{
+//! Operating System Facilities
+class os{
 	//!Returns an approximation of the amount in seconds of CPU time used by the program. 
 	static clock ();
 
@@ -461,14 +450,13 @@ class __LUA_OS{
 	//!Returns a string with a file name that can be used for a temporary file. 
 	static tmpname ();
 };
-//! Operating System Facilities
-__LUA_OS os;
+
 
 #endif
 
 #ifdef LUA_DEBUG
-
-class __LUA_DEBUG{
+//!Provides the functionality of the debug interface to Lua programs.
+class debug{
 	//!Enters an interactive mode with the user, running each string that the user enters.
 	static debug ();
 
@@ -512,8 +500,6 @@ class __LUA_DEBUG{
 	static traceback ([thread,] [message [, level]]);
 
 };
-//!Provides the functionality of the debug interface to Lua programs.
-__LUA_DEBUG debug;
 
 #endif
 

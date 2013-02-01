@@ -98,7 +98,7 @@ namespace Intellua
 
         public override string getToolTipString()
         {
-            return (Type.HideDeclare ? "" :Type.DisplayName + " ") +
+            return (Type.HideDeclare || IsNamespace ? "" :Type.DisplayName + " ") +
                 (Class == null  ?  "" : Class.DisplayName + (IsStatic?".":"::"))
                    + Name + "\n\n" + Desc;
         }
