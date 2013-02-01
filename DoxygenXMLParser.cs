@@ -241,6 +241,8 @@ namespace Intellua
                     }
                 }
             }
+            variableManager.removeEmptyNamespace();
+            typeManager.removeEmptyNamespace();
 
         }
 

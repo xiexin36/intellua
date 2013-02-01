@@ -180,6 +180,27 @@ namespace Intellua
             return m_nullType;
         }
 
+
+        public void removeEmptyNamespace() {
+            foreach (Type t in Types.Values) {
+                List<string> rm = new List<string>();
+                foreach (Variable var in t.Members.Values)
+                {
+                    if (var.IsNamespace)
+                    {
+                        if (var.Type.getList(true).Count == 0)
+                        {
+                            rm.Add(var.Name);
+                        }
+                    }
+                }
+                foreach (string str in rm)
+                {
+                    t.Members.Remove(str);
+                }
+            }
+        }
+
 		#endregion Methods 
     }
 }
