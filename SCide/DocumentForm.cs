@@ -135,8 +135,7 @@ namespace SCide
         private void scintilla_StyleNeeded(object sender, StyleNeededEventArgs e)
         {
             // Style the _text
-            if (_iniLexer)
-                SCide.IniLexer.StyleNeeded((Scintilla)sender, e.Range);
+            
         }
 
         #endregion Methods
