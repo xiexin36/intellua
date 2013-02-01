@@ -101,7 +101,7 @@ namespace Intellua
             }
 
             public string getTypeName() {
-                string rst = (ReturnType != null ? ReturnType.InternalName + " " : "") + (Class == null ? "" : Class.DisplayName + (Static ? "." : ":"));
+                string rst = (ReturnType != null ? ReturnType.DisplayName + " " : "") + (Class == null ? "" : Class.DisplayName + (Static ? "." : ":"));
                 return rst;
             }
 
