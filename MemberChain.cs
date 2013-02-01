@@ -6,9 +6,10 @@ using System.Text;
 namespace Intellua
 {
     class Word {
-		#region Fields (2) 
+		#region Fields (3) 
 
         bool m_isFunction;
+       
         string m_name;
 
 		#endregion Fields 
@@ -22,13 +23,15 @@ namespace Intellua
 
 		#endregion Constructors 
 
-		#region Properties (2) 
+		#region Properties (3) 
 
         public bool IsFunction
         {
             get { return m_isFunction; }
             set { m_isFunction = value; }
         }
+
+        
 
         public string Name
         {
@@ -44,7 +47,15 @@ namespace Intellua
         {
             m_elements = new List<Word>();
             m_startPos = m_endPos = -1;
+            m_isNamespace = false;
         }
+        public bool IsNamespace
+        {
+            get { return m_isNamespace; }
+            set { m_isNamespace = value; }
+        }
+        bool m_isNamespace;
+
         private List<Word> m_elements;
         public List<Word> Elements
         {
@@ -92,6 +103,7 @@ namespace Intellua
                 Variable var = variables.getVariable(word);
                 if (var != null)
                 {
+                    IsNamespace = var.IsNamespace;
                     t = var.Type;
                 }
             }
@@ -108,6 +120,7 @@ namespace Intellua
                 {
                     if (t.Methods.ContainsKey(name))
                     {
+                        IsNamespace = false;
                         t = t.Methods[name].ReturnType;
                     }
                     else
@@ -118,6 +131,7 @@ namespace Intellua
                 else {
                     if (t.Members.ContainsKey(name))
                     {
+                        IsNamespace = t.Members[name].IsNamespace;
                         t = t.Members[name].Type;
                     }
                     else return null;
@@ -128,6 +142,7 @@ namespace Intellua
 
             if (lastAsFuncion || Elements[Elements.Count - 1].IsFunction)
             {
+                IsNamespace = false;
                 if (t.Methods.ContainsKey(last))
                 {
                     LastFunction = t.Methods[last];
@@ -141,6 +156,7 @@ namespace Intellua
             else {
                 if (t.Members.ContainsKey(last))
                 {
+                    IsNamespace = t.Members[last].IsNamespace;
                     return t.Members[last].Type;
                 }
                 else {
