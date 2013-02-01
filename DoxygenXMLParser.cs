@@ -41,6 +41,21 @@ namespace Intellua
                     typeManager.add(t);
                 }
             }
+            //scan enums
+            foreach (XElement node in doc.Descendants("memberdef"))
+            {
+                if (node.Attribute("kind").Value == "enum")
+                {
+                    string name = node.Element("name").Value;
+                    string id = node.Attribute("id").Value;
+
+                    Type t = new Type(id);
+                    t.DisplayName = "enum " + name;
+
+                    System.Diagnostics.Debug.Print("Enum added: " + name);
+                    typeManager.add(t);
+                }
+            }
 
             //set outer class for inner class
             foreach (XElement node in doc.Descendants("compounddef"))
@@ -83,6 +98,7 @@ namespace Intellua
                 }
             }
 
+            //add member and methods for classes
             foreach (XElement node in doc.Descendants("compounddef"))
             {
                 if (node.Attribute("kind").Value == "class" || node.Attribute("kind").Value == "namespace")
@@ -156,6 +172,19 @@ namespace Intellua
                                 System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.getName() + member.Element("argsstring").Value);
                             }
                         }
+                        else if (member.Attribute("kind").Value == "enum")
+                        {
+                            string eid = member.Attribute("id").Value;
+                            Type e = typeManager.get(eid);
+                            foreach (XElement evalue in member.Descendants("enumvalue")) {
+                                Variable var = new Variable(evalue.Element("name").Value);
+                                var.IsStatic = true;
+                                var.Type = typeManager.NullType;
+                                var.Class = e;
+                                var.Desc = evalue.Element("briefdescription").Value;
+                                t.addMember(var);
+                            }
+                        }
                     }
 
 
@@ -194,6 +223,20 @@ namespace Intellua
                             f.Static = true;
                             variableManager.add(f);
                             System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.getName() + member.Element("argsstring").Value);
+                        }
+                        else if (member.Attribute("kind").Value == "enum")
+                        {
+                            string eid = member.Attribute("id").Value;
+                            Type e = typeManager.get(eid);
+                            foreach (XElement evalue in member.Descendants("enumvalue"))
+                            {
+                                Variable var = new Variable(evalue.Element("name").Value);
+                                var.IsStatic = true;
+                                var.Type = typeManager.NullType;
+                                var.Class = e;
+                                var.Desc = evalue.Element("briefdescription").Value;
+                                variableManager.add(var);
+                            }
                         }
                     }
                 }

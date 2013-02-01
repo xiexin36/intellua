@@ -80,7 +80,7 @@ namespace Intellua
 		// Public Methods (3) 
 
         public void addMember(Variable var) {
-            var.Class = this;
+            if(var.Class == null) var.Class = this;
             m_members[var.Name] = var;
         }
 
@@ -154,6 +154,9 @@ namespace Intellua
 		#endregion Constructors 
 
 		#region Properties (1) 
+        public Type NullType {
+            get { return m_nullType; }
+        }
 
         public Dictionary<string, Type> Types
         {

@@ -99,7 +99,7 @@ namespace Intellua
         public override string getToolTipString()
         {
             return (Type.HideDeclare ? "" :Type.DisplayName + " ") +
-                   (Class == null  ?  "" : Class.DisplayName + "::")
+                (Class == null  ?  "" : Class.DisplayName + (IsStatic?".":"::"))
                    + Name + "\n\n" + Desc;
         }
 
