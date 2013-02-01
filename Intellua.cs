@@ -216,7 +216,7 @@ namespace Intellua
             {
                 Type t = chain.getType(m_variables);
                 if (t!=null) {
-                    List<IAutoCompleteItem> list = t.getList();
+                    List<IAutoCompleteItem> list = t.getList(chain.IsNamespace);
                     if (list.Count > 0)
                     {
                         ShowAutoComplete(chain.getLastElement().Length, list);

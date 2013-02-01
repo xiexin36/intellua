@@ -1,4 +1,8 @@
-#define LUA_DOCUMANTATION
+//#define LUA_DOCUMANTATION
+
+
+#ifdef LUA_DOCUMANTATION
+
 #define LUA_BASIC
 #define LUA_COROUTINE
 #define LUA_MODULES
@@ -8,9 +12,6 @@
 #define LUA_IO
 #define LUA_OS
 #define LUA_DEBUG
-
-#ifdef LUA_DOCUMANTATION
-
 
 #ifdef LUA_BASIC
 //! Issues an error when the value of its argument v is false (i.e., nil or false)

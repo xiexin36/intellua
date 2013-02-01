@@ -7,7 +7,7 @@ namespace Intellua
 {
     class Type
     {
-		#region Fields (6) 
+		#region Fields (7) 
 
         private Type m_base;
         private string m_displayName;
@@ -15,6 +15,7 @@ namespace Intellua
         private Dictionary<string, Variable> m_members;
         private Dictionary<string, Function> m_methods;
         private string m_name;
+        private Type m_outerClass;
 
 		#endregion Fields 
 
@@ -28,7 +29,7 @@ namespace Intellua
 
 		#endregion Constructors 
 
-		#region Properties (6) 
+		#region Properties (7) 
 
         public Type Base
         {
@@ -66,6 +67,12 @@ namespace Intellua
             set { m_methods = value; }
         }
 
+        public Type OuterClass
+        {
+            get { return m_outerClass; }
+            set { m_outerClass = value; }
+        }
+
 		#endregion Properties 
 
 		#region Methods (3) 
@@ -89,11 +96,11 @@ namespace Intellua
             }
         }
 
-        public List<IAutoCompleteItem> getList() {
+        public List<IAutoCompleteItem> getList(bool Static) {
             List<IAutoCompleteItem> rst;
             if (Base != null)
             {
-                rst = Base.getList();
+                rst = Base.getList(Static);
                 AutoCompleteItemComparer comparer = new AutoCompleteItemComparer();
                 List<IAutoCompleteItem> rm = new List<IAutoCompleteItem>();
                 foreach (IAutoCompleteItem item in rst) {
@@ -111,10 +118,12 @@ namespace Intellua
                 rst = new List<IAutoCompleteItem>();
             }
             foreach (Variable key in m_members.Values) {
-                rst.Add(key);
+                if(key.IsStatic == Static)
+                    rst.Add(key);
             }
             foreach (Function key in m_methods.Values) {
-                rst.Add(key);
+                if (key.Static == Static)
+                    rst.Add(key);
             }
             rst.Sort();
             return rst;
@@ -126,8 +135,9 @@ namespace Intellua
     
 
     class TypeManager {
-		#region Fields (1) 
+		#region Fields (2) 
 
+        private Type m_nullType;
         private Dictionary<string, Type> m_types;
 
 		#endregion Fields 
@@ -136,6 +146,9 @@ namespace Intellua
 
         public TypeManager() { 
             m_types = new Dictionary<string, Type>();
+            m_nullType = new Type("(UnknownType)");
+            m_nullType.DisplayName = "";
+            m_nullType.HideDeclare = true;
         }
 
 		#endregion Constructors 
@@ -159,8 +172,9 @@ namespace Intellua
         }
 
         public Type get(string name) {
+            if (name == null) return m_nullType;
             if(m_types.ContainsKey(name)) return m_types[name];
-            return null;
+            return m_nullType;
         }
 
 		#endregion Methods 

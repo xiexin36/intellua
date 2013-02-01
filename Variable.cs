@@ -8,11 +8,12 @@ namespace Intellua
 {
     class Variable : IAutoCompleteItem
     {
-		#region Fields (7) 
+		#region Fields (8) 
 
         private Type m_Class;
         private string m_desc;
         private int m_endPos;
+        private bool m_isNamespace;
         private bool m_isStatic;
         private string m_name;
         private int m_startPos;
@@ -29,7 +30,7 @@ namespace Intellua
 
 		#endregion Constructors 
 
-		#region Properties (7) 
+		#region Properties (8) 
 
         public Type Class
         {
@@ -47,6 +48,12 @@ namespace Intellua
         {
             get { return m_endPos; }
             set { m_endPos = value; }
+        }
+
+        public bool IsNamespace
+        {
+            get { return m_isNamespace; }
+            set { m_isNamespace = value; }
         }
 
         public bool IsStatic
