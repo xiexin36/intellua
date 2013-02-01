@@ -33,7 +33,7 @@ namespace Intellua
             this.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.intellua_CharAdded);
             this.TextDeleted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.intellua_TextDeleted);
             this.TextInserted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.intellua_TextInserted);
-
+            this.SelectionChanged += new EventHandler(this.Intellua_SelectionChanged);
             
 
             m_tooltip = new ToolTip(this);
@@ -51,8 +51,8 @@ namespace Intellua
             AutoComplete.IsCaseSensitive = false;
             AutoComplete.AutoHide = false;
             Indentation.ShowGuides = true;
-
-
+            
+            
             m_types.add(new Type("int"));
             m_types.add(new Type("void"));
             m_types.add(new Type("char"));
@@ -83,11 +83,108 @@ namespace Intellua
             
         }
 
-		#endregion Constructors 
+        void Intellua_SelectionChanged(object sender, EventArgs e)
+        {
+            const string lbracket = "([{";
+            const string rbracket = ")]}";
+            int pos = CurrentPos;
+            int style = Styles.GetStyleAt(pos-1);
+            int start, end;
+            start = end = -1;
 
-		#region Methods (14) 
+            Stack<char> stk = new Stack<char>();
 
-		// Public Methods (3) 
+            for (int p = pos-1; p >= 0; p--) {
+               // if (Styles.GetStyleAt(p) != style) continue;
+                if (p >= Text.Length) continue;
+                char c = Text[p];
+                if (rbracket.Contains(c))
+                {
+                    stk.Push(c);
+                }
+                if (lbracket.Contains(c))
+                {
+                    if(stk.Count == 0){
+                        start = p;
+                        break;
+                    }
+                    char pc = stk.Pop();
+                    if ((pc == ')' && c != '(') ||
+                        (pc == ']' && c != '[') ||
+                        (pc == '}' && c != '{')) { 
+                        break;
+                    }
+                }
+            }
+            stk.Clear();
+
+            for (int p = pos; p < Text.Length; p++)
+            {
+               // if (Styles.GetStyleAt(p) != style) continue;
+                char c = Text[p];
+                if (lbracket.Contains(c)) 
+                {
+                    stk.Push(c);
+                }
+                if (rbracket.Contains(c))
+                {
+                    if (stk.Count == 0)
+                    {
+                        end = p;
+                        break;
+                    }
+                    char pc = stk.Pop();
+                    if ((pc != ')' && c == '(') ||
+                        (pc != ']' && c == '[') ||
+                        (pc != '}' && c == '{'))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (start >= 0 && end >= 0)
+            {
+                char c = Text[start];
+                char pc = Text[end];
+
+                if ((pc != ')' && c == '(') ||
+                        (pc != ']' && c == '[') ||
+                        (pc != '}' && c == '{'))
+                {
+                    start = -1;
+                }
+            }
+
+            if (start == -1)
+            {
+                if (end != -1)
+                {
+                    NativeInterface.BraceBadLight(end);
+                }
+            }
+            else if (end == -1)
+            {
+                if (start != -1)
+                {
+                    NativeInterface.BraceBadLight(start);
+                }
+            }
+            else
+            {
+
+                NativeInterface.BraceHighlight(start, end);
+            }
+
+
+
+        }
+
+        #endregion Constructors
+
+        #region Methods (14)
+
+        // Public Methods (3) 
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetClassName(IntPtr hWnd,
@@ -277,6 +374,7 @@ namespace Intellua
             }
         }
 
+        
 		#endregion Methods 
 
 
