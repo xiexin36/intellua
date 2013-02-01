@@ -35,7 +35,6 @@ namespace Intellua
             this.TextInserted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.intellua_TextInserted);
             this.SelectionChanged += new EventHandler(this.Intellua_SelectionChanged);
             
-
             m_tooltip = new ToolTip(this);
             m_types = new TypeManager();
             m_variables = new VariableManager();
@@ -51,8 +50,11 @@ namespace Intellua
             AutoComplete.IsCaseSensitive = false;
             AutoComplete.AutoHide = false;
             Indentation.ShowGuides = true;
-            
-            
+
+            Styles[ScintillaNET.StylesCommon.BraceBad].ForeColor = Color.Red;
+            Styles[ScintillaNET.StylesCommon.BraceLight].ForeColor = Color.Magenta;
+            Lexing.Colorize();
+
             m_types.add(new Type("int"));
             m_types.add(new Type("void"));
             m_types.add(new Type("char"));
@@ -77,7 +79,7 @@ namespace Intellua
 
             AutoComplete.RegisterImages(list);
 
-
+            
             
 
             
@@ -162,12 +164,18 @@ namespace Intellua
                 {
                     NativeInterface.BraceBadLight(end);
                 }
+                else {
+                    NativeInterface.BraceHighlight(-1, -1);
+                }
             }
             else if (end == -1)
             {
                 if (start != -1)
                 {
                     NativeInterface.BraceBadLight(start);
+                }
+                else{
+                    NativeInterface.BraceHighlight(-1, -1);
                 }
             }
             else

@@ -56,25 +56,7 @@
             this.scintilla.Margins.Margin2.Width = 16;
             this.scintilla.Name = "scintilla";
             this.scintilla.Size = new System.Drawing.Size(292, 246);
-            this.scintilla.Styles.BraceBad.FontName = "Courier New";
-            this.scintilla.Styles.BraceBad.Size = 10F;
-            this.scintilla.Styles.BraceLight.Bold = true;
-            this.scintilla.Styles.BraceLight.FontName = "Courier New";
-            this.scintilla.Styles.BraceLight.ForeColor = System.Drawing.Color.Red;
-            this.scintilla.Styles.BraceLight.Size = 10F;
-            this.scintilla.Styles.ControlChar.FontName = "Courier New";
-            this.scintilla.Styles.ControlChar.Size = 10F;
-            this.scintilla.Styles.Default.BackColor = System.Drawing.SystemColors.Window;
-            this.scintilla.Styles.Default.FontName = "Courier New";
-            this.scintilla.Styles.Default.Size = 10F;
-            this.scintilla.Styles.IndentGuide.FontName = "Courier New";
-            this.scintilla.Styles.IndentGuide.Size = 10F;
-            this.scintilla.Styles.LastPredefined.FontName = "Courier New";
-            this.scintilla.Styles.LastPredefined.Size = 10F;
-            this.scintilla.Styles.LineNumber.FontName = "Courier New";
-            this.scintilla.Styles.LineNumber.Size = 10F;
-            this.scintilla.Styles.Max.FontName = "Courier New";
-            this.scintilla.Styles.Max.Size = 10F;
+            
             this.scintilla.TabIndex = 0;
             this.scintilla.ModifiedChanged += new System.EventHandler(this.scintilla_ModifiedChanged);
             this.scintilla.StyleNeeded += new System.EventHandler<ScintillaNET.StyleNeededEventArgs>(this.scintilla_StyleNeeded);
