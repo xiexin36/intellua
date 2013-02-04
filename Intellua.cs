@@ -51,10 +51,6 @@ namespace Intellua
             AutoComplete.AutoHide = false;
             Indentation.ShowGuides = true;
 
-            Styles[ScintillaNET.StylesCommon.BraceBad].ForeColor = Color.Red;
-            Styles[ScintillaNET.StylesCommon.BraceLight].ForeColor = Color.Magenta;
-            Lexing.Colorize();
-
             m_types.add(new Type("int"));
             m_types.add(new Type("void"));
             m_types.add(new Type("char"));
