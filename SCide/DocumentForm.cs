@@ -174,7 +174,11 @@ namespace SCide
         {
            
             InitializeComponent();
+            scintilla.Styles[ScintillaNET.StylesCommon.BraceBad].ForeColor = System.Drawing.Color.Red;
+            scintilla.Styles[ScintillaNET.StylesCommon.BraceLight].ForeColor = System.Drawing.Color.Magenta;
+            scintilla.Lexing.Colorize();
             scintilla.LoadDoxygenXML("classdef.xml");
+
         }
 
         #endregion Constructors
