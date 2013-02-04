@@ -3788,7 +3788,7 @@ namespace ScintillaNET
                 _longLines,
                 _commands,
                 _folding,
-                //_configurationManager,
+                _configurationManager,
                 _printing,
                 _findReplace,
                 _documentNavigation,
