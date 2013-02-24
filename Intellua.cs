@@ -61,12 +61,12 @@ namespace Intellua
             ConfigurationManager.Language = "lua";
             ConfigurationManager.Configure(config);
             Folding.IsEnabled = true;
-            Margins[0].Width = 20;
+            /*Margins[0].Width = 20;
             Margins[1].Width = 20;
-            Margins[2].Width = 20;
+            Margins[2].Width = 20;*/
             AutoComplete.IsCaseSensitive = false;
             AutoComplete.AutoHide = false;
-            Indentation.ShowGuides = true;
+            //Indentation.ShowGuides = true;
 
 
             m_types.add(new Type("int"));
