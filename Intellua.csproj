@@ -97,9 +97,7 @@
     <Content Include="SciLexer.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="ScintillaNET.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="ScintillaNET.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ScintillaNet\src\ScintillaNET.csproj">
