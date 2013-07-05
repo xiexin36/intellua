@@ -111,7 +111,13 @@ namespace Intellua
 
         private Dictionary<string, Function> m_globalFunctions;
         private Dictionary<string, Variable> m_variables;
+        private VariableManager m_parent;
 
+        public VariableManager Parent {
+            set {
+                m_parent = value;
+            }
+        }
 		#endregion Fields 
 
 		#region Constructors (1) 
@@ -119,6 +125,13 @@ namespace Intellua
         public VariableManager() { 
             m_variables =new Dictionary<string,Variable>();
             m_globalFunctions = new Dictionary<string, Function>();
+            m_parent = null;
+        }
+        public VariableManager(VariableManager parent)
+        {
+            m_variables = new Dictionary<string, Variable>();
+            m_globalFunctions = new Dictionary<string, Function>();
+            m_parent = parent;
         }
 
 		#endregion Constructors 
@@ -155,6 +168,8 @@ namespace Intellua
         {
             if (m_globalFunctions.ContainsKey(name))
                 return m_globalFunctions[name];
+            if (m_parent!= null)
+                return m_parent.getFunction(name);
             return null;
         }
 
@@ -170,6 +185,12 @@ namespace Intellua
                     rst.Add(func);
                 }
             }
+            if (m_parent!=null) {
+                List<IAutoCompleteItem> pr = m_parent.getList(partialName);
+                foreach (IAutoCompleteItem item in pr) {
+                    rst.Add(item);
+                }
+            }
             rst.Sort();
             return rst;
         }
@@ -177,6 +198,8 @@ namespace Intellua
         public Variable getVariable(string name) {
             if(m_variables.ContainsKey(name))
                 return m_variables[name];
+            if (m_parent != null)
+                return m_parent.getVariable(name);
             return null;
         }
 

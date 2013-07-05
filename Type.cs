@@ -139,9 +139,15 @@ namespace Intellua
 
         private Type m_nullType;
         private Dictionary<string, Type> m_types;
-
+        private TypeManager m_parent;
 		#endregion Fields 
-
+        public TypeManager Parent
+        {
+            set
+            {
+                m_parent = value;
+            }
+        }
 		#region Constructors (1) 
 
         public TypeManager() { 
@@ -149,8 +155,14 @@ namespace Intellua
             m_nullType = new Type("(UnknownType)");
             m_nullType.DisplayName = "";
             m_nullType.HideDeclare = true;
+            m_parent = null;
         }
-
+        public TypeManager(TypeManager parent)
+        {
+            m_types = new Dictionary<string, Type>();
+            m_nullType = m_parent.NullType;
+            m_parent = parent;
+        }
 		#endregion Constructors 
 
 		#region Properties (1) 
@@ -177,6 +189,7 @@ namespace Intellua
         public Type get(string name) {
             if (name == null) return m_nullType;
             if(m_types.ContainsKey(name)) return m_types[name];
+            if (m_parent != null) return m_parent.get(name);
             return m_nullType;
         }
 

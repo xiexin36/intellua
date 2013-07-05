@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoCompleteData.cs" />
     <Compile Include="AutoCompleteItem.cs" />
     <Compile Include="MemberChain.cs" />
     <Compile Include="DoxygenXMLParser.cs" />
