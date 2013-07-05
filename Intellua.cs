@@ -69,12 +69,20 @@ namespace Intellua
 
             
         }
+        public int getDecodedPos()
+        {
+            return Encoding.GetCharCount(RawText, 0, CurrentPos + 1) - 1;
+        }
 
+        public int getDecodedPos(int bytePos)
+        {
+            return Encoding.GetCharCount(RawText, 0, bytePos + 1) - 1;
+        }
         void Intellua_SelectionChanged(object sender, EventArgs e)
         {
             const string lbracket = "([{";
             const string rbracket = ")]}";
-            int pos = CurrentPos;
+            int pos = getDecodedPos();
             int style = Styles.GetStyleAt(pos-1);
             int start, end;
             start = end = -1;
@@ -143,6 +151,13 @@ namespace Intellua
                 }
             }
 
+            if (start != -1) {
+                start = Encoding.GetByteCount(Text.ToCharArray(), 0, start+1)-1;
+            }
+            if (end != -1) {
+                end = Encoding.GetByteCount(Text.ToCharArray(), 0, end + 1) - 1;
+            }
+
             if (start == -1)
             {
                 if (end != -1)
@@ -205,7 +220,8 @@ namespace Intellua
                     if(str[pos+1] == '=') continue;
                 }
                 MemberChain v = MemberChain.ParseBackward(this,pos-1);
-                if(v.Elements.Count > 1) continue;
+                if(v.Elements.Count > 1 || v.Elements.Count ==0) continue;
+                
                 string varName = v.getLastElement();
                 Variable var = m_autoCompleteData.Variables.getVariable(varName);
                 if (var != null) continue;
@@ -319,12 +335,12 @@ namespace Intellua
 
         private void intellua_TextDeleted(object sender, ScintillaNET.TextModifiedEventArgs e)
         {
-            parseFile(Lines.Current.StartPosition);
+            parseFile(getDecodedPos(Lines.Current.StartPosition));
         }
 
         private void intellua_TextInserted(object sender, ScintillaNET.TextModifiedEventArgs e)
         {
-            parseFile(Lines.Current.StartPosition);
+            parseFile(getDecodedPos(Lines.Current.StartPosition));
         }
 
         private void ShowAutoComplete(int lengthEntered, List<IAutoCompleteItem> list)
@@ -351,7 +367,7 @@ namespace Intellua
 
         private void ShowCalltip()
         {
-            FunctionCall fc = FunctionCall.Parse(this, m_autoCompleteData.Variables, CurrentPos - 1);
+            FunctionCall fc = FunctionCall.Parse(this, m_autoCompleteData.Variables, getDecodedPos() - 1);
             if (fc != null)
             {
                 m_calltipFuncion = fc;
