@@ -193,7 +193,7 @@ namespace Intellua
             searchSeperator,
             searchBracket
         };
-        public static MemberChain ParseBackward(ScintillaNET.Scintilla scintilla, int pos = -1)
+        public static MemberChain ParseBackward(Intellua scintilla, int pos = -1)
         {
             const string seperator = ".:";
             const string lbracket = "([{";
@@ -202,7 +202,7 @@ namespace Intellua
             string str = scintilla.Text;
             if (pos < 0)
             {
-                pos = scintilla.CurrentPos - 1;
+                pos = scintilla.getDecodedPos() - 1;
             }
             PaserState state = PaserState.searchWordEnd;
 
@@ -321,7 +321,7 @@ namespace Intellua
             return rst;
         }
 
-        public static MemberChain ParseFoward(ScintillaNET.Scintilla scintilla, int pos)
+        public static MemberChain ParseFoward(Intellua scintilla, int pos)
         {
             const string seperator = ".:";
             const string lbracket = "([{";

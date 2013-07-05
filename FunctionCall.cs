@@ -60,7 +60,7 @@ namespace Intellua
 
 		// Public Methods (2) 
 
-        public static FunctionCall Parse(ScintillaNET.Scintilla scintilla,VariableManager variables, int pos) {
+        public static FunctionCall Parse(Intellua scintilla,VariableManager variables, int pos) {
 
             const string luaOperators = "+-*/^%<>=~";
             int paramIndex = 0;

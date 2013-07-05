@@ -33,7 +33,7 @@ namespace Intellua
                     Type t = new Type(id);
                     t.DisplayName = name;
 
-                    System.Diagnostics.Debug.Print("Type added: " + name);
+                    //System.Diagnostics.Debug.Print("Type added: " + name);
                     if (name.StartsWith("__")) {
                         int pos = name.LastIndexOf('_');
                         t.DisplayName = name.Substring(pos + 1).ToLower();
@@ -53,7 +53,7 @@ namespace Intellua
                     Type t = new Type(id);
                     t.DisplayName = "enum " + name;
 
-                    System.Diagnostics.Debug.Print("Enum added: " + name);
+                    //System.Diagnostics.Debug.Print("Enum added: " + name);
                     autoCompleteData.Types.add(t);
                 }
             }
@@ -137,7 +137,7 @@ namespace Intellua
 
                             if (isNamespace) var.IsStatic = true;
                             t.addMember(var);
-                            System.Diagnostics.Debug.Print("Member added: " + memberType + " " + name + "::" + memberName);
+                            //System.Diagnostics.Debug.Print("Member added: " + memberType + " " + name + "::" + memberName);
                         }
                         else if (member.Attribute("kind").Value == "function")
                         {
@@ -157,7 +157,7 @@ namespace Intellua
                                     autoCompleteData.Variables.add(f);
                                 else t.OuterClass.addMethod(f);
 
-                                System.Diagnostics.Debug.Print("Constructor added: " + name + "::" + f.getName() + member.Element("argsstring").Value);
+                                //System.Diagnostics.Debug.Print("Constructor added: " + name + "::" + f.getName() + member.Element("argsstring").Value);
                             }
                             else
                             {
@@ -170,7 +170,7 @@ namespace Intellua
                                 f.ReturnType = mt;
 
                                 t.addMethod(f);
-                                System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.getName() + member.Element("argsstring").Value);
+                                //System.Diagnostics.Debug.Print("Method added: " + memberType + " " + name + ":" + f.getName() + member.Element("argsstring").Value);
                             }
                         }
                         else if (member.Attribute("kind").Value == "enum")
@@ -207,7 +207,7 @@ namespace Intellua
                             var.IsStatic = true;
                             var.Desc = member.Element("briefdescription").Value;
                             autoCompleteData.Variables.add(var);
-                            System.Diagnostics.Debug.Print("Static variable added: " + memberType + " " + memberName);
+                            //System.Diagnostics.Debug.Print("Static variable added: " + memberType + " " + memberName);
                         }
                         else if (member.Attribute("kind").Value == "function")
                         {
@@ -223,7 +223,7 @@ namespace Intellua
                             f.Desc.Add(member.Element("briefdescription").Value);
                             f.Static = true;
                             autoCompleteData.Variables.add(f);
-                            System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.getName() + member.Element("argsstring").Value);
+                            //System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.getName() + member.Element("argsstring").Value);
                         }
                         else if (member.Attribute("kind").Value == "enum")
                         {
