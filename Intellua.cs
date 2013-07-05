@@ -17,13 +17,14 @@ namespace Intellua
         private List<IAutoCompleteItem> m_autocompleteList;
         private FunctionCall m_calltipFuncion;
         private ToolTip m_tooltip;
-        private TypeManager m_types;
-        private VariableManager m_variables;
+        private AutoCompleteData m_autoCompleteData;
 
 		#endregion Fields 
 
 		#region Constructors (1) 
-
+        public void setParent(AutoCompleteData parent) {
+            m_autoCompleteData.setParent(parent);
+        }
         public Intellua()
         {
             this.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.intellua_AutoCompleteAccepted);
@@ -36,8 +37,7 @@ namespace Intellua
             this.SelectionChanged += new EventHandler(this.Intellua_SelectionChanged);
             
             m_tooltip = new ToolTip(this);
-            m_types = new TypeManager();
-            m_variables = new VariableManager();
+            m_autoCompleteData = new AutoCompleteData();
             ScintillaNET.Configuration.Configuration config =
                 new ScintillaNET.Configuration.Configuration(Assembly.GetExecutingAssembly().GetManifestResourceStream("Intellua.ScintillaNET.xml"),
                     "lua", true);
@@ -51,18 +51,7 @@ namespace Intellua
             AutoComplete.AutoHide = false;
             //Indentation.ShowGuides = true;
 
-            m_types.add(new Type("int"));
-            m_types.add(new Type("void"));
-            m_types.add(new Type("char"));
-            m_types.add(new Type("float"));
-            m_types.add(new Type("double"));
-            //m_types.add(new Type("string"));
-            //m_types.add(new Type("table"));
-            m_types.add(new Type("number"));
-            m_types.add(new Type("boolean"));
-            m_types.add(new Type("function"));
-            m_types.add(new Type("thread"));
-            m_types.add(new Type("userdata"));
+           
             List<Bitmap> list = new List<Bitmap>();
             Assembly asm = Assembly.GetExecutingAssembly();
             Stream str;
@@ -196,13 +185,9 @@ namespace Intellua
            int nMaxCount
         );
 
-        public void LoadDoxygenXML(string filename) {
-            DoxygenXMLParser.Parse(filename, m_variables, m_types);
-        }
-
         public void parseFile(int pos) {
             string str = Text;
-            m_variables.purge(pos);
+            m_autoCompleteData.Variables.purge(pos);
             for (; pos< str.Length; pos++) {
                 char c = str[pos];
 
@@ -222,12 +207,12 @@ namespace Intellua
                 MemberChain v = MemberChain.ParseBackward(this,pos-1);
                 if(v.Elements.Count > 1) continue;
                 string varName = v.getLastElement();
-                Variable var = m_variables.getVariable(varName);
+                Variable var = m_autoCompleteData.Variables.getVariable(varName);
                 if (var != null) continue;
 
                 MemberChain e = MemberChain.ParseFoward(this,pos+1);
                 if(e == null) continue;
-                Type t = e.getType(m_variables);
+                Type t = e.getType(m_autoCompleteData.Variables);
                 if (t == null) continue;
 
                 //System.Diagnostics.Debug.Print(varName + " added");
@@ -237,7 +222,7 @@ namespace Intellua
                 var.Type = t;
                 var.StartPos = v.StartPos;
                 var.EndPos = e.EndPos;
-                m_variables.add(var);
+                m_autoCompleteData.Variables.add(var);
                 
             }
 
@@ -306,7 +291,7 @@ namespace Intellua
                 string word = chain.Elements[0].Name;
                 if (char.IsLetterOrDigit(e.Ch) && word.Length >= 3)
                 {
-                    List<IAutoCompleteItem> list = m_variables.getList(word);
+                    List<IAutoCompleteItem> list = m_autoCompleteData.Variables.getList(word);
                     if (list.Count > 0)
                     {
                         ShowAutoComplete(word.Length, list);
@@ -315,7 +300,7 @@ namespace Intellua
             }
             else
             {
-                Type t = chain.getType(m_variables);
+                Type t = chain.getType(m_autoCompleteData.Variables);
                 if (t!=null) {
                     List<IAutoCompleteItem> list = t.getList(chain.IsNamespace);
                     if (list.Count > 0)
@@ -366,7 +351,7 @@ namespace Intellua
 
         private void ShowCalltip()
         {
-            FunctionCall fc = FunctionCall.Parse(this, m_variables, CurrentPos - 1);
+            FunctionCall fc = FunctionCall.Parse(this, m_autoCompleteData.Variables, CurrentPos - 1);
             if (fc != null)
             {
                 m_calltipFuncion = fc;

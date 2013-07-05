@@ -12,10 +12,11 @@ namespace Intellua
 
 		// Public Methods (1) 
 
-        public static void Parse(string filename, VariableManager variableManager,TypeManager typeManager)
+        public static AutoCompleteData Parse(string filename)
         {
-            XDocument doc = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + filename);
 
+            XDocument doc = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + filename);
+            AutoCompleteData autoCompleteData = new AutoCompleteData();
             //scan all classes first.
             foreach (XElement node in doc.Descendants("compounddef"))
             {
@@ -38,7 +39,7 @@ namespace Intellua
                         t.DisplayName = name.Substring(pos + 1).ToLower();
                         t.HideDeclare = true;
                     }
-                    typeManager.add(t);
+                    autoCompleteData.Types.add(t);
                 }
             }
             //scan enums
@@ -53,7 +54,7 @@ namespace Intellua
                     t.DisplayName = "enum " + name;
 
                     System.Diagnostics.Debug.Print("Enum added: " + name);
-                    typeManager.add(t);
+                    autoCompleteData.Types.add(t);
                 }
             }
 
@@ -63,11 +64,11 @@ namespace Intellua
                 if (node.Attribute("kind").Value == "class" || node.Attribute("kind").Value == "namespace")
                 {
                     string id = node.Attribute("id").Value;
-                    Type t = typeManager.get(id);
+                    Type t = autoCompleteData.Types.get(id);
 
                     foreach (XElement inner in node.Descendants("innerclass")) {
                         if (inner.Attribute("refid") != null) {
-                            Type i = typeManager.get(inner.Attribute("refid").Value);
+                            Type i = autoCompleteData.Types.get(inner.Attribute("refid").Value);
                             i.OuterClass = t;
                         }
                     }
@@ -80,7 +81,7 @@ namespace Intellua
                 if (node.Attribute("kind").Value == "class" || node.Attribute("kind").Value == "namespace")
                 {
                     string id = node.Attribute("id").Value;
-                    Type t = typeManager.get(id);
+                    Type t = autoCompleteData.Types.get(id);
 
                     Variable var = new Variable(t.DisplayName);
                     var.IsNamespace = true;
@@ -90,7 +91,7 @@ namespace Intellua
 
                     if (t.OuterClass == null)
                     {
-                        variableManager.add(var);
+                        autoCompleteData.Variables.add(var);
                     }
                     else {
                         t.OuterClass.addMember(var);
@@ -106,11 +107,11 @@ namespace Intellua
                     bool isNamespace = node.Attribute("kind").Value == "namespace";
 
                     string id = node.Attribute("id").Value;
-                    Type t = typeManager.get(id);
+                    Type t = autoCompleteData.Types.get(id);
                     string name = t.DisplayName;
                     if (node.Element("basecompoundref") != null)
                     {
-                        t.Base = typeManager.get(node.Element("basecompoundref").Attribute("refid").Value);
+                        t.Base = autoCompleteData.Types.get(node.Element("basecompoundref").Attribute("refid").Value);
                     }
 
                     foreach (XElement member in node.Descendants("memberdef"))
@@ -124,7 +125,7 @@ namespace Intellua
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
 
 
-                            Type mt = typeManager.get(memberTypeID);
+                            Type mt = autoCompleteData.Types.get(memberTypeID);
                             Variable var = new Variable(memberName);
                             var.Type = mt;
                             var.Desc = member.Element("briefdescription").Value;
@@ -153,7 +154,7 @@ namespace Intellua
                                 f.ReturnType = t;
                                 f.Static = true;
                                 if (t.OuterClass == null)
-                                    variableManager.add(f);
+                                    autoCompleteData.Variables.add(f);
                                 else t.OuterClass.addMethod(f);
 
                                 System.Diagnostics.Debug.Print("Constructor added: " + name + "::" + f.getName() + member.Element("argsstring").Value);
@@ -164,7 +165,7 @@ namespace Intellua
                                     f.Static = true;
                                 }
                                 if (isNamespace) f.Static = true;
-                                Type mt = typeManager.get(memberTypeID);
+                                Type mt = autoCompleteData.Types.get(memberTypeID);
                                 
                                 f.ReturnType = mt;
 
@@ -175,11 +176,11 @@ namespace Intellua
                         else if (member.Attribute("kind").Value == "enum")
                         {
                             string eid = member.Attribute("id").Value;
-                            Type e = typeManager.get(eid);
+                            Type e = autoCompleteData.Types.get(eid);
                             foreach (XElement evalue in member.Descendants("enumvalue")) {
                                 Variable var = new Variable(evalue.Element("name").Value);
                                 var.IsStatic = true;
-                                var.Type = typeManager.NullType;
+                                var.Type = autoCompleteData.Types.NullType;
                                 var.Class = e;
                                 var.Desc = evalue.Element("briefdescription").Value;
                                 t.addMember(var);
@@ -200,12 +201,12 @@ namespace Intellua
                             string memberTypeID = null;
                             if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
-                            Type mt = typeManager.get(memberTypeID);
+                            Type mt = autoCompleteData.Types.get(memberTypeID);
                             Variable var = new Variable(memberName);
                             var.Type = mt;
                             var.IsStatic = true;
                             var.Desc = member.Element("briefdescription").Value;
-                            variableManager.add(var);
+                            autoCompleteData.Variables.add(var);
                             System.Diagnostics.Debug.Print("Static variable added: " + memberType + " " + memberName);
                         }
                         else if (member.Attribute("kind").Value == "function")
@@ -215,35 +216,36 @@ namespace Intellua
                             string memberTypeID = null; ;
                             if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
-                            Type mt = typeManager.get(memberTypeID);
+                            Type mt = autoCompleteData.Types.get(memberTypeID);
                             Function f = new Function(memberName);
                             f.Param.Add( member.Element("argsstring").Value);
                             f.ReturnType = mt;
                             f.Desc.Add(member.Element("briefdescription").Value);
                             f.Static = true;
-                            variableManager.add(f);
+                            autoCompleteData.Variables.add(f);
                             System.Diagnostics.Debug.Print("Global function added: " + memberType + " " + f.getName() + member.Element("argsstring").Value);
                         }
                         else if (member.Attribute("kind").Value == "enum")
                         {
                             string eid = member.Attribute("id").Value;
-                            Type e = typeManager.get(eid);
+                            Type e = autoCompleteData.Types.get(eid);
                             foreach (XElement evalue in member.Descendants("enumvalue"))
                             {
                                 Variable var = new Variable(evalue.Element("name").Value);
                                 var.IsStatic = true;
-                                var.Type = typeManager.NullType;
+                                var.Type = autoCompleteData.Types.NullType;
                                 var.Class = e;
                                 var.Desc = evalue.Element("briefdescription").Value;
-                                variableManager.add(var);
+                                autoCompleteData.Variables.add(var);
                             }
                         }
                     }
                 }
             }
-            variableManager.removeEmptyNamespace();
-            typeManager.removeEmptyNamespace();
+            autoCompleteData.Variables.removeEmptyNamespace();
+            autoCompleteData.Types.removeEmptyNamespace();
 
+            return autoCompleteData;
         }
 
 		#endregion Methods 
