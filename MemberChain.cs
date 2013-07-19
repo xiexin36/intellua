@@ -86,7 +86,7 @@ namespace Intellua
         }
         public Type getType(VariableManager variables,bool lastAsFuncion =false)
         {
-            if (Elements.Count == 0) return null;
+             if (Elements.Count == 0) return null;
             string word = Elements[0].Name;
             Type t = null;
             if (Elements[0].IsFunction || (Elements.Count == 1 && lastAsFuncion))
@@ -118,10 +118,11 @@ namespace Intellua
 
                 if (Elements[i].IsFunction)
                 {
-                    if (t.Methods.ContainsKey(name))
+                    Function f = t.getMethod(name);
+                    if (f != null)
                     {
                         IsNamespace = false;
-                        t = t.Methods[name].ReturnType;
+                        t = f.ReturnType;
                     }
                     else
                     {
@@ -129,10 +130,11 @@ namespace Intellua
                     }
                 }
                 else {
-                    if (t.Members.ContainsKey(name))
+                    Variable v = t.getMember(name);
+                    if (v != null)
                     {
-                        IsNamespace = t.Members[name].IsNamespace;
-                        t = t.Members[name].Type;
+                        IsNamespace = v.IsNamespace;
+                        t = v.Type;
                     }
                     else return null;
                 }
@@ -143,10 +145,11 @@ namespace Intellua
             if (lastAsFuncion || Elements[Elements.Count - 1].IsFunction)
             {
                 IsNamespace = false;
-                if (t.Methods.ContainsKey(last))
+                Function f = t.getMethod(last);
+                if (f != null)
                 {
-                    LastFunction = t.Methods[last];
-                    return t.Methods[last].ReturnType;
+                    LastFunction = f;
+                    return f.ReturnType;
                 }
                 else
                 {
@@ -154,10 +157,11 @@ namespace Intellua
                 }
             }
             else {
-                if (t.Members.ContainsKey(last))
+                Variable v = t.getMember(last);
+                if (v != null)
                 {
-                    IsNamespace = t.Members[last].IsNamespace;
-                    return t.Members[last].Type;
+                    IsNamespace = v.IsNamespace;
+                    return v.Type;
                 }
                 else {
                     return t;

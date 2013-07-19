@@ -78,6 +78,16 @@ namespace Intellua
 		#region Methods (3) 
 
 		// Public Methods (3) 
+        public Variable getMember(string name) {
+            if (Members.ContainsKey(name)) return Members[name];
+            if (Base != null) return Base.getMember(name);
+            return null;
+        }
+        public Function getMethod(string name) {
+            if (Methods.ContainsKey(name)) return Methods[name];
+            if (Base != null) return Base.getMethod(name);
+            return null;
+        }
 
         public void addMember(Variable var) {
             if(var.Class == null) var.Class = this;
