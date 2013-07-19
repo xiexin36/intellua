@@ -25,14 +25,14 @@ namespace Intellua
         public AutoCompleteData() {
             m_typeManager = new TypeManager();
             m_variableManager = new VariableManager();
-
+            m_typeManager.add(new Type("object"));
             m_typeManager.add(new Type("int"));
             m_typeManager.add(new Type("void"));
             m_typeManager.add(new Type("char"));
             m_typeManager.add(new Type("float"));
             m_typeManager.add(new Type("double"));
-            //m_types.add(new Type("string"));
-            //m_types.add(new Type("table"));
+            m_typeManager.add(new Type("string"));
+            m_typeManager.add(new Type("table"));
             m_typeManager.add(new Type("number"));
             m_typeManager.add(new Type("boolean"));
             m_typeManager.add(new Type("function"));

@@ -177,8 +177,7 @@ namespace SCide
             scintilla.Styles[ScintillaNET.StylesCommon.BraceBad].ForeColor = System.Drawing.Color.Red;
             scintilla.Styles[ScintillaNET.StylesCommon.BraceLight].ForeColor = System.Drawing.Color.Magenta;
             scintilla.Lexing.Colorize();
-            Intellua.AutoCompleteData data = new Intellua.AutoCompleteData("classdef.xml");
-            scintilla.setParent(data);
+            scintilla.setParent(Program.data);
 
         }
 

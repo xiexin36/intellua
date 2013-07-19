@@ -29,12 +29,14 @@ namespace SCide
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            data = new Intellua.AutoCompleteData("classdef.xml");
             Application.Run(new MainForm(args));
+
         }
 
         #endregion Methods
 
-
+        public static Intellua.AutoCompleteData data;
         #region Properties
 
         public static string Title
