@@ -76,7 +76,7 @@ static void ColouriseLuaDoc(
 	int sepCount = 0;
 	int stringWs = 0;
 	if (initStyle == SCE_LUA_LITERALSTRING || initStyle == SCE_LUA_COMMENT ||
-		initStyle == SCE_LUA_STRING || initStyle == SCE_LUA_CHARACTER) {
+		initStyle == SCE_LUA_STRING || initStyle == SCE_LUA_CHARACTER || initStyle == SCE_LUA_ANNOTATION) {
 		int lineState = styler.GetLineState(currentLine - 1);
 		nestLevel = lineState >> 9;
 		sepCount = lineState & 0xFF;
@@ -84,7 +84,7 @@ static void ColouriseLuaDoc(
 	}
 
 	// Do not leak onto next line
-	if (initStyle == SCE_LUA_STRINGEOL || initStyle == SCE_LUA_COMMENTLINE || initStyle == SCE_LUA_PREPROCESSOR) {
+	if (initStyle == SCE_LUA_STRINGEOL || initStyle == SCE_LUA_COMMENTLINE || initStyle == SCE_LUA_PREPROCESSOR || initStyle == SCE_LUA_ANNOTATIONLINE) {
 		initStyle = SCE_LUA_DEFAULT;
 	}
 
@@ -102,6 +102,7 @@ static void ColouriseLuaDoc(
 			case SCE_LUA_COMMENT:
 			case SCE_LUA_STRING:
 			case SCE_LUA_CHARACTER:
+			case SCE_LUA_ANNOTATION:
 				// Inside a literal string, block comment or string, we set the line state
 				styler.SetLineState(currentLine, (nestLevel << 9) | stringWs | sepCount);
 				break;
@@ -232,7 +233,7 @@ static void ColouriseLuaDoc(
 				}
 				sc.SetState(SCE_LUA_DEFAULT);
 			}
-		} else if (sc.state == SCE_LUA_COMMENTLINE || sc.state == SCE_LUA_PREPROCESSOR) {
+		} else if (sc.state == SCE_LUA_COMMENTLINE || sc.state == SCE_LUA_PREPROCESSOR || sc.state ==SCE_LUA_ANNOTATIONLINE) {
 			if (sc.atLineEnd) {
 				sc.ForwardSetState(SCE_LUA_DEFAULT);
 			}
@@ -272,7 +273,7 @@ static void ColouriseLuaDoc(
 				sc.ChangeState(SCE_LUA_STRINGEOL);
 				sc.ForwardSetState(SCE_LUA_DEFAULT);
 			}
-		} else if (sc.state == SCE_LUA_LITERALSTRING || sc.state == SCE_LUA_COMMENT) {
+		} else if (sc.state == SCE_LUA_LITERALSTRING || sc.state == SCE_LUA_COMMENT || sc.state == SCE_LUA_ANNOTATION) {
 			if (sc.ch == '[') {
 				int sep = LongDelimCheck(sc);
 				if (sep == 1 && sepCount == 1) {    // [[-only allowed to nest
@@ -283,8 +284,15 @@ static void ColouriseLuaDoc(
 				int sep = LongDelimCheck(sc);
 				if (sep == 1 && sepCount == 1) {    // un-nest with ]]-only
 					nestLevel--;
+					if(sc.state == SCE_LUA_ANNOTATION){
+						if(nestLevel == 0){
+							sc.SetState(SCE_LUA_COMMENT);
+						}
+					}
+
 					sc.Forward();
 					if (nestLevel == 0) {
+						
 						sc.ForwardSetState(SCE_LUA_DEFAULT);
 					}
 				} else if (sep > 1 && sep == sepCount) {   // ]=]-style delim
@@ -319,7 +327,7 @@ static void ColouriseLuaDoc(
 					sc.Forward(sepCount);
 				}
 			} else if (sc.Match('-', '-')) {
-				sc.SetState(SCE_LUA_COMMENTLINE);
+				sc.SetState(SCE_LUA_COMMENTLINE); 
 				if (sc.Match("--[")) {
 					sc.Forward(2);
 					sepCount = LongDelimCheck(sc);
@@ -327,9 +335,17 @@ static void ColouriseLuaDoc(
 						nestLevel = 1;
 						sc.ChangeState(SCE_LUA_COMMENT);
 						sc.Forward(sepCount);
+						if(sc.Match('[','@')){
+							sc.Forward();
+							sc.ForwardSetState(SCE_LUA_ANNOTATION);
+						}
 					}
 				} else {
 					sc.Forward();
+					if(sc.Match('-','@')){
+						sc.Forward();
+						sc.ForwardSetState(SCE_LUA_ANNOTATIONLINE);
+					}
 				}
 			} else if (sc.atLineStart && sc.Match('$')) {
 				sc.SetState(SCE_LUA_PREPROCESSOR);	// Obsolete since Lua 4.0, but still in old code
@@ -405,7 +421,7 @@ static void FoldLuaDoc(unsigned int startPos, int length, int /* initStyle */, W
 			} else if (ch == '}' || ch == ')') {
 				levelCurrent--;
 			}
-		} else if (style == SCE_LUA_LITERALSTRING || style == SCE_LUA_COMMENT) {
+		} else if (style == SCE_LUA_LITERALSTRING || style == SCE_LUA_COMMENT || style == SCE_LUA_ANNOTATION) {
 			if (ch == '[') {
 				levelCurrent++;
 			} else if (ch == ']') {
