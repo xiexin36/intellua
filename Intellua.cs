@@ -224,7 +224,7 @@ namespace Intellua
                 
                 string varName = v.getLastElement();
                 Variable var = m_autoCompleteData.Variables.getVariable(varName);
-                if (var != null) continue;
+//                if (var != null) continue;
 
                 MemberChain e = MemberChain.ParseFoward(this,pos+1);
                 if(e == null) continue;
