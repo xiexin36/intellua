@@ -105,6 +105,55 @@ namespace Intellua
 
 		#endregion Methods 
     }
+    class Scope {
+        private Scope m_parent = null;
+        public Scope Parent
+        {
+            get { return m_parent; }
+            set { m_parent = value; }
+        }
+        private List<Scope> m_childs = new List<Scope>();
+        public List<Scope> Childs
+        {
+            get { return m_childs; }
+            set { m_childs = value; }
+        }
+        private List<Variable> m_variables = new List<Variable>();
+        private int m_startPos = 0;
+        public int StartPos
+        {
+            get { return m_startPos; }
+            set { m_startPos = value; }
+        }
+        private int m_endPos = 0;
+        public int EndPos
+        {
+            get { return m_endPos; }
+            set { m_endPos = value; }
+        }
+        public Scope getScope(int pos) {
+            foreach (Scope s in m_childs) {
+                if (s.m_startPos <= pos && s.m_endPos > pos) return s;
+            }
+            return this;
+        }
+
+        public Variable getVariable(string name,int pos) {
+            Variable rst = null;
+            foreach (Variable v in m_variables) {
+                if (v.Name != name) continue;
+                if (v.StartPos > pos) continue;
+                rst = v;
+            }
+            if (rst != null) return rst;
+            if (m_parent!=null) return m_parent.getVariable(name, pos);
+            return null;
+        }
+        public void addVariable(Variable var) {
+            Scope s = getScope(var.StartPos);
+            s.m_variables.Add(var);
+        }
+    }
 
     class VariableManager {
 		#region Fields (2) 
@@ -112,7 +161,10 @@ namespace Intellua
         private Dictionary<string, Function> m_globalFunctions;
         private Dictionary<string, Variable> m_variables;
         private VariableManager m_parent;
-
+        private Scope m_scope;
+        public Scope scope {
+            set { m_scope = value; }
+        }
         public VariableManager Parent {
             set {
                 m_parent = value;
@@ -158,6 +210,10 @@ namespace Intellua
 
         public void add(Variable var) {
             m_variables[var.Name] = var;
+
+            if (m_scope != null) {
+                m_scope.addVariable(var);
+            }
         }
 
         public void add(Function func) {
@@ -202,10 +258,20 @@ namespace Intellua
                 return m_parent.getVariable(name);
             return null;
         }
-
+        public Variable getVariable(string name,int pos)
+        {
+            if(m_scope != null){
+                Scope s = m_scope.getScope(pos);
+                Variable rst = s.getVariable(name, pos);
+                if (rst != null) return rst;
+            }
+            return getVariable(name);
+        }
         //purge all variables affected by changes made after pos
         public void purge(int pos) {
-            List<string> rm = new List<string>();
+            m_variables.Clear();
+            m_scope = null;
+            /*List<string> rm = new List<string>();
             foreach (Variable var in m_variables.Values) {
                 if (var.IsStatic) continue;
 
@@ -224,7 +290,7 @@ namespace Intellua
             foreach (string name in rm) {
                 //System.Diagnostics.Debug.Print(name + " removed");
                 m_variables.Remove(name);
-            }
+            }*/
         }
 
         public void removeEmptyNamespace() {
