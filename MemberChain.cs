@@ -12,13 +12,20 @@ namespace Intellua
        
         string m_name;
 
+        int m_startPos;
+        public int StartPos
+        {
+            get { return m_startPos; }
+            set { m_startPos = value; }
+        }
 		#endregion Fields 
 
 		#region Constructors (1) 
 
-        public Word(string name,bool isFunction) {
+        public Word(string name,bool isFunction,int pos) {
             Name = name;
             IsFunction = isFunction;
+            StartPos = pos;
         }
 
 		#endregion Constructors 
@@ -86,7 +93,7 @@ namespace Intellua
         }
         public Type getType(VariableManager variables,bool lastAsFuncion =false)
         {
-             if (Elements.Count == 0) return null;
+              if (Elements.Count == 0) return null;
             string word = Elements[0].Name;
             Type t = null;
             if (Elements[0].IsFunction || (Elements.Count == 1 && lastAsFuncion))
@@ -100,7 +107,7 @@ namespace Intellua
             }
             else
             {
-                Variable var = variables.getVariable(word);
+                Variable var = variables.getVariable(word,Elements[0].StartPos);
                 if (var != null)
                 {
                     IsNamespace = var.IsNamespace;
@@ -202,7 +209,7 @@ namespace Intellua
             const string seperator = ".:";
             const string lbracket = "([{";
             const string rbracket = ")]}";
-
+            const string operators = "=+-*/;";
             string str = scintilla.Text;
             if (pos < 0)
             {
@@ -233,15 +240,15 @@ namespace Intellua
                         if (isString) return rst;
                         if (!char.IsLetterOrDigit(c) || isComment || pos == 0)
                         {
-                            wordStart = pos;
-                            string word;
-                            if (pos != 0) word = str.Substring(wordStart + 1, wordEnd - wordStart);
-                            else word = str.Substring(wordStart, wordEnd - wordStart + 1);
-                            word.Trim();
+                            wordStart = pos +1;
+                            if (pos == 0 && char.IsLetterOrDigit(c)) wordStart = 0;
+                            string word = str.Substring(wordStart, wordEnd - wordStart + 1);
+                            //word.Trim();
                             {
-                                rst.Elements.Insert(0, new Word(word, isFuncion));
+                                int p =scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, wordStart + 1) - 1;
+                                rst.Elements.Insert(0, new Word(word, isFuncion,p));
                                 isFuncion = false;
-                                rst.StartPos = pos;
+                                rst.StartPos = p;
                             }
                             state = PaserState.searchSeperator;
                         }
@@ -254,6 +261,7 @@ namespace Intellua
 
                     case PaserState.searchWordEnd:
                         if (isString) return rst;
+                        if (operators.Contains(c)) return rst;
                         if (isComment)
                         {
                             pos--;
@@ -262,14 +270,16 @@ namespace Intellua
                         if (seperator.Contains(c)) {
                             if (rst.Elements.Count == 0)
                             {
-                                rst.Elements.Add(new Word("", false));
+                                int p = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, pos + 1) - 1;
+                                rst.Elements.Add(new Word("", false,p));
                             }
                         }
 
                         if (rbracket.Contains(c))
                         {
                             if (rst.Elements.Count == 0) {
-                                rst.Elements.Add(new Word("",false));
+                                int p = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, pos + 1) - 1;
+                                rst.Elements.Add(new Word("",false,p));
                             }
                             state = PaserState.searchBracket;
                             break;
@@ -330,7 +340,7 @@ namespace Intellua
             const string seperator = ".:";
             const string lbracket = "([{";
             const string rbracket = ")]}";
-            const string operators = "=+-*/";
+            const string operators = "=+-*/;";
             string str = scintilla.Text;
 
             PaserState state = PaserState.searchWordStart;
@@ -367,7 +377,8 @@ namespace Intellua
                             }
                             word.Trim();
                             {
-                                rst.Elements.Add(new Word(word,false));
+                                int p = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, wordStart + 1) - 1;
+                                rst.Elements.Add(new Word(word,false,p));
 
                                 rst.EndPos = pos;
                             }

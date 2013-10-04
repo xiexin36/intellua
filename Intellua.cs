@@ -199,10 +199,34 @@ namespace Intellua
            StringBuilder lpClassName,
            int nMaxCount
         );
+        Scope parseScope(int start,int end) {
+            int level = Lines[start].FoldLevel;
+            Scope rst = new Scope();
+            rst.StartPos = Lines[start].StartPosition;
+            rst.EndPos = Lines[end].EndPosition;
 
+            for (int i = start; i <= end; i++) {
+                if (Lines[i].FoldLevel != level) {
+                    int s = i;
+                    while (i <= end && Lines[i].FoldLevel != level) {
+                        i++;
+                    }
+                    i--;
+                    int e = i;
+                    Scope c = parseScope(s, e);
+                    c.Parent = rst;
+                    rst.Childs.Add(c);
+                }
+            }
+
+            return rst;
+        }
         public void parseFile(int pos) {
+            pos = 0;
             string str = Text;
             m_autoCompleteData.Variables.purge(pos);
+            m_autoCompleteData.Variables.scope = parseScope(0,Lines.Count-1);
+            
             for (; pos< str.Length; pos++) {
                 char c = str[pos];
 
