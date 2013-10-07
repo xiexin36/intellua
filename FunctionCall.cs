@@ -89,7 +89,7 @@ namespace Intellua
             MemberChain chain = MemberChain.ParseBackward(scintilla,pos);
             
             while (chain.Elements.Count != 0 && running) {
-                pos = chain.StartPos;
+                pos = scintilla.getDecodedPos(chain.StartPos);
 
                 while (pos > 0) {
                     if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(scintilla,pos)) {

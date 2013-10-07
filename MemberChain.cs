@@ -260,13 +260,14 @@ namespace Intellua
                         break;
 
                     case PaserState.searchWordEnd:
-                        if (isString) return rst;
-                        if (operators.Contains(c)) return rst;
                         if (isComment)
                         {
                             pos--;
                             break;
                         }
+                        if (isString) return rst;
+                        if (operators.Contains(c)) return rst;
+                        
                         if (seperator.Contains(c)) {
                             if (rst.Elements.Count == 0)
                             {
@@ -297,15 +298,17 @@ namespace Intellua
                         break;
                     case PaserState.searchSeperator:
                         if (isString) return rst;
-                        if (seperator.Contains(c))
+                       
+                        if (char.IsWhiteSpace(c) || isComment)
+                        {
+                            pos--;
+                        }
+                        else if (seperator.Contains(c))
                         {
                             state = PaserState.searchWordEnd;
                             pos--;
                         }
-                        else if (char.IsWhiteSpace(c) || isComment)
-                        {
-                            pos--;
-                        }
+
                         else
                         {
                             //end
