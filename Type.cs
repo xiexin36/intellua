@@ -149,6 +149,7 @@ namespace Intellua
 
         private Type m_nullType;
         private Dictionary<string, Type> m_types;
+        private Dictionary<string, Type> m_dtypes = new Dictionary<string, Type>();
         private TypeManager m_parent;
 		#endregion Fields 
         public TypeManager Parent
@@ -194,11 +195,13 @@ namespace Intellua
 
         public void add(Type t){
             m_types[t.InternalName] = t;
+            m_dtypes[t.DisplayName] = t;
         }
 
         public Type get(string name) {
             if (name == null) return m_nullType;
             if(m_types.ContainsKey(name)) return m_types[name];
+            if (m_dtypes.ContainsKey(name)) return m_dtypes[name];
             if (m_parent != null) return m_parent.get(name);
             return m_nullType;
         }

@@ -91,9 +91,10 @@ namespace Intellua
             get { return m_lastFunction; }
             private set { m_lastFunction = value; }
         }
-        public Type getType(VariableManager variables,bool lastAsFuncion =false)
+        public Type getType(AutoCompleteData data,bool lastAsFuncion =false)
         {
               if (Elements.Count == 0) return null;
+            VariableManager  variables = data.Variables;
             string word = Elements[0].Name;
             Type t = null;
             if (Elements[0].IsFunction || (Elements.Count == 1 && lastAsFuncion))
@@ -112,6 +113,10 @@ namespace Intellua
                 {
                     IsNamespace = var.IsNamespace;
                     t = var.Type;
+                }
+                else
+                {
+                    t = data.Types.get(word);
                 }
             }
             
