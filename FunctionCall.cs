@@ -60,8 +60,8 @@ namespace Intellua
 
 		// Public Methods (2) 
 
-        public static FunctionCall Parse(Intellua scintilla,VariableManager variables, int pos) {
-
+        public static FunctionCall Parse(Intellua scintilla,AutoCompleteData data, int pos) {
+            VariableManager variables = data.Variables;
             const string luaOperators = "+-*/^%<>=~";
             int paramIndex = 0;
             string str = scintilla.Text;
@@ -125,7 +125,7 @@ namespace Intellua
 
                 if (str[pos] == '(') {
                     chain = MemberChain.ParseBackward(scintilla, pos - 1);
-                    chain.getType(variables,true);
+                    chain.getType(data,true);
                     
                     if (chain.LastFunction == null) return null;
                     FunctionCall fc = new FunctionCall();

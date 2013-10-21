@@ -252,7 +252,7 @@ namespace Intellua
 
                 MemberChain e = MemberChain.ParseFoward(this,pos+1);
                 if(e == null) continue;
-                Type t = e.getType(m_autoCompleteData.Variables);
+                Type t = e.getType(m_autoCompleteData);
                 if (t == null) continue;
 
                 //System.Diagnostics.Debug.Print(varName + " added");
@@ -340,7 +340,7 @@ namespace Intellua
             }
             else
             {
-                Type t = chain.getType(m_autoCompleteData.Variables);
+                Type t = chain.getType(m_autoCompleteData);
                 if (t!=null) {
                     List<IAutoCompleteItem> list = t.getList(chain.IsNamespace);
                     if (list.Count > 0)
@@ -391,7 +391,7 @@ namespace Intellua
 
         private void ShowCalltip()
         {
-            FunctionCall fc = FunctionCall.Parse(this, m_autoCompleteData.Variables, getDecodedPos() - 1);
+            FunctionCall fc = FunctionCall.Parse(this, m_autoCompleteData, getDecodedPos() - 1);
             if (fc != null)
             {
                 m_calltipFuncion = fc;
