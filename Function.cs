@@ -6,7 +6,7 @@ using System.Text;
 namespace Intellua
 {
  
-        class Function : IAutoCompleteItem
+        public class Function : IAutoCompleteItem
         {
 		#region Fields (7) 
 

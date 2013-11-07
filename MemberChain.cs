@@ -209,16 +209,16 @@ namespace Intellua
             searchSeperator,
             searchBracket
         };
-        public static MemberChain ParseBackward(Intellua scintilla, int pos = -1)
+        public static MemberChain ParseBackward(IntelluaSource source, int pos = -1)
         {
             const string seperator = ".:";
             const string lbracket = "([{";
             const string rbracket = ")]}";
             const string operators = "=+-*/;";
-            string str = scintilla.Text;
+            string str = source.text;
             if (pos < 0)
             {
-                pos = scintilla.getDecodedPos() - 1;
+                pos = source.getDecodedPos() - 1;
             }
             PaserState state = PaserState.searchWordEnd;
 
@@ -234,8 +234,8 @@ namespace Intellua
             while (pos >= 0)
             {
                 char c = str[pos];
-                bool isComment = Parser.isComment(scintilla, pos);
-                bool isString = Parser.isString(scintilla, pos);
+                bool isComment = Parser.isComment(source, pos);
+                bool isString = Parser.isString(source, pos);
 
 
 
@@ -250,7 +250,7 @@ namespace Intellua
                             string word = str.Substring(wordStart, wordEnd - wordStart + 1);
                             //word.Trim();
                             {
-                                int p =scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, wordStart + 1) - 1;
+                                int p = source.getRawPos(wordStart);
                                 rst.Elements.Insert(0, new Word(word, isFuncion,p));
                                 isFuncion = false;
                                 rst.StartPos = p;
@@ -276,7 +276,7 @@ namespace Intellua
                         if (seperator.Contains(c)) {
                             if (rst.Elements.Count == 0)
                             {
-                                int p = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, pos + 1) - 1;
+                                int p = source.getRawPos(pos);
                                 rst.Elements.Add(new Word("", false,p));
                             }
                         }
@@ -284,7 +284,7 @@ namespace Intellua
                         if (rbracket.Contains(c))
                         {
                             if (rst.Elements.Count == 0) {
-                                int p = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, pos + 1) - 1;
+                                int p = source.getRawPos(pos);
                                 rst.Elements.Add(new Word("",false,p));
                             }
                             state = PaserState.searchBracket;
@@ -343,13 +343,13 @@ namespace Intellua
             return rst;
         }
 
-        public static MemberChain ParseFoward(Intellua scintilla, int pos)
+        public static MemberChain ParseFoward(IntelluaSource source, int pos)
         {
             const string seperator = ".:";
             const string lbracket = "([{";
             const string rbracket = ")]}";
             const string operators = "=+-*/;";
-            string str = scintilla.Text;
+            string str = source.text;
 
             PaserState state = PaserState.searchWordStart;
 
@@ -364,8 +364,8 @@ namespace Intellua
             {
                 char c = str[pos];
 
-                bool isComment = Parser.isComment(scintilla, pos);
-                bool isString = Parser.isString(scintilla, pos);
+                bool isComment = Parser.isComment(source, pos);
+                bool isString = Parser.isString(source, pos);
 
                 switch (state)
                 {
@@ -385,7 +385,7 @@ namespace Intellua
                             }
                             word.Trim();
                             {
-                                int p = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, wordStart + 1) - 1;
+                                int p = source.getRawPos(wordStart);
                                 rst.Elements.Add(new Word(word,false,p));
 
                                 rst.EndPos = pos;

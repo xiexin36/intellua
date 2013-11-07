@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace Intellua
 {
-    class Variable : IAutoCompleteItem
+    public class Variable : IAutoCompleteItem
     {
 		#region Fields (8) 
 
@@ -105,7 +105,7 @@ namespace Intellua
 
 		#endregion Methods 
     }
-    class Scope {
+    public class Scope {
         private Scope m_parent = null;
         public Scope Parent
         {

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using ScintillaNET;
+using System.ServiceModel;
 
 #endregion Using Directives
 
@@ -287,27 +288,29 @@ namespace SCide
 
             foreach (string filePath in openFileDialog.FileNames)
             {
-                // Ensure this file isn't already open
-                bool isOpen = false;
-                foreach (DocumentForm documentForm in dockPanel.Documents)
-                {
-                    if (filePath.Equals(documentForm.FilePath, StringComparison.OrdinalIgnoreCase))
-                    {
-                        documentForm.Select();
-                        isOpen = true;
-                        break;
-                    }
-                }
 
                 // Open the files
-                if (!isOpen)
                     OpenFile(filePath);
             }
         }
 
 
-        private DocumentForm OpenFile(string filePath)
+        public DocumentForm OpenFile(string filePath)
         {
+            bool isOpen = false;
+            foreach (DocumentForm documentForm in dockPanel.Documents)
+            {
+                if (filePath.Equals(documentForm.FilePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    documentForm.Select();
+                    isOpen = true;
+                    break;
+                }
+            }
+
+            // Open the files
+            if (isOpen) return null;
+
             DocumentForm doc = new DocumentForm();
             SetScintillaToCurrentOptions(doc);
             doc.Scintilla.Text = File.ReadAllText(filePath);
@@ -636,9 +639,11 @@ namespace SCide
             InitializeComponent();
         }
 
-
+        private ServiceHost serviceHost;
         public MainForm(string[] args) : this()
         {
+
+
             // Store the command line args
             this._args = args;
 
@@ -651,8 +656,28 @@ namespace SCide
             // Set the application title
             Text = Program.Title;
             aboutToolStripMenuItem.Text = String.Format(CultureInfo.CurrentCulture, "&About {0}", Program.Title);
+
+
+            serviceHost = new ServiceHost
+            (typeof(Service), new Uri[] { new Uri("net.pipe://localhost/") });
+            serviceHost.AddServiceEndpoint(typeof(IService1), new NetNamedPipeBinding(), "MikobusterLuaEditor");
+                serviceHost.Open();
+
+                Console.WriteLine("Service started. Available in following endpoints");
+                foreach (var serviceEndpoint in serviceHost.Description.Endpoints)
+                {
+                    Console.WriteLine(serviceEndpoint.ListenUri.AbsoluteUri);
+                }
         }
 
+
         #endregion Constructors
+    }
+
+    class Service :IService1 {
+        public void IPCOpenFile(string filename) {
+            Program._mainForm.OpenFile(filename);
+            Program._mainForm.Activate();
+        }
     }
 }

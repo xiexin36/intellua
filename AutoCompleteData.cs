@@ -50,10 +50,16 @@ namespace Intellua
             m_typeManager = rst.Types;
             m_variableManager = rst.Variables;
         }
+        AutoCompleteData m_parent;
 
         public void setParent(AutoCompleteData parent) {
+            m_parent = parent;
             m_typeManager.Parent = parent.Types;
             m_variableManager.Parent = parent.Variables;
+        }
+
+        public AutoCompleteData getParent() {
+            return m_parent;
         }
     }
 }

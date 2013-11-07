@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Intellua
 {
-    class Type
+    public class Type
     {
 		#region Fields (7) 
 

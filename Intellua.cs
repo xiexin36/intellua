@@ -18,13 +18,19 @@ namespace Intellua
         private FunctionCall m_calltipFuncion;
         private ToolTip m_tooltip;
         private AutoCompleteData m_autoCompleteData;
-
+        public AutoCompleteData AutoCompleteData {
+            get {
+                return m_autoCompleteData;
+            }
+        }
+        private bool m_parsePending = false;
 		#endregion Fields 
 
 		#region Constructors (1) 
         public void setParent(AutoCompleteData parent) {
             m_autoCompleteData.setParent(parent);
         }
+        IntelluaSource m_source;
         public Intellua()
         {
             this.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.intellua_AutoCompleteAccepted);
@@ -38,6 +44,8 @@ namespace Intellua
             
             m_tooltip = new ToolTip(this);
             m_autoCompleteData = new AutoCompleteData();
+            
+
             ScintillaNET.Configuration.Configuration config =
                 new ScintillaNET.Configuration.Configuration(Assembly.GetExecutingAssembly().GetManifestResourceStream("Intellua.ScintillaNET.xml"),
                     "lua", true);
@@ -64,8 +72,8 @@ namespace Intellua
 
             AutoComplete.RegisterImages(list);
 
-            
-            
+
+            m_source = new IntelluaSource(this);
 
             
         }
@@ -199,7 +207,7 @@ namespace Intellua
            StringBuilder lpClassName,
            int nMaxCount
         );
-        Scope parseScope(int start,int end) {
+        public Scope parseScope(int start,int end) {
             int level = Lines[start].FoldLevel;
             Scope rst = new Scope();
             rst.StartPos = Lines[start].StartPosition;
@@ -221,50 +229,36 @@ namespace Intellua
 
             return rst;
         }
-        public void parseFile(int pos) {
-            pos = 0;
-            string str = Text;
-            m_autoCompleteData.Variables.purge(pos);
-            m_autoCompleteData.Variables.scope = parseScope(0,Lines.Count-1);
+
+        System.ComponentModel.BackgroundWorker m_worker;
+
+        private void parseFile() {
             
-            for (; pos< str.Length; pos++) {
-                char c = str[pos];
+            IntelluaSource source = new IntelluaSource(this, true);
+            m_worker = new System.ComponentModel.BackgroundWorker();
+            FileParser fp = new FileParser(source);
+            m_worker.DoWork += new System.ComponentModel.DoWorkEventHandler(fp.doWork);
+            m_worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(parseFileDone);
+            m_worker.RunWorkerAsync();
+        }
 
-                //search for assignment operator
+        private void parseFileDone(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+            m_autoCompleteData = e.Result as AutoCompleteData;
 
-                if(!Parser.isCode(this,pos)){
-                    continue;
-                }
-
-                if(c != '=') continue;
-                if(pos>0){
-                    if(str[pos-1] == '=') continue;
-                }
-                if(pos < str.Length -1){
-                    if(str[pos+1] == '=') continue;
-                }
-                MemberChain v = MemberChain.ParseBackward(this,pos-1);
-                if(v.Elements.Count > 1 || v.Elements.Count ==0) continue;
-                
-                string varName = v.getLastElement();
-                Variable var = m_autoCompleteData.Variables.getVariable(varName);
-//                if (var != null) continue;
-
-                MemberChain e = MemberChain.ParseFoward(this,pos+1);
-                if(e == null) continue;
-                Type t = e.getType(m_autoCompleteData);
-                if (t == null) continue;
-
-                //System.Diagnostics.Debug.Print(varName + " added");
-
-                var = new Variable(varName);
-                var.IsStatic = false;
-                var.Type = t;
-                var.StartPos = v.StartPos;
-                var.EndPos = e.EndPos;
-                m_autoCompleteData.Variables.add(var);
-                
+            if (m_parsePending) {
+                m_parsePending = false;
+                parseFile();
             }
+        }
+
+        public void queueParseFile() {
+            if (m_parsePending) return;
+
+            if(m_worker != null && m_worker.IsBusy){
+                m_parsePending = true;
+                return;
+            }
+            parseFile();
 
         }
 		// Private Methods (11) 
@@ -326,7 +320,7 @@ namespace Intellua
             }
             if (brackets.Contains(e.Ch)) return;
 
-            MemberChain chain = MemberChain.ParseBackward(this);
+            MemberChain chain = MemberChain.ParseBackward(m_source);
             if (chain.Elements.Count == 1) {
                 string word = chain.Elements[0].Name;
                 if (char.IsLetterOrDigit(e.Ch) && word.Length >= 3)
@@ -359,12 +353,12 @@ namespace Intellua
 
         private void intellua_TextDeleted(object sender, ScintillaNET.TextModifiedEventArgs e)
         {
-            parseFile(getDecodedPos(Lines.Current.StartPosition));
+            queueParseFile();
         }
 
         private void intellua_TextInserted(object sender, ScintillaNET.TextModifiedEventArgs e)
         {
-            parseFile(getDecodedPos(Lines.Current.StartPosition));
+            queueParseFile();
         }
 
         private void ShowAutoComplete(int lengthEntered, List<IAutoCompleteItem> list)
@@ -391,7 +385,7 @@ namespace Intellua
 
         private void ShowCalltip()
         {
-            FunctionCall fc = FunctionCall.Parse(this, m_autoCompleteData, getDecodedPos() - 1);
+            FunctionCall fc = FunctionCall.Parse(m_source, m_autoCompleteData, getDecodedPos() - 1);
             if (fc != null)
             {
                 m_calltipFuncion = fc;
