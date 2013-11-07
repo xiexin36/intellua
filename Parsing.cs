@@ -10,9 +10,9 @@ namespace Intellua
 
 		// Public Methods (3) 
 
-        public static bool isCode(Intellua scintilla, int pos) {
-            pos = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, pos + 1) - 1;
-            int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
+        public static bool isCode(IntelluaSource source, int pos) {
+
+            int style = source.getStyleAt(pos);
             switch (style)
             {
                 case 1:
@@ -25,10 +25,9 @@ namespace Intellua
             return true;
         }
 
-        public static bool isComment(Intellua scintilla, int pos)
+        public static bool isComment(IntelluaSource source, int pos)
         {
-            pos = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, pos + 1) - 1;
-            int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
+            int style = source.getStyleAt(pos);
             switch (style)
             {
                 case 1:
@@ -38,10 +37,9 @@ namespace Intellua
             return false;
         }
 
-        public static bool isString(Intellua scintilla, int pos)
+        public static bool isString(IntelluaSource source, int pos)
         {
-            pos = scintilla.Encoding.GetByteCount(scintilla.Text.ToCharArray(), 0, pos + 1) - 1;
-            int style = (scintilla.Styles.GetStyleAt(pos) & 0x1f);
+            int style = source.getStyleAt(pos);
             switch (style)
             {
                 case 6:

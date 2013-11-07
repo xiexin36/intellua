@@ -60,14 +60,14 @@ namespace Intellua
 
 		// Public Methods (2) 
 
-        public static FunctionCall Parse(Intellua scintilla,AutoCompleteData data, int pos) {
+        public static FunctionCall Parse(IntelluaSource source,AutoCompleteData data, int pos) {
             VariableManager variables = data.Variables;
             const string luaOperators = "+-*/^%<>=~";
             int paramIndex = 0;
-            string str = scintilla.Text;
+            string str = source.text;
             bool running = true;
             while (pos > 0) {
-                if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(scintilla, pos))
+                if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source, pos))
                 {
                     pos--;
                     continue;
@@ -86,13 +86,13 @@ namespace Intellua
                 break;
             }
 
-            MemberChain chain = MemberChain.ParseBackward(scintilla,pos);
+            MemberChain chain = MemberChain.ParseBackward(source,pos);
             
             while (chain.Elements.Count != 0 && running) {
-                pos = scintilla.getDecodedPos(chain.StartPos);
+                pos = source.getDecodedPos(chain.StartPos);
 
                 while (pos > 0) {
-                    if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(scintilla,pos)) {
+                    if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source,pos)) {
                         pos--;
                         continue;
                     }
@@ -113,18 +113,18 @@ namespace Intellua
 
                 }
                 if (pos <= 0) return null;
-                chain = MemberChain.ParseBackward(scintilla, pos);
+                chain = MemberChain.ParseBackward(source, pos);
             }
 
             while (pos > 0) {
-                if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(scintilla, pos))
+                if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source, pos))
                 {
                     pos--;
                     continue;
                 }
 
                 if (str[pos] == '(') {
-                    chain = MemberChain.ParseBackward(scintilla, pos - 1);
+                    chain = MemberChain.ParseBackward(source, pos - 1);
                     chain.getType(data,true);
                     
                     if (chain.LastFunction == null) return null;

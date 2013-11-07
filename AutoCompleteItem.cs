@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Intellua
 {
-    abstract class IAutoCompleteItem : IComparable
+    public abstract class IAutoCompleteItem : IComparable
     {
 		#region Methods (5) 
 

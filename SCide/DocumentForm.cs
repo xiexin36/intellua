@@ -193,7 +193,7 @@ namespace SCide
         }
 
         public void ParseFile() {
-            scintilla.parseFile(0);
+            scintilla.queueParseFile();
         }
     }
 }
