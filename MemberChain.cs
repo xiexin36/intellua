@@ -231,7 +231,7 @@ namespace Intellua
             bool isFuncion = false;
 
 
-            while (pos >= 0)
+            while (pos >= 0 &&pos < str.Length)
             {
                 char c = str[pos];
                 bool isComment = Parser.isComment(source, pos);

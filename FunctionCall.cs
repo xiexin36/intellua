@@ -91,7 +91,7 @@ namespace Intellua
             while (chain.Elements.Count != 0 && running) {
                 pos = source.getDecodedPos(chain.StartPos);
 
-                while (pos > 0) {
+                while (pos > 0 && pos <str.Length) {
                     if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source,pos)) {
                         pos--;
                         continue;
@@ -114,9 +114,10 @@ namespace Intellua
                 }
                 if (pos <= 0) return null;
                 chain = MemberChain.ParseBackward(source, pos);
+                if (chain.StartPos == -1) break;
             }
 
-            while (pos > 0) {
+            while (pos > 0 && pos <str.Length) {
                 if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source, pos))
                 {
                     pos--;
