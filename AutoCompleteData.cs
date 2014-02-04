@@ -54,8 +54,16 @@ namespace Intellua
 
         public void setParent(AutoCompleteData parent) {
             m_parent = parent;
-            m_typeManager.Parent = parent.Types;
-            m_variableManager.Parent = parent.Variables;
+            if (m_parent != null)
+            {
+                m_typeManager.Parent = parent.Types;
+                m_variableManager.Parent = parent.Variables;
+            }
+            else {
+                m_typeManager.Parent = null;
+                m_variableManager.Parent = null;
+            }
+
         }
 
         public AutoCompleteData getParent() {
