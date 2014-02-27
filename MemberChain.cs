@@ -91,6 +91,14 @@ namespace Intellua
             get { return m_lastFunction; }
             private set { m_lastFunction = value; }
         }
+
+        private static Byte[] SubArray(Byte[] data, int index, int length)
+        {
+            Byte[] result = new Byte[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
+        }
+
         public Type getType(AutoCompleteData data,bool lastAsFuncion =false)
         {
               if (Elements.Count == 0) return null;
@@ -215,10 +223,10 @@ namespace Intellua
             const string lbracket = "([{";
             const string rbracket = ")]}";
             const string operators = "=+-*/;";
-            string str = source.text;
+            Byte[] str = source.RawText;
             if (pos < 0)
             {
-                pos = source.getDecodedPos() - 1;
+                pos = source.getRawPos() - 1;
             }
             PaserState state = PaserState.searchWordEnd;
 
@@ -233,11 +241,16 @@ namespace Intellua
 
             while (pos >= 0 &&pos < str.Length)
             {
-                char c = str[pos];
+                if (str[pos] > 127)
+                {
+                    pos--;
+                    continue;
+                }
+                char c = Convert.ToChar(str[pos]);
                 bool isComment = Parser.isComment(source, pos);
                 bool isString = Parser.isString(source, pos);
-
-
+                
+                
 
                 switch (state)
                 {
@@ -247,13 +260,14 @@ namespace Intellua
                         {
                             wordStart = pos +1;
                             if (pos == 0 && char.IsLetterOrDigit(c)) wordStart = 0;
-                            string word = str.Substring(wordStart, wordEnd - wordStart + 1);
+                            Byte[] bword = SubArray(str, wordStart, wordEnd - wordStart + 1);
+                            string word = Encoding.UTF8.GetString(bword);//str.Substring(wordStart, wordEnd - wordStart + 1);
                             //word.Trim();
                             {
-                                int p = source.getRawPos(wordStart);
-                                rst.Elements.Insert(0, new Word(word, isFuncion,p));
+                                //int p = source.getRawPos(wordStart);
+                                rst.Elements.Insert(0, new Word(word, isFuncion, wordStart));
                                 isFuncion = false;
-                                rst.StartPos = p;
+                                rst.StartPos = pos;
                             }
                             state = PaserState.searchSeperator;
                         }
@@ -276,16 +290,16 @@ namespace Intellua
                         if (seperator.Contains(c)) {
                             if (rst.Elements.Count == 0)
                             {
-                                int p = source.getRawPos(pos);
-                                rst.Elements.Add(new Word("", false,p));
+                                //int p = source.getRawPos(pos);
+                                rst.Elements.Add(new Word("", false,pos));
                             }
                         }
 
                         if (rbracket.Contains(c))
                         {
                             if (rst.Elements.Count == 0) {
-                                int p = source.getRawPos(pos);
-                                rst.Elements.Add(new Word("",false,p));
+                                //int p = source.getRawPos(pos);
+                                rst.Elements.Add(new Word("",false,pos));
                             }
                             state = PaserState.searchBracket;
                             break;
@@ -349,7 +363,7 @@ namespace Intellua
             const string lbracket = "([{";
             const string rbracket = ")]}";
             const string operators = "=+-*/;";
-            string str = source.text;
+            Byte[] str = source.RawText;
 
             PaserState state = PaserState.searchWordStart;
 
@@ -362,7 +376,11 @@ namespace Intellua
 
             while (pos < str.Length)
             {
-                char c = str[pos];
+                if (str[pos] > 127) {
+                    pos++;
+                    continue;
+                }
+                char c = Convert.ToChar(str[pos]);
 
                 bool isComment = Parser.isComment(source, pos);
                 bool isString = Parser.isString(source, pos);
@@ -377,16 +395,19 @@ namespace Intellua
                             string word;
                             if (pos == str.Length - 1)
                             {
-                                word = str.Substring(wordStart, wordEnd - wordStart + 1);
+                                Byte[] bword = SubArray(str, wordStart, wordEnd - wordStart + 1);
+                                word = Encoding.UTF8.GetString(bword);
                             }
                             else
                             {
-                                word = str.Substring(wordStart, wordEnd - wordStart);
+                                Byte[] bword = SubArray(str, wordStart, wordEnd - wordStart);
+                                word = Encoding.UTF8.GetString(bword);
+                                //word = str.Substring(wordStart, wordEnd - wordStart);
                             }
                             word.Trim();
                             {
-                                int p = source.getRawPos(wordStart);
-                                rst.Elements.Add(new Word(word,false,p));
+                                //int p = wordStart;//source.getRawPos(wordStart);
+                                rst.Elements.Add(new Word(word,false,wordStart));
 
                                 rst.EndPos = pos;
                             }

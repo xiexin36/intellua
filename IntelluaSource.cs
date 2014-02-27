@@ -15,6 +15,12 @@ namespace Intellua
                 return m_intellua.Text;
             }
         }
+        public Byte[] RawText {
+            get {
+                if (m_copy) return rawText;
+                return m_intellua.RawText;
+            }
+        }
         string m_text;
         Byte[] styledText;
         Byte[] rawText;
@@ -25,7 +31,7 @@ namespace Intellua
             m_intellua = intellua;
             if (copy)
             {
-                m_text = intellua.Text;
+                m_text =intellua.Text;
                 rawText = intellua.RawText;
                 ScintillaNET.Range range = new ScintillaNET.Range(0, rawText.Length, intellua);
                 styledText = range.StyledText;
@@ -34,12 +40,21 @@ namespace Intellua
 
         public int getStyleAt(int p) {
             if (m_copy)
-                return styledText[getRawPos(p) * 2 + 1] & 0x1f;
+                return styledText[p * 2 + 1] & 0x1f;
             else
-                return m_intellua.Styles.GetStyleAt(getRawPos(p)) & 0x1f;
+                return m_intellua.Styles.GetStyleAt(p) & 0x1f;
         }
 
-        public int getRawPos(int p) {
+        public int getRawPos(int p = -1) {
+            if (p == -1) {
+                if (m_copy)
+                {
+                    return pos;
+                }
+                else {
+                    return m_intellua.CurrentPos;
+                }
+            }
             return Encoding.UTF8.GetByteCount(text.ToCharArray(), 0, p + 1) - 1;
         }
 
