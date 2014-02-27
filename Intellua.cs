@@ -90,17 +90,20 @@ namespace Intellua
         {
             const string lbracket = "([{";
             const string rbracket = ")]}";
-            int pos = getDecodedPos();
+            int pos = CurrentPos;
             int style = Styles.GetStyleAt(pos-1);
             int start, end;
             start = end = -1;
+
+            Byte[] str = RawText;
 
             Stack<char> stk = new Stack<char>();
 
             for (int p = pos-1; p >= 0; p--) {
                // if (Styles.GetStyleAt(p) != style) continue;
-                if (p >= Text.Length) continue;
-                char c = Text[p];
+                if (p >= str.Length) continue;
+                if (str[p] > 127) continue;
+                char c = Convert.ToChar(str[p]);
                 if (rbracket.Contains(c))
                 {
                     stk.Push(c);
@@ -121,10 +124,11 @@ namespace Intellua
             }
             stk.Clear();
 
-            for (int p = pos; p < Text.Length; p++)
+            for (int p = pos; p < str.Length; p++)
             {
                // if (Styles.GetStyleAt(p) != style) continue;
-                char c = Text[p];
+                if(str[p] > 127)continue;
+                char c = Convert.ToChar(str[p]);
                 if (lbracket.Contains(c)) 
                 {
                     stk.Push(c);
@@ -148,8 +152,8 @@ namespace Intellua
 
             if (start >= 0 && end >= 0)
             {
-                char c = Text[start];
-                char pc = Text[end];
+                char c = Convert.ToChar(str[start]);
+                char pc = Convert.ToChar(str[end]);
 
                 if ((pc != ')' && c == '(') ||
                         (pc != ']' && c == '[') ||
@@ -160,10 +164,10 @@ namespace Intellua
             }
 
             if (start != -1) {
-                start = Encoding.GetByteCount(Text.ToCharArray(), 0, start+1)-1;
+                //start = Encoding.GetByteCount(Text.ToCharArray(), 0, start+1)-1;
             }
             if (end != -1) {
-                end = Encoding.GetByteCount(Text.ToCharArray(), 0, end + 1) - 1;
+                //end = Encoding.GetByteCount(Text.ToCharArray(), 0, end + 1) - 1;
             }
 
             if (start == -1)
@@ -385,7 +389,7 @@ namespace Intellua
 
         private void ShowCalltip()
         {
-            FunctionCall fc = FunctionCall.Parse(m_source, m_autoCompleteData, getDecodedPos() - 1);
+            FunctionCall fc = FunctionCall.Parse(m_source, m_autoCompleteData, RawText.Length - 1);
             if (fc != null)
             {
                 m_calltipFuncion = fc;

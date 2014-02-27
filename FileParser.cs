@@ -19,12 +19,12 @@ namespace Intellua
         {
 
             int pos = 0;
-            string str = m_source.text;
+            Byte[] str = m_source.RawText;
 
            
             for (; pos < str.Length; pos++)
             {
-                char c = str[pos];
+                char c = Convert.ToChar(str[pos]);
 
                 //search for assignment operator
 
@@ -36,11 +36,11 @@ namespace Intellua
                 if (c != '=') continue;
                 if (pos > 0)
                 {
-                    if (str[pos - 1] == '=') continue;
+                    if (Convert.ToChar(str[pos - 1]) == '=') continue;
                 }
                 if (pos < str.Length - 1)
                 {
-                    if (str[pos + 1] == '=') continue;
+                    if (Convert.ToChar(str[pos + 1]) == '=') continue;
                 }
                 MemberChain v = MemberChain.ParseBackward(m_source, pos - 1);
                 if (v.Elements.Count > 1 || v.Elements.Count == 0) continue;

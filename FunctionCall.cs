@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-
+using System;
 namespace Intellua
 {
     class FunctionCall
@@ -64,10 +64,10 @@ namespace Intellua
             VariableManager variables = data.Variables;
             const string luaOperators = "+-*/^%<>=~";
             int paramIndex = 0;
-            string str = source.text;
+            Byte[] str = source.RawText;
             bool running = true;
             while (pos > 0) {
-                if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source, pos))
+                if (char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
                 {
                     pos--;
                     continue;
@@ -92,7 +92,8 @@ namespace Intellua
                 pos = source.getDecodedPos(chain.StartPos);
 
                 while (pos > 0 && pos <str.Length) {
-                    if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source,pos)) {
+                    if (char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
+                    {
                         pos--;
                         continue;
                     }
@@ -101,7 +102,8 @@ namespace Intellua
                         pos--;
                         break;
                     }
-                    if(luaOperators.Contains(str[pos])){
+                    if (luaOperators.Contains(Convert.ToChar(str[pos])))
+                    {
                         pos--;
                         break;
                     }
@@ -118,7 +120,7 @@ namespace Intellua
             }
 
             while (pos > 0 && pos <str.Length) {
-                if (char.IsWhiteSpace(str[pos]) || !Parser.isCode(source, pos))
+                if (char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
                 {
                     pos--;
                     continue;
