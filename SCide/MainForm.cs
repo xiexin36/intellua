@@ -672,6 +672,15 @@ namespace SCide
 
 
         #endregion Constructors
+
+        private void reloadClassDefinitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Program.data = new Intellua.AutoCompleteData("classdef.xml");
+            foreach(DocumentForm d in dockPanel.Documents){
+                d.ReloadClassDef();
+            }
+
+        }
     }
 
     class Service :IService1 {

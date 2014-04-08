@@ -67,18 +67,19 @@ namespace Intellua
             Byte[] str = source.RawText;
             bool running = true;
             while (pos > 0) {
-                if (char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
+                char c = Convert.ToChar(str[pos]);
+                if ( c == 0 || char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
                 {
                     pos--;
                     continue;
                 }
-                if (str[pos] == ',')
+                if (c == ',')
                 {
                     paramIndex++;
                     pos--;
                     break;
                 }
-                if (str[pos] == '(')
+                if (c == '(')
                 {
                     running = false;
                     break;
@@ -89,7 +90,7 @@ namespace Intellua
             MemberChain chain = MemberChain.ParseBackward(source,pos);
             
             while (chain.Elements.Count != 0 && running) {
-                pos = source.getDecodedPos(chain.StartPos);
+                pos =chain.StartPos;
 
                 while (pos > 0 && pos <str.Length) {
                     if (char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))

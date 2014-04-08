@@ -63,7 +63,7 @@
             // 
             // saveFileDialog
             // 
-            this.saveFileDialog.Filter = "Lua (*.lua) | *.lua | All Files (*.*)|*.*";
+            this.saveFileDialog.Filter = "Lua (*.lua) |*.lua| All Files (*.*)|*.*";
             // 
             // DocumentForm
             // 

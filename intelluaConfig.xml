@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<config>
+<include_paths>
+  <path>include/</path>  
+</include_paths>
+<require_extensions>
+  <ext>.lua</ext>
+</require_extensions>
+</config>

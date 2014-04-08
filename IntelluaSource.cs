@@ -21,14 +21,38 @@ namespace Intellua
                 return m_intellua.RawText;
             }
         }
+        public string FilePath {
+            get {
+                return m_filepath;
+            }
+        }
         string m_text;
+        string m_filepath;
         Byte[] styledText;
         Byte[] rawText;
         public Intellua m_intellua;
+
+        public IntelluaSource(string filename,Intellua parent) {
+            m_copy = true;
+            pos = 0;
+            m_intellua = new Intellua();
+            m_intellua.Parse = false;
+            m_intellua.AutoCompleteData.setParent(parent.AutoCompleteData.getParent());
+            m_intellua.Text = System.IO.File.ReadAllText(filename);
+            m_intellua.FilePath = filename;
+            m_filepath = m_intellua.FilePath;
+
+            m_text = m_intellua.Text;
+            rawText = m_intellua.RawText;
+            ScintillaNET.Range range = new ScintillaNET.Range(0, rawText.Length, m_intellua);
+            styledText = range.StyledText;
+        }
+
         public IntelluaSource(Intellua intellua,bool copy = false) {
             m_copy = copy;
             pos = intellua.CurrentPos;
             m_intellua = intellua;
+            m_filepath = m_intellua.FilePath;
             if (copy)
             {
                 m_text =intellua.Text;

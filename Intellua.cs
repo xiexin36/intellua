@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-
+using System.Text.RegularExpressions;
 
 namespace Intellua
 {
@@ -31,6 +31,18 @@ namespace Intellua
             m_autoCompleteData.setParent(parent);
         }
         IntelluaSource m_source;
+        bool m_parse = true;
+        public bool Parse
+        {
+            get { return m_parse; }
+            set { m_parse = value; }
+        }
+        private string m_filePath = "";
+        public string FilePath
+        {
+            get { return m_filePath; }
+            set { m_filePath = value; }
+        }
         public Intellua()
         {
             this.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.intellua_AutoCompleteAccepted);
@@ -88,6 +100,8 @@ namespace Intellua
         }
         void Intellua_SelectionChanged(object sender, EventArgs e)
         {
+            if (!Parse) return;
+            ShowCalltip();
             const string lbracket = "([{";
             const string rbracket = ")]}";
             int pos = CurrentPos;
@@ -241,6 +255,8 @@ namespace Intellua
             IntelluaSource source = new IntelluaSource(this, true);
             m_worker = new System.ComponentModel.BackgroundWorker();
             FileParser fp = new FileParser(source);
+            /*fp.doWork(this,new System.ComponentModel.DoWorkEventArgs(0));
+            m_autoCompleteData = fp.result;*/
             m_worker.DoWork += new System.ComponentModel.DoWorkEventHandler(fp.doWork);
             m_worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(parseFileDone);
             m_worker.RunWorkerAsync();
@@ -256,6 +272,7 @@ namespace Intellua
         }
 
         public void queueParseFile() {
+            if (!Parse) return;
             if (m_parsePending) return;
 
             if(m_worker != null && m_worker.IsBusy){
@@ -305,7 +322,7 @@ namespace Intellua
 
         private void intellua_CharAdded(object sender, ScintillaNET.CharAddedEventArgs e)
         {
-            ShowCalltip();
+            //ShowCalltip();
             const string brackets = "()[]{}";
             const string newline = "\r\n";
             if (newline.Contains(e.Ch))
@@ -322,14 +339,17 @@ namespace Intellua
                 
                 return;
             }
-            if (brackets.Contains(e.Ch)) return;
 
+            if (!Parse) return;
+            if (brackets.Contains(e.Ch)) return;
+            
             MemberChain chain = MemberChain.ParseBackward(m_source);
             if (chain.Elements.Count == 1) {
                 string word = chain.Elements[0].Name;
                 if (char.IsLetterOrDigit(e.Ch) && word.Length >= 3)
                 {
                     List<IAutoCompleteItem> list = m_autoCompleteData.Variables.getList(word);
+                    m_autoCompleteData.Keywords.appendList(list, word);
                     if (list.Count > 0)
                     {
                         ShowAutoComplete(word.Length, list);
@@ -357,6 +377,7 @@ namespace Intellua
 
         private void intellua_TextDeleted(object sender, ScintillaNET.TextModifiedEventArgs e)
         {
+
             queueParseFile();
         }
 
@@ -389,7 +410,7 @@ namespace Intellua
 
         private void ShowCalltip()
         {
-            FunctionCall fc = FunctionCall.Parse(m_source, m_autoCompleteData, RawText.Length - 1);
+            FunctionCall fc = FunctionCall.Parse(m_source, m_autoCompleteData, CurrentPos);
             if (fc != null)
             {
                 m_calltipFuncion = fc;
@@ -401,6 +422,7 @@ namespace Intellua
             }
         }
 
+        
         
 		#endregion Methods 
 

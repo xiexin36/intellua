@@ -9,6 +9,7 @@ namespace Intellua
     {
         private TypeManager m_typeManager;
         private VariableManager m_variableManager;
+        private KeywordManager m_keywords;
 
         internal TypeManager Types {
             get {
@@ -22,9 +23,20 @@ namespace Intellua
             }
         }
 
+        internal KeywordManager Keywords
+        {
+            get {
+                return m_keywords;
+            }
+        }
+        void init() {
+            m_typeManager.Requires = Requires;
+            m_variableManager.Requires = Requires;
+        }
         public AutoCompleteData() {
             m_typeManager = new TypeManager();
             m_variableManager = new VariableManager();
+            m_keywords = new KeywordManager();
             m_typeManager.add(new Type("object"));
             m_typeManager.add(new Type("int"));
             m_typeManager.add(new Type("void"));
@@ -38,17 +50,48 @@ namespace Intellua
             m_typeManager.add(new Type("function"));
             m_typeManager.add(new Type("thread"));
             m_typeManager.add(new Type("userdata"));
+
+            m_keywords.add(new Keyword("break"));
+            m_keywords.add(new Keyword("else"));
+            m_keywords.add(new Keyword("elseif"));
+            m_keywords.add(new Keyword("false"));
+            m_keywords.add(new Keyword("function"));
+            m_keywords.add(new Keyword("local"));
+            m_keywords.add(new Keyword("repeat"));
+            m_keywords.add(new Keyword("return"));
+            m_keywords.add(new Keyword("then"));
+            m_keywords.add(new Keyword("true"));
+            m_keywords.add(new Keyword("until"));
+            m_keywords.add(new Keyword("while"));
+            init();
         }
 
         public AutoCompleteData(AutoCompleteData parent) {
             m_typeManager = new TypeManager(parent.Types);
             m_variableManager = new VariableManager(parent.Variables);
+            m_keywords = new KeywordManager();
+
+            m_keywords.add(new Keyword("break"));
+            m_keywords.add(new Keyword("else"));
+            m_keywords.add(new Keyword("elseif"));
+            m_keywords.add(new Keyword("false"));
+            m_keywords.add(new Keyword("function"));
+            m_keywords.add(new Keyword("local"));
+            m_keywords.add(new Keyword("repeat"));
+            m_keywords.add(new Keyword("return"));
+            m_keywords.add(new Keyword("then"));
+            m_keywords.add(new Keyword("true"));
+            m_keywords.add(new Keyword("until"));
+            m_keywords.add(new Keyword("while"));
+
+            init();
         }
 
         public AutoCompleteData(string filename) {
             AutoCompleteData rst = DoxygenXMLParser.Parse(filename);
             m_typeManager = rst.Types;
             m_variableManager = rst.Variables;
+            init();
         }
         AutoCompleteData m_parent;
 
@@ -65,7 +108,12 @@ namespace Intellua
             }
 
         }
-
+        List<AutoCompleteData> m_requires = new List<AutoCompleteData>();
+        public List<AutoCompleteData> Requires
+        {
+            get { return m_requires; }
+            set { m_requires = value; }
+        }
         public AutoCompleteData getParent() {
             return m_parent;
         }
