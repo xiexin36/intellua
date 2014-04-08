@@ -31,7 +31,7 @@ namespace Intellua
 		#endregion Constructors 
 
 		#region Properties (8) 
-
+        
         public Type Class
         {
             get { return m_Class; }
@@ -171,7 +171,12 @@ namespace Intellua
             }
         }
 		#endregion Fields 
-
+        List<AutoCompleteData> m_requires;
+        public List<AutoCompleteData> Requires
+        {
+            get { return m_requires; }
+            set { m_requires = value; }
+        }
 		#region Constructors (1) 
 
         public VariableManager() { 
@@ -217,13 +222,29 @@ namespace Intellua
         }
 
         public void add(Function func) {
-            m_globalFunctions[func.Name] = func;
+            if (m_globalFunctions.ContainsKey(func.Name))
+            {
+                m_globalFunctions[func.Name].Param.Add(func.Param[0]);
+                m_globalFunctions[func.Name].Desc.Add(func.Desc[0]);
+            }
+            else
+            {
+                m_globalFunctions[func.Name] = func;
+            }
         }
 
         public Function getFunction(string name)
         {
+            
+
             if (m_globalFunctions.ContainsKey(name))
                 return m_globalFunctions[name];
+
+            foreach (AutoCompleteData ac in Requires) {
+                var rst = ac.Variables.getFunction(name);
+                if (rst != null) return rst;
+            }
+
             if (m_parent!= null)
                 return m_parent.getFunction(name);
             return null;
@@ -236,6 +257,9 @@ namespace Intellua
                     rst.Add(var);
                 }
             }
+
+            
+
             foreach(Function func in GlobalFunctions.Values){
                 if(func.Name.StartsWith(partialName,true,null)){
                     rst.Add(func);
@@ -247,6 +271,13 @@ namespace Intellua
                     rst.Add(item);
                 }
             }
+
+            foreach (AutoCompleteData ac in Requires)
+            {
+                var rrst = ac.Variables.getList(partialName);
+                rst.AddRange(rrst);
+            }
+
             rst.Sort();
             return rst;
         }
@@ -265,6 +296,13 @@ namespace Intellua
                 Variable rst = s.getVariable(name, pos);
                 if (rst != null) return rst;
             }
+
+            foreach (AutoCompleteData ac in Requires)
+            {
+                var rst = ac.Variables.getVariable(name,-1);
+                if (rst != null) return rst;
+            }
+
             return getVariable(name);
         }
         //purge all variables affected by changes made after pos

@@ -16,8 +16,6 @@ namespace SCide
     {
         #region Fields
 
-        private string _filePath;
-        
         // Indicates that calls to the StyleNeeded event
         // should use the custom INI lexer
         private bool _iniLexer;
@@ -96,10 +94,10 @@ namespace SCide
 
         public bool Save()
         {
-            if (String.IsNullOrEmpty(_filePath))
+            if (String.IsNullOrEmpty(FilePath))
                 return SaveAs();
 
-            return Save(_filePath);
+            return Save(FilePath);
         }
 
 
@@ -110,6 +108,8 @@ namespace SCide
                 bw.Write(scintilla.RawText, 0, scintilla.RawText.Length - 1); // Omit trailing NULL
 
             scintilla.Modified = false;
+
+            Text = Path.GetFileName(filePath);
             return true;
         }
 
@@ -118,8 +118,8 @@ namespace SCide
         {
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                _filePath = saveFileDialog.FileName;
-                return Save(_filePath);
+                FilePath = saveFileDialog.FileName;
+                return Save(FilePath);
             }
 
             return false;
@@ -145,8 +145,8 @@ namespace SCide
 
         public string FilePath
         {
-            get { return _filePath; }
-            set { _filePath = value; }
+            get { return scintilla.FilePath; }
+            set { scintilla.FilePath = value;}
         }
 
 
@@ -186,6 +186,10 @@ namespace SCide
         }
 
         #endregion Constructors
+
+        public void ReloadClassDef(){
+            scintilla.setParent(Program.data);
+        }
 
         private void DocumentForm_Load(object sender, EventArgs e)
         {

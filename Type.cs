@@ -151,6 +151,12 @@ namespace Intellua
         private Dictionary<string, Type> m_types;
         private Dictionary<string, Type> m_dtypes = new Dictionary<string, Type>();
         private TypeManager m_parent;
+        List<AutoCompleteData> m_requires;
+        public List<AutoCompleteData> Requires
+        {
+            get { return m_requires; }
+            set { m_requires = value; }
+        }
 		#endregion Fields 
         public TypeManager Parent
         {
@@ -202,6 +208,12 @@ namespace Intellua
             if (name == null) return m_nullType;
             if(m_types.ContainsKey(name)) return m_types[name];
             if (m_dtypes.ContainsKey(name)) return m_dtypes[name];
+
+            foreach (AutoCompleteData ac in Requires) {
+                var rst = ac.Types.get(name);
+                if (rst!=null) return rst;
+            }
+
             if (m_parent != null) return m_parent.get(name);
             return m_nullType;
         }

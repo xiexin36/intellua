@@ -55,6 +55,7 @@
     <Compile Include="AutoCompleteItem.cs" />
     <Compile Include="FileParser.cs" />
     <Compile Include="IntelluaSource.cs" />
+    <Compile Include="Keyword.cs" />
     <Compile Include="MemberChain.cs" />
     <Compile Include="DoxygenXMLParser.cs" />
     <Compile Include="Function.cs" />
@@ -81,8 +82,10 @@
     </Compile>
     <EmbeddedResource Include="ToolTip.resx">
       <DependentUpon>ToolTip.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -97,6 +100,9 @@
     <EmbeddedResource Include="function.png" />
     <EmbeddedResource Include="member.png" />
     <EmbeddedResource Include="method.png" />
+    <Content Include="intelluaConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SciLexer.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
