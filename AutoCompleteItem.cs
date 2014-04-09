@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Intellua
 {
     public abstract class IAutoCompleteItem : IComparable
     {
-		#region Methods (5) 
+        #region Methods (5)
 
-		// Public Methods (5) 
+        // Public Methods (5) 
 
         public Int32 CompareTo(IAutoCompleteItem other)
         {
@@ -21,7 +19,8 @@ namespace Intellua
             IAutoCompleteItem item = obj as IAutoCompleteItem;
             if (item != null)
                 return CompareTo(item);
-            else {
+            else
+            {
                 throw new ArgumentException("Object is not a IAutoCompleteItem");
             }
         }
@@ -32,13 +31,14 @@ namespace Intellua
 
         public abstract string getToolTipString();
 
-		#endregion Methods 
+        #endregion Methods
     }
 
-    class AutoCompleteItemComparer : EqualityComparer<IAutoCompleteItem> {
-		#region Methods (2) 
+    internal class AutoCompleteItemComparer : EqualityComparer<IAutoCompleteItem>
+    {
+        #region Methods (2)
 
-		// Public Methods (2) 
+        // Public Methods (2) 
 
         public override bool Equals(IAutoCompleteItem b1, IAutoCompleteItem b2)
         {
@@ -57,6 +57,6 @@ namespace Intellua
             return item.getName().GetHashCode();
         }
 
-		#endregion Methods 
+        #endregion Methods
     }
 }

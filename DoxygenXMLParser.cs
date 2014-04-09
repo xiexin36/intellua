@@ -1,31 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
+
 namespace Intellua
 {
-    class DoxygenXMLParser
+    internal class DoxygenXMLParser
     {
-		#region Methods (1) 
+        #region Methods (1)
 
-		// Public Methods (1) 
+        // Public Methods (1) 
 
         public static AutoCompleteData Parse(string filename)
         {
-
             XDocument doc = XDocument.Load(AppDomain.CurrentDomain.BaseDirectory + filename);
             AutoCompleteData autoCompleteData = new AutoCompleteData();
             //scan all classes first.
             foreach (XElement node in doc.Descendants("compounddef"))
             {
-                if (node.Attribute("kind").Value == "class" || node.Attribute("kind").Value == "namespace") 
+                if (node.Attribute("kind").Value == "class" || node.Attribute("kind").Value == "namespace")
                 {
                     string name = node.Element("compoundname").Value;
                     string id = node.Attribute("id").Value;
 
-                    if (name.Contains(':')) {
+                    if (name.Contains(':'))
+                    {
                         int pos = name.LastIndexOf(':');
                         name = name.Substring(pos + 1);
                     }
@@ -34,7 +32,8 @@ namespace Intellua
                     t.DisplayName = name;
 
                     //System.Diagnostics.Debug.Print("Type added: " + name);
-                    if (name.StartsWith("__")) {
+                    if (name.StartsWith("__"))
+                    {
                         int pos = name.LastIndexOf('_');
                         t.DisplayName = name.Substring(pos + 1).ToLower();
                         t.HideDeclare = true;
@@ -66,8 +65,10 @@ namespace Intellua
                     string id = node.Attribute("id").Value;
                     Type t = autoCompleteData.Types.get(id);
 
-                    foreach (XElement inner in node.Descendants("innerclass")) {
-                        if (inner.Attribute("refid") != null) {
+                    foreach (XElement inner in node.Descendants("innerclass"))
+                    {
+                        if (inner.Attribute("refid") != null)
+                        {
                             Type i = autoCompleteData.Types.get(inner.Attribute("refid").Value);
                             i.OuterClass = t;
                         }
@@ -93,7 +94,8 @@ namespace Intellua
                     {
                         autoCompleteData.Variables.add(var);
                     }
-                    else {
+                    else
+                    {
                         t.OuterClass.addMember(var);
                     }
                 }
@@ -121,9 +123,8 @@ namespace Intellua
                             string memberName = member.Element("name").Value;
                             string memberType = member.Element("type").Value;
                             string memberTypeID = null;
-                            if(member.Element("type").Element("ref") !=null)
+                            if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
-
 
                             Type mt = autoCompleteData.Types.get(memberTypeID);
                             Variable var = new Variable(memberName);
@@ -147,8 +148,8 @@ namespace Intellua
                             if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
                             Function f = new Function(memberName);
-                            f.Param.Add( member.Element("argsstring").Value);
-                            f.Desc.Add( member.Element("briefdescription").Value); 
+                            f.Param.Add(member.Element("argsstring").Value);
+                            f.Desc.Add(member.Element("briefdescription").Value);
                             if (memberName == name)
                             {
                                 f.ReturnType = t;
@@ -161,12 +162,13 @@ namespace Intellua
                             }
                             else
                             {
-                                if (member.Attribute("static").Value == "yes") {
+                                if (member.Attribute("static").Value == "yes")
+                                {
                                     f.Static = true;
                                 }
                                 if (isNamespace) f.Static = true;
                                 Type mt = autoCompleteData.Types.get(memberTypeID);
-                                
+
                                 f.ReturnType = mt;
 
                                 t.addMethod(f);
@@ -177,7 +179,8 @@ namespace Intellua
                         {
                             string eid = member.Attribute("id").Value;
                             Type e = autoCompleteData.Types.get(eid);
-                            foreach (XElement evalue in member.Descendants("enumvalue")) {
+                            foreach (XElement evalue in member.Descendants("enumvalue"))
+                            {
                                 Variable var = new Variable(evalue.Element("name").Value);
                                 var.IsStatic = true;
                                 var.Type = autoCompleteData.Types.NullType;
@@ -187,8 +190,6 @@ namespace Intellua
                             }
                         }
                     }
-
-
                 }
                 else if (node.Attribute("kind").Value == "file")
                 {
@@ -218,7 +219,7 @@ namespace Intellua
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
                             Type mt = autoCompleteData.Types.get(memberTypeID);
                             Function f = new Function(memberName);
-                            f.Param.Add( member.Element("argsstring").Value);
+                            f.Param.Add(member.Element("argsstring").Value);
                             f.ReturnType = mt;
                             f.Desc.Add(member.Element("briefdescription").Value);
                             f.Static = true;
@@ -248,6 +249,6 @@ namespace Intellua
             return autoCompleteData;
         }
 
-		#endregion Methods 
+        #endregion Methods
     }
 }

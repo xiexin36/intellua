@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Intellua
 {
@@ -28,49 +27,32 @@ namespace Intellua
         OP_Minus,
         OP_Plus,
     };
-    class DeclToken {
-        public string data;
 
+    internal class DeclToken
+    {
+        public string Data;
 
-        public DeclTokenType type;
+        public DeclTokenType Type;
 
-        public DeclToken(string _data, DeclTokenType _type)
+        public DeclToken(string data, DeclTokenType type)
         {
-            data = _data;
-            type = _type;
+            Data = data;
+            Type = type;
         }
     }
 
-    class TupleList<T1, T2> : List<Tuple<T1, T2>>
+    internal class DeclTokenizer
     {
-        public void Add(T1 item, T2 item2)
-        {
-            Add(new Tuple<T1, T2>(item, item2));
-        }
-    }
-
-    class DeclTokenizer
-    {
-        List<DeclToken> result = new List<DeclToken>();
-        public List<DeclToken> Result{
-            get{
-                return result;
-            }
-        }
-        string data;
-        public DeclTokenizer(string str) {
-            data = str + EOF;
-            parse();    
-        }
-        static string IdentifierHeadChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"";
-        static string IdentifierChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"1234567890";
-        static string PPNumber = "01234567890.+-xXabcdefABCDEF";
-        static TupleList<string, DeclTokenType> Kws = new TupleList<string, DeclTokenType>
+        private static string EOF = "\0";
+        private static string IdentifierChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"1234567890";
+        private static string IdentifierHeadChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"";
+        private static TupleList<string, DeclTokenType> Keywords = new TupleList<string, DeclTokenType>
         {
             {"static",DeclTokenType.KW_Static},
             {"class",DeclTokenType.KW_Class},
         };
-        static TupleList<string, DeclTokenType> Ops = new TupleList<string, DeclTokenType>
+
+        private static TupleList<string, DeclTokenType> Operands = new TupleList<string, DeclTokenType>
         {
             {"(",DeclTokenType.OP_LParen},
             {")",DeclTokenType.OP_RParen},
@@ -87,8 +69,21 @@ namespace Intellua
             {"-",DeclTokenType.OP_Minus},
             {"+",DeclTokenType.OP_Plus},
         };
-        
-        enum State
+
+        private static string PPNumber = "01234567890.+-xXabcdefABCDEF";
+        private string m_data;
+        private int m_pos;
+        private List<DeclToken> m_result = new List<DeclToken>();
+
+        private State m_state;
+
+        public DeclTokenizer(string str)
+        {
+            m_data = str + EOF;
+            parse();
+        }
+
+        private enum State
         {
             Start,
             Identifier,
@@ -96,144 +91,162 @@ namespace Intellua
             BlockComment,
             Number,
         };
-        State state;
-        int pos;
-        bool matchChar(string str){
-            return (str.Contains(data[pos]));
-        }
-        bool match(string str) {
-            if (pos + str.Length > data.Length) return false;
-            for (int i = 0; i < str.Length; i++) {
-                if (data[pos + i] != str[i]) return false;
+
+        public List<DeclToken> Result
+        {
+            get
+            {
+                return m_result;
             }
-            return true;
         }
-        static string EOF = "\0";
-
-        char peek() {
-            return data[pos];
-        }
-
-        void addComment(string str) { 
-            if(str.Length == 0 || str[0] != '!') return;
+        private void addComment(string str)
+        {
+            if (str.Length == 0 || str[0] != '!') return;
             str = str.Substring(1);
             str = str.Trim();
             str.Replace("\r", "");
             str.Replace("\n", "");
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ");
-            result.Add(new DeclToken(str, DeclTokenType.Comment));
+            m_result.Add(new DeclToken(str, DeclTokenType.Comment));
         }
 
-        void parse()
+        private bool match(string str)
         {
-            state = State.Start;
-            pos = 0;
+            if (m_pos + str.Length > m_data.Length) return false;
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (m_data[m_pos + i] != str[i]) return false;
+            }
+            return true;
+        }
+
+        private bool matchChar(string str)
+        {
+            return (str.Contains(m_data[m_pos]));
+        }
+        private void parse()
+        {
+            m_state = State.Start;
+            m_pos = 0;
             int sequenceStart = -1;
             bool running = true;
-            
+
             int angleBracketLevel = 0;
 
-            while (running) {
-                switch (state) { 
+            while (running)
+            {
+                switch (m_state)
+                {
                     case State.Start:
-                        if(matchChar(EOF)){
+                        if (matchChar(EOF))
+                        {
                             running = false;
                             continue;
                         }
 
-                        if(matchChar(IdentifierHeadChars)){
-                            state = State.Identifier;
-                            sequenceStart = pos;
+                        if (matchChar(IdentifierHeadChars))
+                        {
+                            m_state = State.Identifier;
+                            sequenceStart = m_pos;
                             continue;
                         }
-                        if (match("//")) {
-                            pos += 2;
-                            sequenceStart = pos;
-                            state = State.LineComment;
+                        if (match("//"))
+                        {
+                            m_pos += 2;
+                            sequenceStart = m_pos;
+                            m_state = State.LineComment;
                             continue;
                         }
                         if (match("/*"))
                         {
-                            pos += 2;
-                            sequenceStart = pos;
-                            state = State.BlockComment;
+                            m_pos += 2;
+                            sequenceStart = m_pos;
+                            m_state = State.BlockComment;
                             continue;
                         }
                         if (Char.IsDigit(peek()))
                         {
-                            sequenceStart = pos;
-                            state = State.Number;
-                            continue;
-                        }
-                        
-
-                        if (Char.IsWhiteSpace(peek())) {
-                            pos++;
+                            sequenceStart = m_pos;
+                            m_state = State.Number;
                             continue;
                         }
 
-                        foreach (Tuple<string, DeclTokenType> op in Ops) {
-                            if (match(op.Item1)) {
-                                pos += op.Item1.Length -1;
-                                result.Add(new DeclToken(op.Item1, op.Item2));
+                        if (Char.IsWhiteSpace(peek()))
+                        {
+                            m_pos++;
+                            continue;
+                        }
+
+                        foreach (Tuple<string, DeclTokenType> op in Operands)
+                        {
+                            if (match(op.Item1))
+                            {
+                                m_pos += op.Item1.Length - 1;
+                                m_result.Add(new DeclToken(op.Item1, op.Item2));
                                 break;
                             }
                         }
 
-                        pos++;
+                        m_pos++;
                         continue;
 
-
                     case State.Identifier:
-                        if (matchChar(IdentifierChars)) {
-                            pos++;
+                        if (matchChar(IdentifierChars))
+                        {
+                            m_pos++;
                             continue;
                         }
-                        if (match("<")) {
+                        if (match("<"))
+                        {
                             angleBracketLevel++;
-                            pos++;
+                            m_pos++;
                             continue;
                         }
-                        if (angleBracketLevel > 0) {
-                            if (match(">")) {
+                        if (angleBracketLevel > 0)
+                        {
+                            if (match(">"))
+                            {
                                 angleBracketLevel--;
                             }
-                            pos++;
+                            m_pos++;
                             continue;
                         }
 
-                        string str = data.Substring(sequenceStart, pos - sequenceStart);
+                        string str = m_data.Substring(sequenceStart, m_pos - sequenceStart);
                         bool found = false;
-                        foreach (Tuple<string, DeclTokenType> kw in Kws)
+                        foreach (Tuple<string, DeclTokenType> kw in Keywords)
                         {
-                            if (kw.Item1 == str) {
-                                result.Add(new DeclToken(kw.Item1, kw.Item2));
-                                state = State.Start;
+                            if (kw.Item1 == str)
+                            {
+                                m_result.Add(new DeclToken(kw.Item1, kw.Item2));
+                                m_state = State.Start;
                                 found = true;
                                 break;
                             }
                         }
-                        if (found) {
+                        if (found)
+                        {
                             break;
                         }
 
-                        result.Add(new DeclToken(str,DeclTokenType.Identifier));
-                        state = State.Start;
+                        m_result.Add(new DeclToken(str, DeclTokenType.Identifier));
+                        m_state = State.Start;
                         break;
 
                     case State.LineComment:
                         if (match("\n") || match(EOF))
                         {
-                            addComment(data.Substring(sequenceStart, pos - sequenceStart));
-                            
+                            addComment(m_data.Substring(sequenceStart, m_pos - sequenceStart));
+
                             if (match("\n"))
                             {
-                                pos++;
+                                m_pos++;
                             }
-                            state = State.Start;
+                            m_state = State.Start;
                         }
-                        else {
-                            pos++;
+                        else
+                        {
+                            m_pos++;
                             continue;
                         }
                         break;
@@ -241,45 +254,58 @@ namespace Intellua
                     case State.BlockComment:
                         if (match("*/") || match(EOF))
                         {
-                            addComment(data.Substring(sequenceStart, pos - sequenceStart));
+                            addComment(m_data.Substring(sequenceStart, m_pos - sequenceStart));
                             if (match("*/"))
                             {
-                                pos+=2;
+                                m_pos += 2;
                             }
-                            state = State.Start;
+                            m_state = State.Start;
                         }
                         else
                         {
-                            pos++;
+                            m_pos++;
                             continue;
                         }
                         break;
 
                     case State.Number:
-                        if (matchChar(PPNumber)) {
-                            pos++;
+                        if (matchChar(PPNumber))
+                        {
+                            m_pos++;
                             continue;
                         }
-                        if(result.Count >0){
-                            DeclToken last = result[result.Count-1];
-                            if (last.type == DeclTokenType.OP_Minus || last.type == DeclTokenType.OP_Plus)
+                        if (m_result.Count > 0)
+                        {
+                            DeclToken last = m_result[m_result.Count - 1];
+                            if (last.Type == DeclTokenType.OP_Minus || last.Type == DeclTokenType.OP_Plus)
                             {
-                                string sign = last.data;
-                                result.RemoveAt(result.Count - 1);
-                                result.Add(new DeclToken(sign + data.Substring(sequenceStart, pos - sequenceStart), DeclTokenType.Number));
-                                state = State.Start;
+                                string sign = last.Data;
+                                m_result.RemoveAt(m_result.Count - 1);
+                                m_result.Add(new DeclToken(sign + m_data.Substring(sequenceStart, m_pos - sequenceStart), DeclTokenType.Number));
+                                m_state = State.Start;
                                 continue;
                             }
                         }
-                        result.Add(new DeclToken(data.Substring(sequenceStart, pos - sequenceStart), DeclTokenType.Number));
-                        state = State.Start;
+                        m_result.Add(new DeclToken(m_data.Substring(sequenceStart, m_pos - sequenceStart), DeclTokenType.Number));
+                        m_state = State.Start;
                         break;
-
-
                 }
             }
 
-            result.Add(new DeclToken("", DeclTokenType.EOF));
+            m_result.Add(new DeclToken("", DeclTokenType.EOF));
+        }
+
+        private char peek()
+        {
+            return m_data[m_pos];
+        }
+    }
+
+    internal class TupleList<T1, T2> : List<Tuple<T1, T2>>
+    {
+        public void Add(T1 item, T2 item2)
+        {
+            Add(new Tuple<T1, T2>(item, item2));
         }
     }
 }

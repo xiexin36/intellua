@@ -1,154 +1,176 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Intellua
 {
-    class DeclString
+    internal class DeclString
     {
-        enum State
+        private string m_data;
+
+        private int m_declStart;
+
+        private int m_longCommentLevel;
+
+        private int m_pos;
+
+        private string m_result = "";
+
+        private State m_state;
+
+        public DeclString(string str)
+        {
+            m_data = str;
+            m_state = State.SearchCommentStart;
+            m_pos = 0;
+            parse();
+        }
+
+        private enum State
         {
             SearchCommentStart,
             SearchCommentEnd
         };
-
-        State state;
-        int pos;
-        string data;
-        string result = "";
-        
-        int longCommentLevel;
-        int declStart;
-        public String Result {
-            get {
-                return result;
+        public String Result
+        {
+            get
+            {
+                return m_result;
             }
         }
-
-        public DeclString(string str) {
-            data = str;
-            state = State.SearchCommentStart;
-            pos = 0;
-            parse();
-        }
-
-        bool match(string str) {
-            if (pos + str.Length > data.Length) return false;
-            for (int i = 0; i < str.Length; i++) {
-                if (data[pos + i] != str[i]) return false;
+        private bool match(string str)
+        {
+            if (m_pos + str.Length > m_data.Length) return false;
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (m_data[m_pos + i] != str[i]) return false;
             }
             return true;
         }
 
-        void parse() {
+        private void parse()
+        {
             bool running = true;
             while (running)
             {
-                switch (state) {
-                    case State.SearchCommentStart: {
-                        if (pos >= data.Length) {
-                            running = false;
-                            continue;
-                        }
-
-                        if (!match("--")) {
-                            pos++;
-                            continue;
-                        }
-                        pos += 2;
-                        int commentStart = pos;
-                        longCommentLevel = -1; //single
-
-                        //mach long bracket [=====[
-                        if (match("[")) {
-                            pos++;
-                            longCommentLevel = 0;
-                            while (match("=")) {
-                                longCommentLevel++;
-                                pos++;
+                switch (m_state)
+                {
+                    case State.SearchCommentStart:
+                        {
+                            if (m_pos >= m_data.Length)
+                            {
+                                running = false;
+                                continue;
                             }
+
+                            if (!match("--"))
+                            {
+                                m_pos++;
+                                continue;
+                            }
+                            m_pos += 2;
+                            int commentStart = m_pos;
+                            m_longCommentLevel = -1; //single
+
+                            //mach long bracket [=====[
                             if (match("["))
                             {
-                                pos++;
-                            }
-                            else {
-                                pos = commentStart;
-                            }
-                        }
-
-                        if (match("!"))
-                        {
-                            pos++;
-                            declStart = pos;
-                        }
-                        else {
-                            declStart = -1;
-                        }
-
-                        state = State.SearchCommentEnd;
-
-                        break;
-                    }
-
-                    case State.SearchCommentEnd:{
-                        int commentEnd = data.Length;
-                        if (pos < data.Length) {
-                            if (longCommentLevel == -1)
-                            {
-                                if (!match("\n"))
+                                m_pos++;
+                                m_longCommentLevel = 0;
+                                while (match("="))
                                 {
-                                    pos++;
-                                    continue;
-                                }else{
-                                    pos++;
-                                    commentEnd = pos;
+                                    m_longCommentLevel++;
+                                    m_pos++;
+                                }
+                                if (match("["))
+                                {
+                                    m_pos++;
+                                }
+                                else
+                                {
+                                    m_pos = commentStart;
                                 }
                             }
-                            else { 
-                                bool closeLongBracketFound = false;
-                                int p = pos;
-                                if (match("]")) { 
-                                    commentEnd = pos;
-                                    pos++;
-                                    bool closeLongBracketMatch = true;
-                                    for (int i = 0; i < longCommentLevel; i++) {
-                                        if (!match("="))
+
+                            if (match("!"))
+                            {
+                                m_pos++;
+                                m_declStart = m_pos;
+                            }
+                            else
+                            {
+                                m_declStart = -1;
+                            }
+
+                            m_state = State.SearchCommentEnd;
+
+                            break;
+                        }
+
+                    case State.SearchCommentEnd:
+                        {
+                            int commentEnd = m_data.Length;
+                            if (m_pos < m_data.Length)
+                            {
+                                if (m_longCommentLevel == -1)
+                                {
+                                    if (!match("\n"))
+                                    {
+                                        m_pos++;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        m_pos++;
+                                        commentEnd = m_pos;
+                                    }
+                                }
+                                else
+                                {
+                                    bool closeLongBracketFound = false;
+                                    int p = m_pos;
+                                    if (match("]"))
+                                    {
+                                        commentEnd = m_pos;
+                                        m_pos++;
+                                        bool closeLongBracketMatch = true;
+                                        for (int i = 0; i < m_longCommentLevel; i++)
                                         {
-                                            closeLongBracketMatch = false;
-                                            break;
+                                            if (!match("="))
+                                            {
+                                                closeLongBracketMatch = false;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                m_pos++;
+                                            }
                                         }
-                                        else {
-                                            pos++;
+                                        if (closeLongBracketMatch)
+                                        {
+                                            if (match("]"))
+                                            {
+                                                closeLongBracketFound = true;
+                                                m_pos++;
+                                            }
                                         }
-
                                     }
-                                    if (closeLongBracketMatch) { 
-                                        if(match("]")){
-                                            closeLongBracketFound = true;
-                                            pos++;
-                                        }
+                                    if (!closeLongBracketFound)
+                                    {
+                                        m_pos = p;
+                                        m_pos++;
+                                        continue;
                                     }
-                                }
-                                if (!closeLongBracketFound) {
-                                    pos = p;
-                                    pos++;
-                                    continue;
                                 }
                             }
-                        }
 
-                        if (declStart != -1) {
-                            string str = data.Substring(declStart, commentEnd - declStart);
-                            result += str;
+                            if (m_declStart != -1)
+                            {
+                                string str = m_data.Substring(m_declStart, commentEnd - m_declStart);
+                                m_result += str;
+                            }
+                            m_state = State.SearchCommentStart;
+                            break;
                         }
-                        state = State.SearchCommentStart;
-                        break;
-                    }
-                
                 }
-
-
             }
         }
     }

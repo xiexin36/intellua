@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Intellua
 {
     public class Keyword : IAutoCompleteItem
     {
         private string m_name;
+
+        public Keyword(string name)
+        {
+            Name = name;
+        }
+
         public string Name
         {
             get { return m_name; }
             set { m_name = value; }
-        }
-        public Keyword(string name) {
-            Name = name;
         }
         public override string getACString()
         {
@@ -32,16 +32,21 @@ namespace Intellua
         }
     }
 
-    public class KeywordManager {
+    public class KeywordManager
+    {
         private Dictionary<string, Keyword> m_keywords = new Dictionary<string, Keyword>();
 
-        public void add(Keyword k) {
+        public void add(Keyword k)
+        {
             m_keywords[k.Name] = k;
         }
 
-        public void appendList(List<IAutoCompleteItem> lst,string partialName){
-            foreach(Keyword k in m_keywords.Values){
-                if(k.Name.StartsWith(partialName)){
+        public void appendList(List<IAutoCompleteItem> lst, string partialName)
+        {
+            foreach (Keyword k in m_keywords.Values)
+            {
+                if (k.Name.StartsWith(partialName))
+                {
                     lst.Add(k);
                 }
             }
