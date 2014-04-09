@@ -147,7 +147,7 @@ namespace Intellua
     class TypeManager {
 		#region Fields (2) 
 
-        private Type m_nullType;
+        private static Type m_nullType;
         private Dictionary<string, Type> m_types;
         private Dictionary<string, Type> m_dtypes = new Dictionary<string, Type>();
         private TypeManager m_parent;
@@ -166,12 +166,14 @@ namespace Intellua
             }
         }
 		#region Constructors (1) 
-
-        public TypeManager() { 
-            m_types = new Dictionary<string, Type>();
+        static TypeManager() {
             m_nullType = new Type("(UnknownType)");
             m_nullType.DisplayName = "";
             m_nullType.HideDeclare = true;
+        }
+        public TypeManager() { 
+            m_types = new Dictionary<string, Type>();
+            
             m_parent = null;
         }
         public TypeManager(TypeManager parent)
@@ -211,7 +213,7 @@ namespace Intellua
 
             foreach (AutoCompleteData ac in Requires) {
                 var rst = ac.Types.get(name);
-                if (rst!=null) return rst;
+                if (rst != m_nullType) return rst;
             }
 
             if (m_parent != null) return m_parent.get(name);

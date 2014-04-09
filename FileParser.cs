@@ -35,11 +35,17 @@ namespace Intellua
         static Dictionary<string, FileParser> s_files = new Dictionary<string, FileParser>();
         static FileParser getFile(string filename, Intellua parent, Dictionary<string, int> required)
         {
-          /*  if (s_files.ContainsKey(filename)) { 
-                //todo: check file changes
-
-                return s_files[filename];
-            }*/
+            if (s_files.ContainsKey(filename)) { 
+                FileParser afp = s_files[filename];
+                if (!afp.modified())
+                {
+                    return afp;
+                }
+                else {
+                    System.Diagnostics.Debug.Print("modified");
+                }
+            }
+            System.Diagnostics.Debug.Print("parse file " + filename);
             IntelluaSource source = new IntelluaSource(filename,parent);
             FileParser fp = new FileParser(source);
             foreach (var kv in required) {
@@ -58,6 +64,12 @@ namespace Intellua
             result = new AutoCompleteData();
             result.setParent(source.m_intellua.AutoCompleteData.getParent());
             result.Variables.scope = source.m_intellua.parseScope(0, source.m_intellua.Lines.Count - 1);
+
+            m_lastCheckTime = System.DateTime.Now;
+            if (source.FilePath.Length != 0) {
+                m_lastWriteTime = System.IO.File.GetLastWriteTime(m_source.FilePath);
+            }
+            m_required[source.FilePath] = 0;
         }
 
         static Regex s_requreReg = new Regex(@"(?<![\.:]\s*)(?:\s+|^)require\s*\(\s*\""(.*)\""\s*\)", RegexOptions.Compiled);
@@ -103,12 +115,13 @@ namespace Intellua
         }
         private void parseRequire()
         {
+            
             MatchCollection rst = s_requreReg.Matches(m_source.text);
             string filebasepath = null;
             if (m_source.FilePath.Length!=0)
             {
                 System.IO.FileInfo fi = new System.IO.FileInfo(m_source.FilePath);
-                filebasepath = fi.DirectoryName;
+                filebasepath = fi.DirectoryName + "\\";
             }
            
 
@@ -119,7 +132,7 @@ namespace Intellua
                     if (m_required.ContainsKey(fn)) {
                         continue;
                     }
-                    System.Diagnostics.Debug.Print("require " + fn);
+                    
                     m_required[fn] = 0;
 
                     FileParser fp = getFile(fn,m_source.m_intellua,m_required);
@@ -130,13 +143,15 @@ namespace Intellua
         void parse(bool importMode) {
             parseRequire();
             parseDeclaration();
-            //if (importMode) return;
+            if (importMode) return;
             parseVariables();
                
             
         }
-        void parseDeclaration() { 
-            
+        void parseDeclaration() {
+            DeclParser dp = new DeclParser();
+            dp.parse(m_source.text);
+            dp.apply(result);
         }
         void parseVariables (){
             int pos = 0;
@@ -192,6 +207,23 @@ namespace Intellua
             e.Result = result;
 
         }
-        
+
+        System.DateTime m_lastWriteTime;
+        System.DateTime m_lastCheckTime;
+        bool modified() {
+            if (m_source.FilePath.Length == 0) return false;
+
+            if (m_lastWriteTime == null) return true;
+
+            if ((System.DateTime.Now - m_lastCheckTime) < System.TimeSpan.FromSeconds(5)) return false;
+            if (!System.IO.File.Exists(m_source.FilePath)) return true;
+            
+            m_lastCheckTime = System.DateTime.Now;
+
+            if (m_lastWriteTime != System.IO.File.GetLastWriteTime(m_source.FilePath)) {
+                return true;
+            }
+            return false;
+        }
     }
 }

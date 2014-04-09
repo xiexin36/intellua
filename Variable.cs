@@ -279,6 +279,7 @@ namespace Intellua
             }
 
             rst.Sort();
+            rst = rst.Distinct().ToList();
             return rst;
         }
 
