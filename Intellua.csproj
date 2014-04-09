@@ -53,6 +53,9 @@
   <ItemGroup>
     <Compile Include="AutoCompleteData.cs" />
     <Compile Include="AutoCompleteItem.cs" />
+    <Compile Include="DeclParser.cs" />
+    <Compile Include="DeclString.cs" />
+    <Compile Include="DeclTokenizer.cs" />
     <Compile Include="FileParser.cs" />
     <Compile Include="IntelluaSource.cs" />
     <Compile Include="Keyword.cs" />
