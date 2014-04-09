@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ScintillaNET>
   <Language name="lua" ext="lua" commentLine="--">
-    <Indentation TabWidth="2"/>
+    <Indentation TabWidth="2" />
     <Lexer StreamCommentPrefix="{ " StreamCommentSuffix=" }">
       <Keywords List="0">and break do else elseif end false for function if in local nil not or repeat return then true until while</Keywords>
-      
     </Lexer>
     <Styles>
-      <Style Name="BRACEBAD" ForeColor="#FF0000"/>
-      <Style Name="BRACELIGHT" ForeColor="#FF00FF"/>
+      <Style Name="BRACEBAD" ForeColor="#FF0000" />
+      <Style Name="BRACELIGHT" ForeColor="#FF00FF" />
     </Styles>
   </Language>
 </ScintillaNET>

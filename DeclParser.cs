@@ -1,173 +1,325 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using IntVariable = Intellua.Variable;
 using IntFunction = Intellua.Function;
+using IntVariable = Intellua.Variable;
+
 /*
  * BNF:
  * declarations:
  *  (declaration OP_Semicolon)*
- *  
+ *
  * declaration:
- *  class 
- *  member OP_Semicolon
- *  
- * class:
- *  comment? KW_Class identifier? (OP_Colon identifier)? OP_LBrace declaration* OP_RBrace identifier?
- *  
- * member:
+ *  class
  *  variable
  *  function
- *  
+ *
+ * class:
+ *  comment? KW_Class identifier? (OP_Colon identifier)? OP_LBrace declaration* OP_RBrace identifier?
+ *
  * variable:
  *  comment? KW_Static? identifier? identifier (OP_LSquare  number? OP_RSquare)? (OP_Equal token)?
  *  comment? OP_Dots
- *  
+ *
  * function:
  *  comment? KW_Static? identifier? identifier OP_LParen (variable? (OP_Comma variable)*)? OP_RParen)
  */
+
 namespace Intellua
 {
-    namespace Decl {
-        class Indent{
-            public static void print(string str,int count)
-            {
-                System.Diagnostics.Debug.Print( "".PadLeft(count) + str);
-            }
-        }
-
-        class Declarations {
-            public Declarations(){}
-            public List<Class> classes = new List<Class>();
-            public Members members = new Members();
-
-            public void print(int indent)
-            {
-                foreach (Class c in classes) {
-                    c.print(indent);
-                }
-                members.print(indent);
-            }
-        }
-        class Declaration { 
-            
+    namespace Decl
+    {
+        internal interface Declaration
+        {
+            void addToDeclarations(Declarations d);
         };
 
-        class Class : Declaration{
-            public Class(){}
-            public Type outerClass;
-            public string name = "";
-            public Declarations declarations = new Declarations();
-            public string obj = "";
-            public string baseClass = "";
-            public string desc = "";
+        internal class Class : Declaration
+        {
+            public string BaseClass = "";
 
-            public void print(int indent)
+            public Declarations Declarations = new Declarations();
+
+            public string Desc = "";
+
+            public string Name = "";
+
+            public string Object = "";
+
+            public Type OuterClass;
+
+            public Type Type;
+
+            public Class()
             {
-                string n = "class " + name;
-                if(baseClass.Length != 0){
-                    n+= " : " + baseClass;
-                }
-                n+= " {";
-                Indent.print(n, indent);
-                declarations.print(indent + 1);
-                n = "}";
-                if (obj.Length > 0) {
-                    n += " " + obj;
-                }
-                n += ";";
-                Indent.print(n,indent);
             }
-            public Type type;
-            public void registerClass(AutoCompleteData ac){
-                type = new Type(name);
-                type.OuterClass = outerClass;
-                ac.Types.add(type);
 
-                foreach(Class c in declarations.classes){
-                    c.outerClass = type;
-                    c.registerClass(ac);
-                }
+            public void addToDeclarations(Declarations d)
+            {
+                d.Classes.Add(this);
             }
 
             public void apply(AutoCompleteData ac)
             {
-                IntVariable var = new IntVariable(type.DisplayName);
+                Type.Base = ac.Types.get(BaseClass);
+                IntVariable var = new IntVariable(Type.DisplayName);
                 var.IsNamespace = true;
                 var.IsStatic = true;
-                var.Type = type;
+                var.Type = Type;
 
-                var.Desc = desc;
+                var.Desc = Desc;
 
-                if (outerClass == null)
+                if (OuterClass == null)
                 {
                     ac.Variables.add(var);
                 }
-                else {
-                    outerClass.addMember(var);
+                else
+                {
+                    OuterClass.addMember(var);
                 }
 
-                foreach (Class c in declarations.classes) {
+                foreach (Class c in Declarations.Classes)
+                {
                     c.apply(ac);
                 }
 
-                foreach (Variable v in declarations.members.variables) {
-                    v.apply(ac, this);
-
-                }
-
-                foreach (Function v in declarations.members.functions)
+                foreach (Variable v in Declarations.Variables)
                 {
                     v.apply(ac, this);
                 }
-            }
 
-        }
-
-        class Members{
-            public Members(){}
-
-            public void Add(Member m) {
-                Variable v = m as Variable;
-                if (v != null) {
-                    variables.Add(v);
-                }
-                Function f = m as Function;
-                if (f != null)
+                foreach (Function v in Declarations.Functions)
                 {
-                    functions.Add(f);
+                    v.apply(ac, this);
+                }
+                if (Object.Length > 0)
+                {
+                    IntVariable dec = new IntVariable(Object);
+                    dec.Type = Type;
+                    dec.Desc = Desc;
+                    if (OuterClass == null)
+                    {
+                        ac.Variables.add(dec);
+                    }
+                    else
+                    {
+                        OuterClass.addMember(dec);
+                    }
                 }
             }
 
             public void print(int indent)
             {
-                foreach (Variable v in variables) {
+                string n = "class " + Name;
+                if (BaseClass.Length != 0)
+                {
+                    n += " : " + BaseClass;
+                }
+                n += " {";
+                Indent.print(n, indent);
+                Declarations.print(indent + 1);
+                n = "}";
+                if (Object.Length > 0)
+                {
+                    n += " " + Object;
+                }
+                n += ";";
+                Indent.print(n, indent);
+            }
+
+            public void registerClass(AutoCompleteData ac)
+            {
+                Type = new Type(Name);
+                Type.OuterClass = OuterClass;
+                ac.Types.add(Type);
+
+                foreach (Class c in Declarations.Classes)
+                {
+                    c.OuterClass = Type;
+                    c.registerClass(ac);
+                }
+            }
+        }
+        internal class Declarations
+        {
+            public List<Class> Classes = new List<Class>();
+
+            public List<Function> Functions = new List<Function>();
+
+            public List<Variable> Variables = new List<Variable>();
+
+            public Declarations()
+            {
+            }
+
+            public void add(Declaration m)
+            {
+                m.addToDeclarations(this);
+            }
+            public void print(int indent)
+            {
+                foreach (Class c in Classes)
+                {
+                    c.print(indent);
+                }
+                foreach (Variable v in Variables)
+                {
                     v.print(indent);
                 }
 
-                foreach (Function v in functions)
+                foreach (Function v in Functions)
                 {
                     v.print(indent);
                 }
             }
-
-            public List<Variable> variables = new List<Variable>();
-            public List<Function> functions = new List<Function>();
         }
-        class Member : Declaration{
-        
-        };
-        class Variable : Member{
-            public Variable(){}
+
+        internal class Function : Declaration
+        {
+            public string Desc = "";
+
             public bool isStatic = false;
-            public string type = "";
+
             public string name = "";
+
+            public List<Variable> parameters = new List<Variable>();
+
+            public string type = "";
+
+            public Function()
+            {
+            }
+
+            public void addToDeclarations(Declarations d)
+            {
+                d.Functions.Add(this);
+            }
+
+            public void apply(AutoCompleteData ac, Class c)
+            {
+                IntFunction f = new IntFunction(name);
+                string paramStr = "(";
+                for (int i = 0; i < parameters.Count; i++)
+                {
+                    paramStr += parameters[i].ToString();
+                    if (i < parameters.Count - 1)
+                    {
+                        paramStr += ", ";
+                    }
+                }
+                paramStr += ")";
+                f.Param.Add(paramStr);
+                f.Desc.Add(Desc);
+
+                if (c != null && f.Name == c.Name)
+                {
+                    f.ReturnType = c.Type;
+                    f.Static = true;
+                    if (c.OuterClass != null)
+                    {
+                        c.OuterClass.addMethod(f);
+                    }
+                    else
+                    {
+                        ac.Variables.add(f);
+                    }
+                }
+                else
+                {
+                    f.Static = isStatic;
+                    f.ReturnType = ac.Types.get(type);
+
+                    if (c != null)
+                    {
+                        c.Type.addMethod(f);
+                    }
+                    else
+                    {
+                        f.Static = true;
+                        ac.Variables.add(f);
+                    }
+                }
+            }
+
+            public void print(int indent)
+            {
+                string str = "";
+                if (isStatic)
+                {
+                    str += "static ";
+                }
+                if (type.Length > 0)
+                {
+                    str += type + " ";
+                }
+                str += name + "(";
+                for (int i = 0; i < parameters.Count; i++)
+                {
+                    str += parameters[i].ToString();
+                    if (i < parameters.Count - 1)
+                    {
+                        str += ", ";
+                    }
+                }
+                str += ");";
+                Indent.print(str, indent);
+            }
+        }
+
+        internal class Indent
+        {
+            public static void print(string str, int count)
+            {
+                System.Diagnostics.Debug.Print("".PadLeft(count) + str);
+            }
+        }
+
+        internal class Variable : Declaration
+        {
             public int arraySize = 0;
+
             public string defaultValue = "";
+
             public string desc = "";
-            public string ToString() {
+
+            public bool isStatic = false;
+
+            public string name = "";
+
+            public string type = "";
+
+            public Variable()
+            {
+            }
+
+            public void addToDeclarations(Declarations d)
+            {
+                d.Variables.Add(this);
+            }
+
+            public void apply(AutoCompleteData ac, Class c)
+            {
+                IntVariable var = new IntVariable(name);
+                var.Type = ac.Types.get(type);
+
+                var.Desc = desc;
+                var.IsStatic = isStatic;
+                if (c != null)
+                {
+                    c.Type.addMember(var);
+                }
+                else
+                {
+                    ac.Variables.add(var);
+                }
+            }
+
+            public void print(int indent)
+            {
+                Indent.print(toString() + ";", indent);
+            }
+
+            public string toString()
+            {
                 string str = "";
                 if (isStatic)
                 {
@@ -188,413 +340,329 @@ namespace Intellua
                 }
                 return str;
             }
-            public void print(int indent)
-            {
-                Indent.print(ToString() + ";", indent);
-            }
-
-            public void apply(AutoCompleteData ac, Class c) {
-                IntVariable var = new IntVariable(name);
-                var.Type = ac.Types.get(type);
-
-                var.Desc = desc;
-                var.IsStatic = isStatic;
-                if (c != null)
-                {
-                    c.type.addMember(var);
-                }
-                else {
-                    ac.Variables.add(var);
-                }
-
-            }
-        }
-
-        class Function : Member{
-            public Function(){}
-            public bool isStatic = false;
-            public string type = "";
-            public string desc = "";
-            public string name = "";
-            public List<Variable> parameters = new List<Variable>();
-
-            
-
-            public void print(int indent)
-            {
-                string str = "";
-                if (isStatic)
-                {
-                    str += "static ";
-                }
-                if (type.Length > 0)
-                {
-                    str += type + " ";
-                }
-                str += name +"(";
-                for (int i = 0; i < parameters.Count; i++) {
-                    str += parameters[i].ToString();
-                    if (i < parameters.Count - 1) {
-                        str += ", ";
-                    }
-                }
-                str += ");";
-                Indent.print(str, indent);
-            }
-
-            public void apply(AutoCompleteData ac, Class c)
-            {
-                IntFunction f = new IntFunction(name);
-                string paramStr = "(";
-                for (int i = 0; i < parameters.Count; i++)
-                {
-                    paramStr += parameters[i].ToString();
-                    if (i < parameters.Count - 1)
-                    {
-                        paramStr += ", ";
-                    }
-                }
-                paramStr += ")";
-                f.Param.Add(paramStr);
-                f.Desc.Add(desc);
-
-                if (c != null && f.Name == c.name)
-                {
-                    f.ReturnType = c.type;
-                    f.Static = true;
-                    if (c.outerClass != null)
-                    {
-                        c.outerClass.addMethod(f);
-                    }
-                    else
-                    {
-                        ac.Variables.add(f);
-                    }
-                }
-                else {
-                    f.Static = isStatic;
-                    f.ReturnType = ac.Types.get(type);
-
-                    if (c != null)
-                    {
-                        c.type.addMethod(f);
-                    }
-                    else {
-                        f.Static = true;
-                        ac.Variables.add(f);
-                    }
-                }
-
-            }
         }
     }
-    
-    class DeclParser
+
+    internal class DeclParser
     {
-        class ParserState
+        private Decl.Declarations m_declarations;
+
+        private int m_pos;
+
+        private List<DeclToken> m_tokens;
+
+        public void apply(AutoCompleteData ac)
         {
-            public ParserState(DeclParser p){
-                parser = p;
+            if (m_declarations == null) return;
 
-                pos = parser.pos;
-            }
-            public void restore() {
-                parser.pos = pos;
-            }
-            int pos;
-            DeclParser parser;
-
-        };
-
-        public void apply(AutoCompleteData ac) {
-            if (declarations == null) return;
-
-            foreach(Decl.Class c in declarations.classes){
+            foreach (Decl.Class c in m_declarations.Classes)
+            {
                 c.registerClass(ac);
             }
 
-            foreach (Decl.Class c in declarations.classes)
+            foreach (Decl.Class c in m_declarations.Classes)
             {
                 c.apply(ac);
             }
 
-            foreach (Decl.Variable v in declarations.members.variables)
+            foreach (Decl.Variable v in m_declarations.Variables)
             {
                 v.apply(ac, null);
-
             }
 
-            foreach (Decl.Function v in declarations.members.functions)
+            foreach (Decl.Function v in m_declarations.Functions)
             {
                 v.apply(ac, null);
             }
         }
 
-        public void parse(string str) {
+        public void parse(string str)
+        {
             DeclString ds = new DeclString(str);
             string declString = ds.Result;
             DeclTokenizer tokenizer = new DeclTokenizer(declString);
-            tokens = tokenizer.Result;
-            pos = 0;
+            m_tokens = tokenizer.Result;
+            m_pos = 0;
             try
             {
-                declarations = parseDeclarations();
+                m_declarations = parseDeclarations();
                 System.Diagnostics.Debug.Print("==========================");
-                declarations.print(0);
+                m_declarations.print(0);
             }
-            catch (System.Exception e) {
+            catch (System.Exception e)
+            {
                 System.Diagnostics.Debug.Print(e.Message);
             }
-
-
-        }
-        int pos;
-
-        DeclToken peek() {
-            return tokens[pos];
         }
 
-        List<DeclToken> tokens;
-        Decl.Declarations declarations;
-
-        Decl.Declarations parseDeclarations(){
-            Decl.Declarations rst = new Decl.Declarations();
-            while (peek().type != DeclTokenType.EOF) {
-                var d = parseDeclaration();
-                if (d != null)
-                {
-                    Decl.Class c = d as Decl.Class;
-                    if (c != null)
-                    {
-                        rst.classes.Add(c);
-                    }
-
-                    Decl.Member m = d as Decl.Member;
-                    if (m != null)
-                    {
-                        rst.members.Add(m);
-                    }
-
-                    if (peek().type != DeclTokenType.OP_SemiColon)
-                    {
-                        throw new System.Exception("';' expected");
-                    }
-                    pos++;
-                }
-                else {
-                    break;
-                }
-            }
-            
-            return rst;
-            
-        }
-
-        Decl.Declaration parseDeclaration() {
-            Decl.Declaration rst;
-            rst = parseClass();
-            if (rst != null)
-            {   
-                return rst;
-            }
-            rst = parseMember();
-            if (rst != null)
-            {
-                return rst;
-            }
-            return null;
-        }
-        string getUniqueString() {
+        private string getUniqueString()
+        {
             Guid g = Guid.NewGuid();
             string GuidString = Convert.ToBase64String(g.ToByteArray());
             GuidString = GuidString.Replace("=", "");
             GuidString = GuidString.Replace("+", "");
             return GuidString;
         }
-        Decl.Class parseClass() {
+
+        private Decl.Class parseClass()
+        {
             ParserState ps = new ParserState(this);
             Decl.Class rst = new Decl.Class();
 
-            if (peek().type == DeclTokenType.Comment) {
-                rst.desc = peek().data;
-                pos++;
+            if (peek().Type == DeclTokenType.Comment)
+            {
+                rst.Desc = peek().Data;
+                m_pos++;
             }
 
-            if (peek().type != DeclTokenType.KW_Class)
+            if (peek().Type != DeclTokenType.KW_Class)
             {
                 ps.restore();
                 return null;
             }
-            pos++;
-            if (peek().type == DeclTokenType.Identifier)
+            m_pos++;
+            if (peek().Type == DeclTokenType.Identifier)
             {
-                rst.name = peek().data;
-                pos++;
+                rst.Name = peek().Data;
+                m_pos++;
             }
-            else {
-                rst.name = "__unnamed@"+getUniqueString();
+            else
+            {
+                rst.Name = "__unnamed@" + getUniqueString();
             }
-            if (peek().type == DeclTokenType.OP_Colon) {
-                pos++;
-                if (peek().type == DeclTokenType.Identifier)
+            if (peek().Type == DeclTokenType.OP_Colon)
+            {
+                m_pos++;
+                if (peek().Type == DeclTokenType.Identifier)
                 {
-                    rst.baseClass = peek().data;
-                    pos++;
+                    rst.BaseClass = peek().Data;
+                    m_pos++;
                 }
-                else {
+                else
+                {
                     throw new System.Exception("baseClass expected");
                 }
             }
 
-            if (peek().type != DeclTokenType.OP_LBrace) {
+            if (peek().Type != DeclTokenType.OP_LBrace)
+            {
                 throw new System.Exception("'{' expected");
             }
-            pos++;
-            rst.declarations = parseDeclarations();
+            m_pos++;
+            rst.Declarations = parseDeclarations();
 
-            if (peek().type != DeclTokenType.OP_RBrace)
+            if (peek().Type != DeclTokenType.OP_RBrace)
             {
                 throw new System.Exception("'}' expected");
             }
-            pos++;
-            if (peek().type == DeclTokenType.Identifier) {
-                rst.obj = peek().data;
-                pos++;
+            m_pos++;
+            if (peek().Type == DeclTokenType.Identifier)
+            {
+                rst.Object = peek().Data;
+                m_pos++;
             }
 
             return rst;
         }
 
-        Decl.Member parseMember() {
-            Decl.Member rst;
+        private Decl.Declaration parseDeclaration()
+        {
+            Decl.Declaration rst;
+            rst = parseClass();
+            if (rst != null) return rst;
             rst = parseFunction();
             if (rst != null) return rst;
             rst = parseVariable();
             if (rst != null) return rst;
             return null;
         }
-        Decl.Variable parseVariable() {
-            ParserState ps = new ParserState(this);
-            Decl.Variable rst = new Decl.Variable();
-            
-            if (peek().type == DeclTokenType.Comment)
+
+        private Decl.Declarations parseDeclarations()
+        {
+            Decl.Declarations rst = new Decl.Declarations();
+            while (peek().Type != DeclTokenType.EOF)
             {
-                rst.desc = peek().data;
-                pos++;
-            }
+                var d = parseDeclaration();
+                if (d != null)
+                {
+                    rst.add(d);
 
-            if (peek().type == DeclTokenType.OP_Dots) {
-                rst.name = "...";
-                pos++;
-                return rst;
-            }
-
-            if (peek().type == DeclTokenType.KW_Static) {
-                rst.isStatic = true;
-                pos++;
-            }
-            
-            if (peek().type != DeclTokenType.Identifier) {
-                ps.restore();
-                return null;
-            }
-            string id1 = peek().data;
-            pos++;
-
-            if (peek().type == DeclTokenType.Identifier)
-            {
-                rst.type = id1;
-                rst.name = peek().data;
-                pos++;
-            }
-            else {
-                rst.name = id1;
-            }
-
-            if (peek().type == DeclTokenType.OP_LSquare) {
-                pos++;
-                if (peek().type == DeclTokenType.Number) {
-                    rst.arraySize = System.Convert.ToInt32(peek().data);
-                    pos++;
+                    if (peek().Type != DeclTokenType.OP_SemiColon)
+                    {
+                        throw new System.Exception("';' expected");
+                    }
+                    m_pos++;
                 }
-                if (peek().type != DeclTokenType.OP_RSquare) {
-                    throw new System.Exception("']' expected");
+                else
+                {
+                    break;
                 }
-                pos++;
             }
 
-            if (peek().type == DeclTokenType.OP_Equal) {
-                pos++;
-                if (peek().type == DeclTokenType.EOF) {
-                    throw new System.Exception("token expected");
-                }
-                rst.defaultValue = peek().data;
-                pos++;
-            }
             return rst;
         }
-        Decl.Function parseFunction() {
+
+        private Decl.Function parseFunction()
+        {
             ParserState ps = new ParserState(this);
             Decl.Function rst = new Decl.Function();
 
-            if (peek().type == DeclTokenType.Comment)
+            if (peek().Type == DeclTokenType.Comment)
             {
-                rst.desc = peek().data;
-                pos++;
+                rst.Desc = peek().Data;
+                m_pos++;
             }
 
-            if (peek().type == DeclTokenType.KW_Static)
+            if (peek().Type == DeclTokenType.KW_Static)
             {
                 rst.isStatic = true;
-                pos++;
+                m_pos++;
             }
 
-            if (peek().type != DeclTokenType.Identifier)
+            if (peek().Type != DeclTokenType.Identifier)
             {
                 ps.restore();
                 return null;
             }
-            string id1 = peek().data;
-            pos++;
+            string id1 = peek().Data;
+            m_pos++;
 
-            if (peek().type == DeclTokenType.Identifier)
+            if (peek().Type == DeclTokenType.Identifier)
             {
                 rst.type = id1;
-                rst.name = peek().data;
-                pos++;
+                rst.name = peek().Data;
+                m_pos++;
             }
             else
             {
                 rst.name = id1;
             }
 
-            if (peek().type != DeclTokenType.OP_LParen) {
+            if (peek().Type != DeclTokenType.OP_LParen)
+            {
                 ps.restore();
                 return null;
             }
-            pos++;
+            m_pos++;
 
             Decl.Variable var = parseVariable();
-            if (var != null) {
+            if (var != null)
+            {
                 rst.parameters.Add(var);
 
-                while (peek().type == DeclTokenType.OP_Comma) {
-                    pos++;
+                while (peek().Type == DeclTokenType.OP_Comma)
+                {
+                    m_pos++;
                     Decl.Variable moreVar = parseVariable();
-                    if (moreVar == null) {
+                    if (moreVar == null)
+                    {
                         throw new System.Exception("variable expected");
                     }
                     rst.parameters.Add(moreVar);
                 }
             }
-            if (peek().type != DeclTokenType.OP_RParen)
+            if (peek().Type != DeclTokenType.OP_RParen)
             {
                 throw new System.Exception("')' expected");
             }
-            pos++;
-
+            m_pos++;
 
             return rst;
         }
+
+        private Decl.Variable parseVariable()
+        {
+            ParserState ps = new ParserState(this);
+            Decl.Variable rst = new Decl.Variable();
+
+            if (peek().Type == DeclTokenType.Comment)
+            {
+                rst.desc = peek().Data;
+                m_pos++;
+            }
+
+            if (peek().Type == DeclTokenType.OP_Dots)
+            {
+                rst.name = "...";
+                m_pos++;
+                return rst;
+            }
+
+            if (peek().Type == DeclTokenType.KW_Static)
+            {
+                rst.isStatic = true;
+                m_pos++;
+            }
+
+            if (peek().Type != DeclTokenType.Identifier)
+            {
+                ps.restore();
+                return null;
+            }
+            string id1 = peek().Data;
+            m_pos++;
+
+            if (peek().Type == DeclTokenType.Identifier)
+            {
+                rst.type = id1;
+                rst.name = peek().Data;
+                m_pos++;
+            }
+            else
+            {
+                rst.name = id1;
+            }
+
+            if (peek().Type == DeclTokenType.OP_LSquare)
+            {
+                m_pos++;
+                if (peek().Type == DeclTokenType.Number)
+                {
+                    rst.arraySize = System.Convert.ToInt32(peek().Data);
+                    m_pos++;
+                }
+                if (peek().Type != DeclTokenType.OP_RSquare)
+                {
+                    throw new System.Exception("']' expected");
+                }
+                m_pos++;
+            }
+
+            if (peek().Type == DeclTokenType.OP_Equal)
+            {
+                m_pos++;
+                if (peek().Type == DeclTokenType.EOF)
+                {
+                    throw new System.Exception("token expected");
+                }
+                rst.defaultValue = peek().Data;
+                m_pos++;
+            }
+            return rst;
+        }
+
+        private DeclToken peek()
+        {
+            return m_tokens[m_pos];
+        }
+
+        private class ParserState
+        {
+            private DeclParser parser;
+
+            private int pos;
+
+            public ParserState(DeclParser p)
+            {
+                parser = p;
+
+                pos = parser.m_pos;
+            }
+
+            public void restore()
+            {
+                parser.m_pos = pos;
+            }
+        };
     }
 }

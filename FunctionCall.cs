@@ -1,10 +1,11 @@
-﻿using System.Linq;
-using System;
+﻿using System;
+using System.Linq;
+
 namespace Intellua
 {
-    class FunctionCall
+    internal class FunctionCall
     {
-		#region Fields (5) 
+        #region Fields (5)
 
         private string m_calltipString;
         private Function m_func;
@@ -12,17 +13,17 @@ namespace Intellua
         private int m_highLightStart;
         private int m_paramIndex;
 
-		#endregion Fields 
+        #endregion Fields
 
-		#region Constructors (1) 
+        #region Constructors (1)
 
-        private FunctionCall() { 
-        
+        private FunctionCall()
+        {
         }
 
-		#endregion Constructors 
+        #endregion Constructors
 
-		#region Properties (5) 
+        #region Properties (5)
 
         public string CalltipString
         {
@@ -54,21 +55,23 @@ namespace Intellua
             set { m_paramIndex = value; }
         }
 
-		#endregion Properties 
+        #endregion Properties
 
-		#region Methods (2) 
+        #region Methods (2)
 
-		// Public Methods (2) 
+        // Public Methods (2) 
 
-        public static FunctionCall Parse(IntelluaSource source,AutoCompleteData data, int pos) {
+        public static FunctionCall Parse(IntelluaSource source, AutoCompleteData data, int pos)
+        {
             VariableManager variables = data.Variables;
             const string luaOperators = "+-*/^%<>=~";
             int paramIndex = 0;
             Byte[] str = source.RawText;
             bool running = true;
-            while (pos > 0) {
+            while (pos > 0)
+            {
                 char c = Convert.ToChar(str[pos]);
-                if ( c == 0 || char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
+                if (c == 0 || char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
                 {
                     pos--;
                     continue;
@@ -87,18 +90,21 @@ namespace Intellua
                 break;
             }
 
-            MemberChain chain = MemberChain.ParseBackward(source,pos);
-            
-            while (chain.Elements.Count != 0 && running) {
-                pos =chain.StartPos;
+            MemberChain chain = MemberChain.ParseBackward(source, pos);
 
-                while (pos > 0 && pos <str.Length) {
+            while (chain.Elements.Count != 0 && running)
+            {
+                pos = chain.StartPos;
+
+                while (pos > 0 && pos < str.Length)
+                {
                     if (char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
                     {
                         pos--;
                         continue;
                     }
-                    if (str[pos] == ',') {
+                    if (str[pos] == ',')
+                    {
                         paramIndex++;
                         pos--;
                         break;
@@ -108,57 +114,57 @@ namespace Intellua
                         pos--;
                         break;
                     }
-                    if (str[pos] == '(') {
+                    if (str[pos] == '(')
+                    {
                         running = false;
                         break;
                     }
                     return null;
-
                 }
                 if (pos <= 0) return null;
                 chain = MemberChain.ParseBackward(source, pos);
                 if (chain.StartPos == -1) break;
             }
 
-            while (pos > 0 && pos <str.Length) {
+            while (pos > 0 && pos < str.Length)
+            {
                 if (char.IsWhiteSpace(Convert.ToChar(str[pos])) || !Parser.isCode(source, pos))
                 {
                     pos--;
                     continue;
                 }
 
-                if (str[pos] == '(') {
+                if (str[pos] == '(')
+                {
                     chain = MemberChain.ParseBackward(source, pos - 1);
-                    chain.getType(data,true);
-                    
+                    chain.getType(data, true);
+
                     if (chain.LastFunction == null) return null;
                     FunctionCall fc = new FunctionCall();
                     fc.m_func = chain.LastFunction;
                     fc.ParamIndex = paramIndex;
 
-                   fc.update();
+                    fc.update();
                     return fc;
-
                 }
                 break;
             }
 
-            
-            
-
             return null;
         }
 
-        public void update() {
+        public void update()
+        {
             Function func = Func;
             CalltipString = "";
-            if (func.Param.Count > 1) {
-                CalltipString += "[" + (func.CurrentOverloadIndex+1) + " of " + func.Param.Count + "]\n";
+            if (func.Param.Count > 1)
+            {
+                CalltipString += "[" + (func.CurrentOverloadIndex + 1) + " of " + func.Param.Count + "]\n";
             }
             CalltipString += func.getTypeName() + func.Name;
             int offset = CalltipString.Length;
             CalltipString += func.Param[func.CurrentOverloadIndex];
-            if(func.Desc[func.CurrentOverloadIndex].Length > 0)
+            if (func.Desc[func.CurrentOverloadIndex].Length > 0)
                 CalltipString += "\n\n" + func.Desc[func.CurrentOverloadIndex];
 
             string str = func.Param[func.CurrentOverloadIndex];
@@ -177,9 +183,8 @@ namespace Intellua
                 while (pos < str.Length - 1 && str[pos] != ',') pos++;
                 HighLightEnd = pos + offset;
             }
-
         }
 
-		#endregion Methods 
+        #endregion Methods
     }
 }

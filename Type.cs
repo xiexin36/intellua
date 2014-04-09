@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Intellua
 {
     public class Type
     {
-		#region Fields (7) 
+        #region Fields (7)
 
         private Type m_base;
         private string m_displayName;
@@ -17,19 +15,20 @@ namespace Intellua
         private string m_name;
         private Type m_outerClass;
 
-		#endregion Fields 
+        #endregion Fields
 
-		#region Constructors (1) 
+        #region Constructors (1)
 
-        public Type(string name) {
+        public Type(string name)
+        {
             DisplayName = InternalName = name;
             m_members = new Dictionary<string, Variable>();
             m_methods = new Dictionary<string, Function>();
         }
 
-		#endregion Constructors 
+        #endregion Constructors
 
-		#region Properties (7) 
+        #region Properties (7)
 
         public Type Base
         {
@@ -73,48 +72,42 @@ namespace Intellua
             set { m_outerClass = value; }
         }
 
-		#endregion Properties 
+        #endregion Properties
 
-		#region Methods (3) 
+        #region Methods (3)
 
-		// Public Methods (3) 
-        public Variable getMember(string name) {
-            if (Members.ContainsKey(name)) return Members[name];
-            if (Base != null) return Base.getMember(name);
-            return null;
-        }
-        public Function getMethod(string name) {
-            if (Methods.ContainsKey(name)) return Methods[name];
-            if (Base != null) return Base.getMethod(name);
-            return null;
-        }
-
-        public void addMember(Variable var) {
-            if(var.Class == null) var.Class = this;
+        public void addMember(Variable var)
+        {
+            if (var.Class == null) var.Class = this;
             m_members[var.Name] = var;
         }
 
-        public void addMethod(Function method) {
+        public void addMethod(Function method)
+        {
             if (!m_methods.ContainsKey(method.Name))
             {
                 method.Class = this;
                 m_methods[method.Name] = method;
             }
-            else {
+            else
+            {
                 m_methods[method.Name].Param.Add(method.Param[0]);
                 m_methods[method.Name].Desc.Add(method.Desc[0]);
             }
         }
 
-        public List<IAutoCompleteItem> getList(bool Static) {
+        public List<IAutoCompleteItem> getList(bool Static)
+        {
             List<IAutoCompleteItem> rst;
             if (Base != null)
             {
                 rst = Base.getList(Static);
                 AutoCompleteItemComparer comparer = new AutoCompleteItemComparer();
                 List<IAutoCompleteItem> rm = new List<IAutoCompleteItem>();
-                foreach (IAutoCompleteItem item in rst) {
-                    if (m_methods.Values.Contains(item,comparer)) {
+                foreach (IAutoCompleteItem item in rst)
+                {
+                    if (m_methods.Values.Contains(item, comparer))
+                    {
                         rm.Add(item);
                     }
                 }
@@ -127,11 +120,13 @@ namespace Intellua
             {
                 rst = new List<IAutoCompleteItem>();
             }
-            foreach (Variable key in m_members.Values) {
-                if(key.IsStatic == Static)
+            foreach (Variable key in m_members.Values)
+            {
+                if (key.IsStatic == Static)
                     rst.Add(key);
             }
-            foreach (Function key in m_methods.Values) {
+            foreach (Function key in m_methods.Values)
+            {
                 if (key.Static == Static)
                     rst.Add(key);
             }
@@ -139,25 +134,58 @@ namespace Intellua
             return rst;
         }
 
-		#endregion Methods 
+        // Public Methods (3) 
+        public Variable getMember(string name)
+        {
+            if (Members.ContainsKey(name)) return Members[name];
+            if (Base != null) return Base.getMember(name);
+            return null;
+        }
+
+        public Function getMethod(string name)
+        {
+            if (Methods.ContainsKey(name)) return Methods[name];
+            if (Base != null) return Base.getMethod(name);
+            return null;
+        }
+        #endregion Methods
     }
 
-    
-
-    class TypeManager {
-		#region Fields (2) 
+    internal class TypeManager
+    {
+        #region Fields (2)
 
         private static Type m_nullType;
-        private Dictionary<string, Type> m_types;
         private Dictionary<string, Type> m_dtypes = new Dictionary<string, Type>();
         private TypeManager m_parent;
-        List<AutoCompleteData> m_requires;
-        public List<AutoCompleteData> Requires
+        private List<AutoCompleteData> m_requires;
+        private Dictionary<string, Type> m_types;
+        static TypeManager()
         {
-            get { return m_requires; }
-            set { m_requires = value; }
+            m_nullType = new Type("(UnknownType)");
+            m_nullType.DisplayName = "";
+            m_nullType.HideDeclare = true;
         }
-		#endregion Fields 
+
+        public TypeManager()
+        {
+            m_types = new Dictionary<string, Type>();
+
+            m_parent = null;
+        }
+
+        public TypeManager(TypeManager parent)
+        {
+            m_types = new Dictionary<string, Type>();
+            m_nullType = m_parent.NullType;
+            m_parent = parent;
+        }
+
+        public Type NullType
+        {
+            get { return m_nullType; }
+        }
+
         public TypeManager Parent
         {
             set
@@ -165,53 +193,44 @@ namespace Intellua
                 m_parent = value;
             }
         }
-		#region Constructors (1) 
-        static TypeManager() {
-            m_nullType = new Type("(UnknownType)");
-            m_nullType.DisplayName = "";
-            m_nullType.HideDeclare = true;
-        }
-        public TypeManager() { 
-            m_types = new Dictionary<string, Type>();
-            
-            m_parent = null;
-        }
-        public TypeManager(TypeManager parent)
+
+        public List<AutoCompleteData> Requires
         {
-            m_types = new Dictionary<string, Type>();
-            m_nullType = m_parent.NullType;
-            m_parent = parent;
-        }
-		#endregion Constructors 
-
-		#region Properties (1) 
-        public Type NullType {
-            get { return m_nullType; }
+            get { return m_requires; }
+            set { m_requires = value; }
         }
 
+        #endregion Fields
+        #region Constructors (1)
+        #endregion Constructors
+
+        #region Properties (1)
         public Dictionary<string, Type> Types
         {
             get { return m_types; }
             set { m_types = value; }
         }
 
-		#endregion Properties 
+        #endregion Properties
 
-		#region Methods (2) 
+        #region Methods (2)
 
-		// Public Methods (2) 
+        // Public Methods (2) 
 
-        public void add(Type t){
+        public void add(Type t)
+        {
             m_types[t.InternalName] = t;
             m_dtypes[t.DisplayName] = t;
         }
 
-        public Type get(string name) {
+        public Type get(string name)
+        {
             if (name == null) return m_nullType;
-            if(m_types.ContainsKey(name)) return m_types[name];
+            if (m_types.ContainsKey(name)) return m_types[name];
             if (m_dtypes.ContainsKey(name)) return m_dtypes[name];
 
-            foreach (AutoCompleteData ac in Requires) {
+            foreach (AutoCompleteData ac in Requires)
+            {
                 var rst = ac.Types.get(name);
                 if (rst != m_nullType) return rst;
             }
@@ -220,9 +239,10 @@ namespace Intellua
             return m_nullType;
         }
 
-
-        public void removeEmptyNamespace() {
-            foreach (Type t in Types.Values) {
+        public void removeEmptyNamespace()
+        {
+            foreach (Type t in Types.Values)
+            {
                 List<string> rm = new List<string>();
                 foreach (Variable var in t.Members.Values)
                 {
@@ -241,6 +261,6 @@ namespace Intellua
             }
         }
 
-		#endregion Methods 
+        #endregion Methods
     }
 }

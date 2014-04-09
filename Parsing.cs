@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Intellua
+﻿namespace Intellua
 {
-    class Parser {
-		#region Methods (3) 
+    internal class Parser
+    {
+        #region Methods (3)
 
-		// Public Methods (3) 
+        // Public Methods (3) 
 
-        public static bool isCode(IntelluaSource source, int pos) {
-
+        public static bool isCode(IntelluaSource source, int pos)
+        {
             int style = source.getStyleAt(pos);
             switch (style)
             {
@@ -50,7 +46,6 @@ namespace Intellua
             return false;
         }
 
-		#endregion Methods 
+        #endregion Methods
     }
-    
 }

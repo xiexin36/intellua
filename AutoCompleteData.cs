@@ -1,39 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Intellua
 {
     public class AutoCompleteData
     {
+        private KeywordManager m_keywords;
+        private AutoCompleteData m_parent;
+        private List<AutoCompleteData> m_requires = new List<AutoCompleteData>();
         private TypeManager m_typeManager;
         private VariableManager m_variableManager;
-        private KeywordManager m_keywords;
-
-        internal TypeManager Types {
-            get {
-                return m_typeManager;
-            }
-        }
-        internal VariableManager Variables
+        public AutoCompleteData()
         {
-            get {
-                return m_variableManager;
-            }
-        }
-
-        internal KeywordManager Keywords
-        {
-            get {
-                return m_keywords;
-            }
-        }
-        void init() {
-            m_typeManager.Requires = Requires;
-            m_variableManager.Requires = Requires;
-        }
-        public AutoCompleteData() {
             m_typeManager = new TypeManager();
             m_variableManager = new VariableManager();
             m_keywords = new KeywordManager();
@@ -66,7 +43,8 @@ namespace Intellua
             init();
         }
 
-        public AutoCompleteData(AutoCompleteData parent) {
+        public AutoCompleteData(AutoCompleteData parent)
+        {
             m_typeManager = new TypeManager(parent.Types);
             m_variableManager = new VariableManager(parent.Variables);
             m_keywords = new KeywordManager();
@@ -87,35 +65,67 @@ namespace Intellua
             init();
         }
 
-        public AutoCompleteData(string filename) {
+        public AutoCompleteData(string filename)
+        {
             AutoCompleteData rst = DoxygenXMLParser.Parse(filename);
             m_typeManager = rst.Types;
             m_variableManager = rst.Variables;
             init();
         }
-        AutoCompleteData m_parent;
 
-        public void setParent(AutoCompleteData parent) {
+        public List<AutoCompleteData> Requires
+        {
+            get { return m_requires; }
+            set { m_requires = value; }
+        }
+
+        internal KeywordManager Keywords
+        {
+            get
+            {
+                return m_keywords;
+            }
+        }
+
+        internal TypeManager Types
+        {
+            get
+            {
+                return m_typeManager;
+            }
+        }
+
+        internal VariableManager Variables
+        {
+            get
+            {
+                return m_variableManager;
+            }
+        }
+        public AutoCompleteData getParent()
+        {
+            return m_parent;
+        }
+
+        public void setParent(AutoCompleteData parent)
+        {
             m_parent = parent;
             if (m_parent != null)
             {
                 m_typeManager.Parent = parent.Types;
                 m_variableManager.Parent = parent.Variables;
             }
-            else {
+            else
+            {
                 m_typeManager.Parent = null;
                 m_variableManager.Parent = null;
             }
+        }
 
-        }
-        List<AutoCompleteData> m_requires = new List<AutoCompleteData>();
-        public List<AutoCompleteData> Requires
+        private void init()
         {
-            get { return m_requires; }
-            set { m_requires = value; }
-        }
-        public AutoCompleteData getParent() {
-            return m_parent;
+            m_typeManager.Requires = Requires;
+            m_variableManager.Requires = Requires;
         }
     }
 }
