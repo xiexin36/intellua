@@ -45,6 +45,7 @@ namespace SCide
             this.printToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printPreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadClassDefinitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,7 +129,6 @@ namespace SCide
             this.undoToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.redoToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolIncremental = new ScintillaNET.ToolStripIncrementalSearcher();
-            this.reloadClassDefinitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -282,6 +282,13 @@ namespace SCide
             this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.printPreviewToolStripMenuItem.Text = "Print Pre&view...";
             this.printPreviewToolStripMenuItem.Click += new System.EventHandler(this.printPreviewToolStripMenuItem_Click);
+            // 
+            // reloadClassDefinitionToolStripMenuItem
+            // 
+            this.reloadClassDefinitionToolStripMenuItem.Name = "reloadClassDefinitionToolStripMenuItem";
+            this.reloadClassDefinitionToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.reloadClassDefinitionToolStripMenuItem.Text = "Reload Class Definition";
+            this.reloadClassDefinitionToolStripMenuItem.Click += new System.EventHandler(this.reloadClassDefinitionToolStripMenuItem_Click);
             // 
             // exitToolStripSeparator
             // 
@@ -955,13 +962,6 @@ namespace SCide
             this.toolIncremental.Name = "toolIncremental";
             this.toolIncremental.Scintilla = null;
             this.toolIncremental.Size = new System.Drawing.Size(264, 24);
-            // 
-            // reloadClassDefinitionToolStripMenuItem
-            // 
-            this.reloadClassDefinitionToolStripMenuItem.Name = "reloadClassDefinitionToolStripMenuItem";
-            this.reloadClassDefinitionToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.reloadClassDefinitionToolStripMenuItem.Text = "Reload Class Definition";
-            this.reloadClassDefinitionToolStripMenuItem.Click += new System.EventHandler(this.reloadClassDefinitionToolStripMenuItem_Click);
             // 
             // MainForm
             // 
