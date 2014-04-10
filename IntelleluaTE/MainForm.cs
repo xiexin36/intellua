@@ -10,7 +10,7 @@ using System.ServiceModel;
 #endregion Using Directives
 
 
-namespace SCide
+namespace IntelluaTE
 {
     internal sealed partial class MainForm : Form
     {

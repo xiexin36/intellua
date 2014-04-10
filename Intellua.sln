@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intellua", "Intellua.csproj", "{4A13DA78-292A-43E1-964E-EB679CB77AE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntelluaIDE", "SCide\IntelluaIDE.csproj", "{FB3E07AB-E0FA-4122-BE64-BFFEF510201B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntelluaTE", "IntelleluaTE\IntelluaTE.csproj", "{FB3E07AB-E0FA-4122-BE64-BFFEF510201B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

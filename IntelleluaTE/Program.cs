@@ -9,7 +9,7 @@ using System.ServiceModel.Description;
 #endregion Using Directives
 
 
-namespace SCide
+namespace IntelluaTE
 {
     public class ServiceProxy : ClientBase<IService1>
     {

@@ -1,4 +1,4 @@
-namespace SCide
+namespace IntelluaTE
 {
     partial class AboutForm
     {

@@ -8,8 +8,8 @@
     <ProjectGuid>{FB3E07AB-E0FA-4122-BE64-BFFEF510201B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SCide</RootNamespace>
-    <AssemblyName>IntelluaIDE</AssemblyName>
+    <RootNamespace>IntelluaTE</RootNamespace>
+    <AssemblyName>IntelluaTE</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -26,7 +26,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <ApplicationIcon>Resources\IconApplication.ico</ApplicationIcon>
-    <StartupObject>SCide.Program</StartupObject>
+    <StartupObject>IntelluaTE.Program</StartupObject>
     <TargetFrameworkProfile />
     <PublishUrl>http://localhost/SCide/</PublishUrl>
     <Install>true</Install>

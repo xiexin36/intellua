@@ -7,7 +7,7 @@ using System.Windows.Forms;
 #endregion Using Directives
 
 
-namespace SCide
+namespace IntelluaTE
 {
     internal sealed partial class AboutForm : Form
     {
