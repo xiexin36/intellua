@@ -2,13 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intellua", "Intellua.csproj", "{4A13DA78-292A-43E1-964E-EB679CB77AE9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB} = {F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntelluaIDE", "SCide\IntelluaIDE.csproj", "{FB3E07AB-E0FA-4122-BE64-BFFEF510201B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScintillaNET", "d:\Users\AzureBlaze\Desktop\2.6\ScintillaNET\ScintillaNET.csproj", "{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,18 +41,6 @@ Global
 		{FB3E07AB-E0FA-4122-BE64-BFFEF510201B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FB3E07AB-E0FA-4122-BE64-BFFEF510201B}.Release|Win32.ActiveCfg = Release|Any CPU
 		{FB3E07AB-E0FA-4122-BE64-BFFEF510201B}.Release|x86.ActiveCfg = Release|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|Win32.ActiveCfg = Release|Any CPU
-		{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

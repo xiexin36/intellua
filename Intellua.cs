@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Intellua
 {
-    public class Intellua : ScintillaNET.Scintilla
+    public class Intellua : ScintillaNET.Scintilla, System.ComponentModel.ISupportInitialize
     {
         #region Fields (5)
 
@@ -25,6 +25,8 @@ namespace Intellua
 
         public Intellua()
         {
+            
+
             this.CallTipClick += new System.EventHandler<ScintillaNET.CallTipClickEventArgs>(this.intellua_CallTipClick);
             this.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.intellua_CharAdded);
             this.TextDeleted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.intellua_TextDeleted);
@@ -61,7 +63,17 @@ namespace Intellua
 
             m_source = new IntelluaSource(this);
         }
+        public new void EndInit()
+        {
+            base.EndInit();
+            Styles[ScintillaNET.StylesCommon.BraceBad].ForeColor = System.Drawing.Color.Red;
+            Styles[ScintillaNET.StylesCommon.BraceLight].ForeColor = System.Drawing.Color.Magenta;
 
+            Styles[21].ForeColor = System.Drawing.Color.DarkMagenta;
+            Styles[22].ForeColor = System.Drawing.Color.DarkMagenta;
+
+            Lexing.Colorize();
+        }
         public AutoCompleteData AutoCompleteData
         {
             get

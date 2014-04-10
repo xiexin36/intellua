@@ -7,12 +7,12 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("IntelluaIDE")]
-[assembly: AssemblyDescription("IntelluaIDE")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("ScintillaNET Team")]
-[assembly: AssemblyProduct("ScintillaNET")]
-[assembly: AssemblyCopyright("Copyright (C) 2012 ScintillaNET. All rights reserved.")]
-[assembly: AssemblyTrademark("http://scintillanet.codeplex.com/")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Intellua")]
+[assembly: AssemblyCopyright("Copyright (C) 2014 Intellua. All rights reserved.")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -30,7 +30,7 @@ using System.Resources;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.5.2.0")]
-[assembly: AssemblyFileVersion("2.5.2.0")]
+[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyFileVersion("0.5.0.0")]
 [assembly: AssemblyInformationalVersion("2.5.2.0")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]

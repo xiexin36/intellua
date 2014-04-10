@@ -168,13 +168,7 @@ namespace SCide
         {
            
             InitializeComponent();
-            scintilla.Styles[ScintillaNET.StylesCommon.BraceBad].ForeColor = System.Drawing.Color.Red;
-            scintilla.Styles[ScintillaNET.StylesCommon.BraceLight].ForeColor = System.Drawing.Color.Magenta;
-
-            scintilla.Styles[21].ForeColor = System.Drawing.Color.DarkMagenta;
-            scintilla.Styles[22].ForeColor = System.Drawing.Color.DarkMagenta;
-
-            scintilla.Lexing.Colorize();
+            
             scintilla.setParent(Program.data);
 
         }
