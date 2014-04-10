@@ -39,6 +39,10 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ScintillaNET, Version=2.5.2.0, Culture=neutral, PublicKeyToken=948d6c9751444115, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ScintillaNet\ScintillaNET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,6 +63,7 @@
     <Compile Include="FileParser.cs" />
     <Compile Include="IntelluaSource.cs" />
     <Compile Include="Keyword.cs" />
+    <Compile Include="LuaLexer.cs" />
     <Compile Include="MemberChain.cs" />
     <Compile Include="DoxygenXMLParser.cs" />
     <Compile Include="Function.cs" />
@@ -73,6 +78,9 @@
     </Compile>
     <Compile Include="Type.cs" />
     <Compile Include="Variable.cs" />
+    <EmbeddedResource Include="Intellua.resx">
+      <DependentUpon>Intellua.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -99,22 +107,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ScintillaNET.xml" />
     <EmbeddedResource Include="function.png" />
     <EmbeddedResource Include="member.png" />
     <EmbeddedResource Include="method.png" />
     <Content Include="intelluaConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SciLexer.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <EmbeddedResource Include="ScintillaNET.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="ScintillaNet\src\ScintillaNET.csproj">
-      <Project>{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}</Project>
-      <Name>ScintillaNET</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

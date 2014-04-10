@@ -38,15 +38,9 @@
             this.scintilla.AutoComplete.AutoHide = false;
             this.scintilla.AutoComplete.IsCaseSensitive = false;
             this.scintilla.AutoComplete.ListString = "";
-            this.scintilla.ConfigurationManager.Language = "lua";
             this.scintilla.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scintilla.Indentation.ShowGuides = true;
             this.scintilla.Indentation.TabWidth = 2;
-            this.scintilla.Lexing.Lexer = ScintillaNET.Lexer.Lua;
-            this.scintilla.Lexing.LexerName = "lua";
-            this.scintilla.Lexing.LineCommentPrefix = "";
-            this.scintilla.Lexing.StreamCommentPrefix = "{ ";
-            this.scintilla.Lexing.StreamCommentSufix = " }";
             this.scintilla.LineWrapping.VisualFlags = ScintillaNET.LineWrappingVisualFlags.End;
             this.scintilla.Location = new System.Drawing.Point(0, 0);
             this.scintilla.Margins.Margin0.Width = 20;
@@ -59,7 +53,6 @@
             
             this.scintilla.TabIndex = 0;
             this.scintilla.ModifiedChanged += new System.EventHandler(this.scintilla_ModifiedChanged);
-            this.scintilla.StyleNeeded += new System.EventHandler<ScintillaNET.StyleNeededEventArgs>(this.scintilla_StyleNeeded);
             // 
             // saveFileDialog
             // 

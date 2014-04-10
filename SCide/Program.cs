@@ -15,7 +15,7 @@ namespace SCide
     {
         public ServiceProxy()
             : base(new ServiceEndpoint(ContractDescription.GetContract(typeof(IService1)),
-                new NetNamedPipeBinding(), new EndpointAddress("net.pipe://localhost/MikobusterLuaEditor")))
+                new NetNamedPipeBinding(), new EndpointAddress("net.pipe://localhost/IntelluaIDE" + AppDomain.CurrentDomain.BaseDirectory.GetHashCode().ToString())))
         {
 
         }
@@ -42,7 +42,7 @@ namespace SCide
         [STAThread]
         private static void Main(string[] args)
         {
-            System.Threading.Mutex mutex = new System.Threading.Mutex(false, "MyUniqueMutexName");
+            System.Threading.Mutex mutex = new System.Threading.Mutex(false, "IntelluaIDE" + AppDomain.CurrentDomain.BaseDirectory.GetHashCode().ToString());
             try
             {
                 if (mutex.WaitOne(0, false))

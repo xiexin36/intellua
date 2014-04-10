@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SCide</RootNamespace>
-    <AssemblyName>SCide</AssemblyName>
+    <AssemblyName>IntelluaIDE</AssemblyName>
     <SccProjectName>
     </SccProjectName>
     <SccLocalPath>
@@ -67,6 +67,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ScintillaNET, Version=2.6.0.0, Culture=neutral, PublicKeyToken=948d6c9751444115, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ScintillaNet\ScintillaNET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -176,18 +180,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SciLexer.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Intellua.csproj">
       <Project>{4A13DA78-292A-43E1-964E-EB679CB77AE9}</Project>
       <Name>Intellua</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ScintillaNet\src\ScintillaNET.csproj">
-      <Project>{F9B6DABD-BBC1-4638-8CE6-A5C9506BFDCB}</Project>
-      <Name>ScintillaNET</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -201,7 +196,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>xcopy "$(SolutionDir)SciLexer*.dll" "$(TargetDir)" /D /F /K /R /Y
+    <PostBuildEvent>xcopy "$(SolutionDir)ScintillaNet\SciLexer*.dll" "$(TargetDir)" /D /F /K /R /Y
 xcopy "$(SolutionDir)License\License.txt" "$(TargetDir)" /D /F /K /R /Y
 xcopy "$(SolutionDir)Doxygen\classdef.xml" "$(TargetDir)" /D /F /K /R /Y</PostBuildEvent>
   </PropertyGroup>

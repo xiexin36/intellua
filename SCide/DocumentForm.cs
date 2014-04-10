@@ -132,12 +132,6 @@ namespace SCide
         }
 
 
-        private void scintilla_StyleNeeded(object sender, StyleNeededEventArgs e)
-        {
-            // Style the _text
-            
-        }
-
         #endregion Methods
 
 

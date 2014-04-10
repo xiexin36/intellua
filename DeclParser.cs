@@ -315,10 +315,10 @@ namespace Intellua
 
             public void print(int indent)
             {
-                Indent.print(toString() + ";", indent);
+                Indent.print(ToString() + ";", indent);
             }
 
-            public string toString()
+            public override string ToString()
             {
                 string str = "";
                 if (isStatic)
@@ -386,12 +386,12 @@ namespace Intellua
             try
             {
                 m_declarations = parseDeclarations();
-                System.Diagnostics.Debug.Print("==========================");
-                m_declarations.print(0);
+               // System.Diagnostics.Debug.Print("==========================");
+                //m_declarations.print(0);
             }
             catch (System.Exception e)
             {
-                System.Diagnostics.Debug.Print(e.Message);
+                //System.Diagnostics.Debug.Print(e.Message);
             }
         }
 
