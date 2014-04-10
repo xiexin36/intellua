@@ -478,7 +478,7 @@ namespace SCide
             doc.Scintilla.EndOfLine.IsVisible = endOfLineToolStripMenuItem.Checked;
 
             // Set the zoom
-            doc.Scintilla.Zoom = _zoomLevel;
+            doc.Scintilla.ZoomFactor = _zoomLevel;
         }
 
 
@@ -554,7 +554,7 @@ namespace SCide
         {
             // Update zoom level for all files
             foreach (DocumentForm doc in dockPanel.Documents)
-                doc.Scintilla.Zoom = _zoomLevel;
+                doc.Scintilla.ZoomFactor = _zoomLevel;
         }
 
 
@@ -659,8 +659,8 @@ namespace SCide
 
 
             serviceHost = new ServiceHost
-            (typeof(Service), new Uri[] { new Uri("net.pipe://localhost/") });
-            serviceHost.AddServiceEndpoint(typeof(IService1), new NetNamedPipeBinding(), "MikobusterLuaEditor");
+            (typeof(Service), new Uri[] { new Uri("net.pipe://localhost/IntelluaIDE" + AppDomain.CurrentDomain.BaseDirectory.GetHashCode().ToString()) });
+            serviceHost.AddServiceEndpoint(typeof(IService1), new NetNamedPipeBinding(), "");
                 serviceHost.Open();
 
                 Console.WriteLine("Service started. Available in following endpoints");

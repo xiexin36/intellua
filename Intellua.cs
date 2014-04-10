@@ -25,9 +25,6 @@ namespace Intellua
 
         public Intellua()
         {
-            this.AutoCompleteAccepted += new System.EventHandler<ScintillaNET.AutoCompleteAcceptedEventArgs>(this.intellua_AutoCompleteAccepted);
-            this.AutoCompleteCancelled += new System.EventHandler<ScintillaNET.NativeScintillaEventArgs>(this.intellua_AutoCompleteCancelled);
-            this.AutoCompleteMoved += new System.EventHandler<ScintillaNET.NativeScintillaEventArgs>(this.intellua_AutoCompleteMoved);
             this.CallTipClick += new System.EventHandler<ScintillaNET.CallTipClickEventArgs>(this.intellua_CallTipClick);
             this.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.intellua_CharAdded);
             this.TextDeleted += new System.EventHandler<ScintillaNET.TextModifiedEventArgs>(this.intellua_TextDeleted);
@@ -157,21 +154,13 @@ namespace Intellua
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
-        private void intellua_AutoCompleteAccepted(object sender, ScintillaNET.AutoCompleteAcceptedEventArgs e)
-        {
-            m_tooltip.Hide();
+        private void autoCompleteHided() {
+            if(m_tooltip!=null)m_tooltip.Hide();
         }
-
-        private void intellua_AutoCompleteCancelled(object sender, EventArgs e)
-        {
-            m_tooltip.Hide();
-        }
-
-        private void intellua_AutoCompleteMoved(object sender, ScintillaNET.NativeScintillaEventArgs e)
-        {
+        private void autoCompleteIndexChanged() {
+            if (AutoComplete.SelectedIndex == -1) return;
             m_tooltip.setText(m_autocompleteList[AutoComplete.SelectedIndex].getToolTipString());
         }
-
         private void intellua_CallTipClick(object sender, ScintillaNET.CallTipClickEventArgs e)
         {
             Function func = m_calltipFuncion.Func;
@@ -398,6 +387,7 @@ namespace Intellua
         private void ShowAutoComplete(int lengthEntered, List<IAutoCompleteItem> list)
         {
             m_autocompleteList = list;
+            
             List<string> str = new List<string>();
             foreach (IAutoCompleteItem item in list)
             {
@@ -430,7 +420,28 @@ namespace Intellua
                 CallTip.Hide();
             }
         }
-
+        protected override void WndProc(ref System.Windows.Forms.Message m) {
+            //
+            if (AutoComplete != null )
+            {
+                int acItem = AutoComplete.SelectedIndex;
+                base.WndProc(ref m);
+                if (!AutoComplete.IsActive)
+                {
+                    autoCompleteHided();
+                }
+                else
+                {
+                    if (acItem != AutoComplete.SelectedIndex)
+                    {
+                        autoCompleteIndexChanged();
+                    }
+                }
+            }
+            else {
+                base.WndProc(ref m);
+            }
+        }
         #endregion Methods
 
         [StructLayout(LayoutKind.Sequential)]
