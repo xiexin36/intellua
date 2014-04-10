@@ -71,8 +71,9 @@ namespace Intellua
 
             Styles[21].ForeColor = System.Drawing.Color.DarkMagenta;
             Styles[22].ForeColor = System.Drawing.Color.DarkMagenta;
-
+            AutoComplete.AutoHide = false;
             Lexing.Colorize();
+            
         }
         public AutoCompleteData AutoCompleteData
         {
