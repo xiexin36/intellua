@@ -196,8 +196,8 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>xcopy "$(SolutionDir)ScintillaNet\SciLexer*.dll" "$(TargetDir)" /D /F /K /R /Y
-xcopy "$(SolutionDir)License\License.txt" "$(TargetDir)" /D /F /K /R /Y
-xcopy "$(SolutionDir)Doxygen\classdef.xml" "$(TargetDir)" /D /F /K /R /Y</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)License\License.txt" "$(TargetDir)" /D /F /K /R /C
+xcopy "$(SolutionDir)Doxygen\classdef.xml" "$(TargetDir)" /D /F /K /R /C
+exit /b 0</PostBuildEvent>
   </PropertyGroup>
 </Project>
