@@ -1,4 +1,4 @@
-namespace SCide
+namespace IntelluaTE
 {
     partial class MainForm
     {
@@ -182,7 +182,7 @@ namespace SCide
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageFileNew;
+            this.newToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageFileNew;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
@@ -191,7 +191,7 @@ namespace SCide
             // 
             // openToolStripMenuItem
             // 
-            this.openToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageFileOpen;
+            this.openToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageFileOpen;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
@@ -217,7 +217,7 @@ namespace SCide
             // 
             // saveToolStripMenuItem
             // 
-            this.saveToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageFileSave;
+            this.saveToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageFileSave;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
@@ -233,7 +233,7 @@ namespace SCide
             // 
             // saveAllStripMenuItem
             // 
-            this.saveAllStripMenuItem.Image = global::SCide.Properties.Resources.ImageFileSaveAll;
+            this.saveAllStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageFileSaveAll;
             this.saveAllStripMenuItem.Name = "saveAllStripMenuItem";
             this.saveAllStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
@@ -268,7 +268,7 @@ namespace SCide
             // 
             // printToolStripMenuItem
             // 
-            this.printToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageFilePrint;
+            this.printToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageFilePrint;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.printToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
@@ -277,7 +277,7 @@ namespace SCide
             // 
             // printPreviewToolStripMenuItem
             // 
-            this.printPreviewToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageFilePrintPreview;
+            this.printPreviewToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageFilePrintPreview;
             this.printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
             this.printPreviewToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.printPreviewToolStripMenuItem.Text = "Print Pre&view...";
@@ -330,7 +330,7 @@ namespace SCide
             // 
             // undoToolStripMenuItem
             // 
-            this.undoToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageEditUndo;
+            this.undoToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageEditUndo;
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
             this.undoToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -339,7 +339,7 @@ namespace SCide
             // 
             // redoToolStripMenuItem
             // 
-            this.redoToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageEditRedo;
+            this.redoToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageEditRedo;
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
             this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
             this.redoToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -353,7 +353,7 @@ namespace SCide
             // 
             // cutToolStripMenuItem
             // 
-            this.cutToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageEditCut;
+            this.cutToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageEditCut;
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
             this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
             this.cutToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -362,7 +362,7 @@ namespace SCide
             // 
             // copyToolStripMenuItem
             // 
-            this.copyToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageEditCopy;
+            this.copyToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageEditCopy;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
             this.copyToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -371,7 +371,7 @@ namespace SCide
             // 
             // pasteToolStripMenuItem
             // 
-            this.pasteToolStripMenuItem.Image = global::SCide.Properties.Resources.ImageEditPaste;
+            this.pasteToolStripMenuItem.Image = global::IntelluaTE.Properties.Resources.ImageEditPaste;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
             this.pasteToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
@@ -868,7 +868,7 @@ namespace SCide
             // newToolStripButton
             // 
             this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.newToolStripButton.Image = global::SCide.Properties.Resources.ImageFileNew;
+            this.newToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageFileNew;
             this.newToolStripButton.Name = "newToolStripButton";
             this.newToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.newToolStripButton.Text = "New File (Ctrl+N)";
@@ -877,7 +877,7 @@ namespace SCide
             // openToolStripButton
             // 
             this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.openToolStripButton.Image = global::SCide.Properties.Resources.ImageFileOpen;
+            this.openToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageFileOpen;
             this.openToolStripButton.Name = "openToolStripButton";
             this.openToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.openToolStripButton.Text = "Open File (Ctrl+O)";
@@ -886,7 +886,7 @@ namespace SCide
             // saveToolStripButton
             // 
             this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveToolStripButton.Image = global::SCide.Properties.Resources.ImageFileSave;
+            this.saveToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageFileSave;
             this.saveToolStripButton.Name = "saveToolStripButton";
             this.saveToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.saveToolStripButton.Text = "Save File (Ctrl+S)";
@@ -895,7 +895,7 @@ namespace SCide
             // saveAllToolStripButton
             // 
             this.saveAllToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveAllToolStripButton.Image = global::SCide.Properties.Resources.ImageFileSaveAll;
+            this.saveAllToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageFileSaveAll;
             this.saveAllToolStripButton.Name = "saveAllToolStripButton";
             this.saveAllToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.saveAllToolStripButton.Text = "Save All Files (Ctrl+Shift+S)";
@@ -909,7 +909,7 @@ namespace SCide
             // cutToolStripButton
             // 
             this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.cutToolStripButton.Image = global::SCide.Properties.Resources.ImageEditCut;
+            this.cutToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageEditCut;
             this.cutToolStripButton.Name = "cutToolStripButton";
             this.cutToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.cutToolStripButton.Text = "Cut (Ctrl+X)";
@@ -918,7 +918,7 @@ namespace SCide
             // copyToolStripButton
             // 
             this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.copyToolStripButton.Image = global::SCide.Properties.Resources.ImageEditCopy;
+            this.copyToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageEditCopy;
             this.copyToolStripButton.Name = "copyToolStripButton";
             this.copyToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.copyToolStripButton.Text = "Copy (Ctrl+C)";
@@ -927,7 +927,7 @@ namespace SCide
             // pasteToolStripButton
             // 
             this.pasteToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.pasteToolStripButton.Image = global::SCide.Properties.Resources.ImageEditPaste;
+            this.pasteToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageEditPaste;
             this.pasteToolStripButton.Name = "pasteToolStripButton";
             this.pasteToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.pasteToolStripButton.Text = "Paste (Ctrl+V)";
@@ -941,7 +941,7 @@ namespace SCide
             // undoToolStripButton
             // 
             this.undoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.undoToolStripButton.Image = global::SCide.Properties.Resources.ImageEditUndo;
+            this.undoToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageEditUndo;
             this.undoToolStripButton.Name = "undoToolStripButton";
             this.undoToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.undoToolStripButton.Text = "Undo (Ctrl+Z)";
@@ -950,7 +950,7 @@ namespace SCide
             // redoToolStripButton
             // 
             this.redoToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.redoToolStripButton.Image = global::SCide.Properties.Resources.ImageEditRedo;
+            this.redoToolStripButton.Image = global::IntelluaTE.Properties.Resources.ImageEditRedo;
             this.redoToolStripButton.Name = "redoToolStripButton";
             this.redoToolStripButton.Size = new System.Drawing.Size(23, 24);
             this.redoToolStripButton.Text = "Redo (Ctrl+Y)";

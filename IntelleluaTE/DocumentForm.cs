@@ -10,7 +10,7 @@ using WeifenLuo.WinFormsUI.Docking;
 #endregion Using Directives
 
 
-namespace SCide
+namespace IntelluaTE
 {
     internal sealed partial class DocumentForm : DockContent
     {

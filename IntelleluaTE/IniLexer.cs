@@ -7,7 +7,7 @@ using ScintillaNET;
 #endregion Using Directives
 
 
-namespace SCide
+namespace IntelluaTE
 {
     // A helper class to use the Scintilla container as an INI lexer.
     // We'll ignore the fact that SciLexer.DLL already has an INI capable lexer. ;)
