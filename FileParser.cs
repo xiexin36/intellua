@@ -172,6 +172,8 @@ namespace Intellua
             DeclParser dp = new DeclParser();
             dp.parse(m_source.text);
             dp.apply(result);
+            result.Types.removeEmptyNamespace();
+            result.Variables.removeEmptyNamespace();
         }
 
         private void parseRequire()
