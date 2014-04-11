@@ -91,8 +91,18 @@ namespace Intellua
             }
             else
             {
-                m_methods[method.Name].Param.Add(method.Param[0]);
-                m_methods[method.Name].Desc.Add(method.Desc[0]);
+                /*m_methods[method.Name].Param.Add(method.Param[0]);
+                m_methods[method.Name].Desc.Add(method.Desc[0]);*/
+
+                for (int i = 0; i < method.Param.Count; i++)
+                {
+                    if (m_methods[method.Name].Param.Contains(method.Param[i]))
+                    {
+                        continue;
+                    }
+                    m_methods[method.Name].Param.Add(method.Param[i]);
+                    m_methods[method.Name].Desc.Add(method.Desc[i]);
+                }
             }
         }
 

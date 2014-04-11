@@ -243,8 +243,13 @@ namespace Intellua
         {
             if (m_globalFunctions.ContainsKey(func.Name))
             {
-                m_globalFunctions[func.Name].Param.Add(func.Param[0]);
-                m_globalFunctions[func.Name].Desc.Add(func.Desc[0]);
+                for(int i =0;i<func.Param.Count;i++){
+                    if(m_globalFunctions[func.Name].Param.Contains(func.Param[i])) {
+                        continue;
+                    }
+                    m_globalFunctions[func.Name].Param.Add(func.Param[i]);
+                    m_globalFunctions[func.Name].Desc.Add(func.Desc[i]);
+                }
             }
             else
             {
