@@ -19,7 +19,7 @@ namespace IntelluaTE
         // Indicates that calls to the StyleNeeded event
         // should use the custom INI lexer
         private bool _iniLexer;
-
+        public MainForm m_mainForm;
         #endregion Fields
 
 
@@ -186,6 +186,11 @@ namespace IntelluaTE
 
         public void ParseFile() {
             scintilla.queueParseFile();
+        }
+
+        private void scintilla_StatusChanged(object sender, Intellua.StatusChangedEventArgs e)
+        {
+            m_mainForm.setStatusText(e.Text);
         }
     }
 }

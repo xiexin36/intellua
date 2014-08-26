@@ -9,6 +9,9 @@ using System.Text;
 
 namespace Intellua
 {
+    public class StatusChangedEventArgs {
+        public string Text;
+    };
     public class Intellua : ScintillaNET.Scintilla, System.ComponentModel.ISupportInitialize
     {
         #region Fields (5)
@@ -23,6 +26,8 @@ namespace Intellua
         private ToolTip m_tooltip;
         private System.ComponentModel.BackgroundWorker m_worker;
 
+        public delegate void StatusChangedHandler(object sender, StatusChangedEventArgs e);
+        public event StatusChangedHandler StatusChanged;
         public Intellua()
         {
             
@@ -58,7 +63,8 @@ namespace Intellua
             list.Add(new Bitmap(str));
             str = asm.GetManifestResourceStream("Intellua.function.png");
             list.Add(new Bitmap(str));
-
+            str = asm.GetManifestResourceStream("Intellua.type.png");
+            list.Add(new Bitmap(str));
             AutoComplete.RegisterImages(list);
 
             m_source = new IntelluaSource(this);
@@ -217,7 +223,10 @@ namespace Intellua
                 if (char.IsLetterOrDigit(e.Ch) && word.Length >= 3)
                 {
                     List<IAutoCompleteItem> list = m_autoCompleteData.Variables.getList(word);
+                    m_autoCompleteData.Types.appendList(list, word);
                     m_autoCompleteData.Keywords.appendList(list, word);
+
+                    list.Sort();
                     if (list.Count > 0)
                     {
                         ShowAutoComplete(word.Length, list);
@@ -389,8 +398,9 @@ namespace Intellua
 
         private void parseFileDone(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            m_autoCompleteData = e.Result as AutoCompleteData;
-
+            FileParserResult rst = e.Result as FileParserResult;
+            m_autoCompleteData = rst.result;
+            setStatus(rst.msg);
             if (m_parsePending)
             {
                 m_parsePending = false;
@@ -453,6 +463,14 @@ namespace Intellua
             }
             else {
                 base.WndProc(ref m);
+            }
+        }
+
+        public void setStatus(string text) {
+            if (StatusChanged != null) { 
+                StatusChangedEventArgs e= new StatusChangedEventArgs();
+                e.Text=text;
+                StatusChanged(this, e);
             }
         }
         #endregion Methods

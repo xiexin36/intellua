@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 namespace Intellua
 {
     internal class DeclString
@@ -13,7 +13,7 @@ namespace Intellua
         private int m_pos;
 
         private string m_result = "";
-
+        private List<int> m_lines = new List<int>();
         private State m_state;
 
         public DeclString(string str)
@@ -36,6 +36,11 @@ namespace Intellua
                 return m_result;
             }
         }
+        public List<int> Lines {
+            get {
+                return m_lines;
+            }
+        }
         private bool match(string str)
         {
             if (m_pos + str.Length > m_data.Length) return false;
@@ -48,6 +53,13 @@ namespace Intellua
 
         private void parse()
         {
+            List<int> lines = new List<int>();
+            for (int i = 0; i < m_data.Length; i++) { 
+                if(m_data[i]=='\n'){
+                    lines.Add(i);
+                }
+            }
+            int curLine = 0;
             bool running = true;
             while (running)
             {
@@ -166,6 +178,12 @@ namespace Intellua
                             {
                                 string str = m_data.Substring(m_declStart, commentEnd - m_declStart);
                                 m_result += str;
+
+                                for (int i = m_declStart; i != commentEnd; i++)
+                                {
+                                    while (curLine < lines.Count-1 && lines[curLine] < i) curLine++;
+                                    m_lines.Add(curLine+1);
+                                }
                             }
                             m_state = State.SearchCommentStart;
                             break;

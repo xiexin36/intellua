@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Intellua
 {
-    public class Type
+    public class Type : IAutoCompleteItem
     {
         #region Fields (7)
 
@@ -12,9 +12,10 @@ namespace Intellua
         private bool m_hideDeclare = false;
         private Dictionary<string, Variable> m_members;
         private Dictionary<string, Function> m_methods;
+        private Dictionary<string, Type> m_innerClasses;
         private string m_name;
         private Type m_outerClass;
-
+        
         #endregion Fields
 
         #region Constructors (1)
@@ -24,12 +25,17 @@ namespace Intellua
             DisplayName = InternalName = name;
             m_members = new Dictionary<string, Variable>();
             m_methods = new Dictionary<string, Function>();
+            m_innerClasses = new Dictionary<string, Type>();
         }
 
         #endregion Constructors
 
         #region Properties (7)
-
+        public bool Private = false;
+        public override bool isPrivate()
+        {
+            return Private;
+        }
         public Type Base
         {
             get { return m_base; }
@@ -72,9 +78,31 @@ namespace Intellua
             set { m_outerClass = value; }
         }
 
+        public Dictionary<string, Type> InnerClasses
+        {
+            get { return m_innerClasses; }
+            set { m_innerClasses = value; }
+        }
+
         #endregion Properties
 
         #region Methods (3)
+
+        public override string getACString()
+        {
+            return DisplayName + "?3";
+        }
+
+        public override string getName()
+        {
+            return DisplayName;
+        }
+
+        public override string getToolTipString()
+        {
+            return DisplayName;
+        }
+
 
         public void addMember(Variable var)
         {
@@ -104,6 +132,9 @@ namespace Intellua
                     m_methods[method.Name].Desc.Add(method.Desc[i]);
                 }
             }
+        }
+        public void addClass(Type cls) {
+            InnerClasses.Add(cls.DisplayName, cls);
         }
 
         public List<IAutoCompleteItem> getList(bool Static)
@@ -140,6 +171,10 @@ namespace Intellua
                 if (key.Static == Static)
                     rst.Add(key);
             }
+            foreach (Type key in m_innerClasses.Values)
+            {
+                    rst.Add(key);
+            }
             rst.Sort();
             return rst;
         }
@@ -152,12 +187,21 @@ namespace Intellua
             return null;
         }
 
+        public Type getClass(string name) { 
+            if (InnerClasses.ContainsKey(name)) return InnerClasses[name];
+            if (Base != null) return Base.getClass(name);
+            return null;
+
+        }
+
         public Function getMethod(string name)
         {
             if (Methods.ContainsKey(name)) return Methods[name];
             if (Base != null) return Base.getMethod(name);
             return null;
         }
+
+        
         #endregion Methods
     }
 
@@ -242,11 +286,25 @@ namespace Intellua
             foreach (AutoCompleteData ac in Requires)
             {
                 var rst = ac.Types.get(name);
-                if (rst != m_nullType) return rst;
+                if (rst != null && rst != m_nullType && !rst.isPrivate()) return rst;
             }
 
             if (m_parent != null) return m_parent.get(name);
             return m_nullType;
+        }
+
+        public void appendList(List<IAutoCompleteItem> lst, string partialName)
+        {
+            foreach (Type t in m_types.Values)
+            {
+                if (t.OuterClass != null) continue;
+                if (t.DisplayName.StartsWith(partialName,true,null))
+                {
+                    lst.Add(t);
+                }
+            }
+            if (m_parent != null) m_parent.appendList(lst, partialName);
+            //lst.Sort();
         }
 
         public void removeEmptyNamespace()

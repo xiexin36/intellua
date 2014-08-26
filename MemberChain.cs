@@ -365,6 +365,8 @@ namespace Intellua
                 else
                 {
                     t = data.Types.get(word);
+                    if (t.OuterClass != null) return null;
+                    IsNamespace = true;
                 }
             }
 
@@ -396,8 +398,15 @@ namespace Intellua
                     {
                         IsNamespace = v.IsNamespace;
                         t = v.Type;
+                    }else{
+                        Type c = t.getClass(name);
+                        if (t != null) {
+                            IsNamespace = true;
+                            t = c;
+                        }
+                        else return null;
                     }
-                    else return null;
+                    
                 }
             }
             //last
@@ -424,10 +433,14 @@ namespace Intellua
                 {
                     IsNamespace = v.IsNamespace;
                     return v.Type;
-                }
-                else
-                {
-                    return t;
+                }else{
+                    Type c = t.getClass(last);
+                    if(c!=null){
+                        IsNamespace = true;
+                        return c;
+                    }else{
+                        return t;
+                    }
                 }
             }
         }

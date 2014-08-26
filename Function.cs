@@ -26,7 +26,11 @@ namespace Intellua
         #endregion Constructors
 
         #region Properties (7)
-
+        public bool Private = false;
+        public override bool isPrivate()
+        {
+            return Private;
+        }
         public Type Class
         {
             get { return m_class; }

@@ -5,7 +5,10 @@ namespace Intellua
     public class Keyword : IAutoCompleteItem
     {
         private string m_name;
-
+        public override bool isPrivate()
+        {
+            return true;
+        }
         public Keyword(string name)
         {
             Name = name;
@@ -18,7 +21,7 @@ namespace Intellua
         }
         public override string getACString()
         {
-            return Name + "?3";
+            return Name + "?4";
         }
 
         public override string getName()
@@ -50,7 +53,7 @@ namespace Intellua
                     lst.Add(k);
                 }
             }
-            lst.Sort();
+            //lst.Sort();
         }
     }
 }

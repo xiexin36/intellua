@@ -9,9 +9,9 @@ using IntVariable = Intellua.Variable;
  *  (declaration OP_Semicolon)*
  *
  * declaration:
- *  class
- *  variable
- *  function
+ *  KW_Private class
+ *  KW_Private variable
+ *  KW_Private function
  *
  * class:
  *  comment? KW_Class identifier? (OP_Colon identifier)? OP_LBrace declaration* OP_RBrace identifier?
@@ -31,6 +31,7 @@ namespace Intellua
         internal interface Declaration
         {
             void addToDeclarations(Declarations d);
+            void setPrivate();
         };
 
         internal class Class : Declaration
@@ -49,6 +50,8 @@ namespace Intellua
 
             public Type Type;
 
+            public bool Private = false;
+            public void setPrivate() { Private = true; }
             public Class()
             {
             }
@@ -65,7 +68,7 @@ namespace Intellua
                 var.IsNamespace = true;
                 var.IsStatic = true;
                 var.Type = Type;
-
+                var.Private = Private;
                 var.Desc = Desc;
 
                 if (OuterClass == null)
@@ -184,7 +187,8 @@ namespace Intellua
             public List<Variable> parameters = new List<Variable>();
 
             public string type = "";
-
+            public bool Private = false;
+            public void setPrivate() { Private = true; }
             public Function()
             {
             }
@@ -209,7 +213,7 @@ namespace Intellua
                 paramStr += ")";
                 f.Param.Add(paramStr);
                 f.Desc.Add(Desc);
-
+                f.Private = Private;
                 if (c != null && f.Name == c.Name)
                 {
                     f.ReturnType = c.Type;
@@ -290,7 +294,8 @@ namespace Intellua
             public Variable()
             {
             }
-
+            public bool Private = false;
+            public void setPrivate() { Private = true; }
             public void addToDeclarations(Declarations d)
             {
                 d.Variables.Add(this);
@@ -300,7 +305,7 @@ namespace Intellua
             {
                 IntVariable var = new IntVariable(name);
                 var.Type = ac.Types.get(type);
-
+                var.Private = Private;
                 var.Desc = desc;
                 var.IsStatic = isStatic;
                 if (c != null)
@@ -351,6 +356,8 @@ namespace Intellua
 
         private List<DeclToken> m_tokens;
 
+        public string msg = "";
+
         public void apply(AutoCompleteData ac)
         {
             if (m_declarations == null) return;
@@ -380,8 +387,10 @@ namespace Intellua
         {
             DeclString ds = new DeclString(str);
             string declString = ds.Result;
-            DeclTokenizer tokenizer = new DeclTokenizer(declString);
+
+            DeclTokenizer tokenizer = new DeclTokenizer(declString,ds.Lines);
             m_tokens = tokenizer.Result;
+
             m_pos = 0;
             try
             {
@@ -391,6 +400,7 @@ namespace Intellua
             }
             catch (System.Exception e)
             {
+                msg = e.Message;
                 //System.Diagnostics.Debug.Print(e.Message);
             }
         }
@@ -440,20 +450,20 @@ namespace Intellua
                 }
                 else
                 {
-                    throw new System.Exception("baseClass expected");
+                    throw new System.Exception("Line " + peek().Line + ": baseClass expected");
                 }
             }
 
             if (peek().Type != DeclTokenType.OP_LBrace)
             {
-                throw new System.Exception("'{' expected");
+                throw new System.Exception("Line " + peek().Line + ": '{' expected");
             }
             m_pos++;
             rst.Declarations = parseDeclarations();
 
             if (peek().Type != DeclTokenType.OP_RBrace)
             {
-                throw new System.Exception("'}' expected");
+                throw new System.Exception("Line " + peek().Line + ": '}' expected");
             }
             m_pos++;
             if (peek().Type == DeclTokenType.Identifier)
@@ -467,13 +477,31 @@ namespace Intellua
 
         private Decl.Declaration parseDeclaration()
         {
+            bool priv = false;
+            if (peek().Type == DeclTokenType.KW_Private) {
+                priv = true;
+                m_pos++;
+            }
+
             Decl.Declaration rst;
             rst = parseClass();
-            if (rst != null) return rst;
+            if (rst != null)
+            {
+                if(priv) rst.setPrivate();
+                return rst;
+            }
             rst = parseFunction();
-            if (rst != null) return rst;
+            if (rst != null)
+            {
+                if(priv) rst.setPrivate();
+                return rst;
+            }
             rst = parseVariable();
-            if (rst != null) return rst;
+            if (rst != null)
+            {
+                if(priv) rst.setPrivate();
+                return rst;
+            }
             return null;
         }
 
@@ -489,7 +517,7 @@ namespace Intellua
 
                     if (peek().Type != DeclTokenType.OP_SemiColon)
                     {
-                        throw new System.Exception("';' expected");
+                        throw new System.Exception("Line "+peek().Line+": ';' expected");
                     }
                     m_pos++;
                 }
@@ -556,7 +584,7 @@ namespace Intellua
                     Decl.Variable moreVar = parseVariable();
                     if (moreVar == null)
                     {
-                        throw new System.Exception("variable expected");
+                        throw new System.Exception("Line " + peek().Line + ": variable expected");
                     }
                     rst.parameters.Add(moreVar);
                 }
@@ -623,7 +651,7 @@ namespace Intellua
                 }
                 if (peek().Type != DeclTokenType.OP_RSquare)
                 {
-                    throw new System.Exception("']' expected");
+                    throw new System.Exception("Line " + peek().Line + ": ']' expected");
                 }
                 m_pos++;
             }
@@ -633,7 +661,7 @@ namespace Intellua
                 m_pos++;
                 if (peek().Type == DeclTokenType.EOF)
                 {
-                    throw new System.Exception("token expected");
+                    throw new System.Exception("Unexpected EOF");
                 }
                 rst.defaultValue = peek().Data;
                 m_pos++;
