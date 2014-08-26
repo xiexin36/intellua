@@ -31,6 +31,8 @@ namespace Intellua
 
         public abstract string getToolTipString();
 
+        public abstract bool isPrivate();
+
         #endregion Methods
     }
 

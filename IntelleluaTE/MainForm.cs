@@ -258,6 +258,7 @@ namespace IntelluaTE
         private DocumentForm NewDocument()
         {
             DocumentForm doc = new DocumentForm();
+            doc.m_mainForm = this;
             SetScintillaToCurrentOptions(doc);
             doc.Text = String.Format(CultureInfo.CurrentCulture, "{0}{1}", NEW_DOCUMENT_TEXT, ++_newDocumentCount);
             doc.Show(dockPanel);
@@ -312,6 +313,7 @@ namespace IntelluaTE
             if (isOpen) return null;
 
             DocumentForm doc = new DocumentForm();
+            doc.m_mainForm = this;
             SetScintillaToCurrentOptions(doc);
             doc.Scintilla.Text = File.ReadAllText(filePath);
             doc.Scintilla.UndoRedo.EmptyUndoBuffer();
@@ -610,6 +612,10 @@ namespace IntelluaTE
         {
             _zoomLevel--;
             UpdateAllScintillaZoom();
+        }
+
+        public void setStatusText(string text) {
+            toolStripStatusLabel1.Text = text;
         }
 
         #endregion Methods

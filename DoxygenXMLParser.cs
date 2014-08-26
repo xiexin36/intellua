@@ -71,12 +71,14 @@ namespace Intellua
                         {
                             Type i = autoCompleteData.Types.get(inner.Attribute("refid").Value);
                             i.OuterClass = t;
+                            t.addClass(i);
                         }
                     }
                 }
             }
 
             //add a static variable for access to classes
+            /*
             foreach (XElement node in doc.Descendants("compounddef"))
             {
                 if (node.Attribute("kind").Value == "class" || node.Attribute("kind").Value == "namespace")
@@ -99,7 +101,7 @@ namespace Intellua
                         t.OuterClass.addMember(var);
                     }
                 }
-            }
+            }*/
 
             //add member and methods for classes
             foreach (XElement node in doc.Descendants("compounddef"))

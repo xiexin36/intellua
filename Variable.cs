@@ -10,7 +10,7 @@ namespace Intellua
         private Scope m_parent = null;
 
         private int m_startPos = 0;
-
+        
         private List<Variable> m_variables = new List<Variable>();
 
         public List<Scope> Childs
@@ -145,7 +145,11 @@ namespace Intellua
         #region Methods (3)
 
         // Public Methods (3) 
-
+        public bool Private = false;
+        public override bool isPrivate()
+        {
+            return Private;
+        }
         public override string getACString()
         {
             return Name + "?0";
@@ -265,6 +269,7 @@ namespace Intellua
             foreach (AutoCompleteData ac in Requires)
             {
                 var rst = ac.Variables.getFunction(name);
+                if (rst != null && rst.Private) rst = null;
                 if (rst != null) return rst;
             }
 
@@ -303,7 +308,11 @@ namespace Intellua
             foreach (AutoCompleteData ac in Requires)
             {
                 var rrst = ac.Variables.getList(partialName);
-                rst.AddRange(rrst);
+                foreach (IAutoCompleteItem t in rrst) {
+                    if (t.isPrivate()) continue;
+                    rst.Add(t);
+                }
+                
             }
 
             rst.Sort();
@@ -332,7 +341,8 @@ namespace Intellua
             foreach (AutoCompleteData ac in Requires)
             {
                 var rst = ac.Variables.getVariable(name, -1);
-                if (rst != null) return rst;
+
+                if (rst != null && !rst.isPrivate()) return rst;
             }
 
             return getVariable(name);

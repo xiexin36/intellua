@@ -12,6 +12,7 @@ namespace Intellua
         EOF,
         KW_Static,
         KW_Class,
+        KW_Private,
         OP_LParen,
         OP_RParen,
         OP_LBrace,
@@ -34,11 +35,14 @@ namespace Intellua
 
         public DeclTokenType Type;
 
-        public DeclToken(string data, DeclTokenType type)
+        public DeclToken(string data, DeclTokenType type,int line)
         {
             Data = data;
             Type = type;
+            Line = line;
         }
+
+        public int Line;
     }
 
     internal class DeclTokenizer
@@ -50,6 +54,7 @@ namespace Intellua
         {
             {"static",DeclTokenType.KW_Static},
             {"class",DeclTokenType.KW_Class},
+            {"private",DeclTokenType.KW_Private},
         };
 
         private static TupleList<string, DeclTokenType> Operands = new TupleList<string, DeclTokenType>
@@ -72,14 +77,16 @@ namespace Intellua
 
         private static string PPNumber = "01234567890.+-xXabcdefABCDEF";
         private string m_data;
+        private List<int> m_lines;
         private int m_pos;
         private List<DeclToken> m_result = new List<DeclToken>();
 
         private State m_state;
 
-        public DeclTokenizer(string str)
+        public DeclTokenizer(string str, List<int> lines)
         {
             m_data = str + EOF;
+            m_lines = lines;
             parse();
         }
 
@@ -99,7 +106,7 @@ namespace Intellua
                 return m_result;
             }
         }
-        private void addComment(string str)
+        private void addComment(string str,int pos)
         {
             if (str.Length == 0 || str[0] != '!') return;
             str = str.Substring(1);
@@ -107,7 +114,7 @@ namespace Intellua
             str.Replace("\r", "");
             str.Replace("\n", "");
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ");
-            m_result.Add(new DeclToken(str, DeclTokenType.Comment));
+            m_result.Add(new DeclToken(str, DeclTokenType.Comment,pos));
         }
 
         private bool match(string str)
@@ -181,8 +188,8 @@ namespace Intellua
                         {
                             if (match(op.Item1))
                             {
+                                m_result.Add(new DeclToken(op.Item1, op.Item2, m_lines[m_pos]));
                                 m_pos += op.Item1.Length - 1;
-                                m_result.Add(new DeclToken(op.Item1, op.Item2));
                                 break;
                             }
                         }
@@ -218,7 +225,7 @@ namespace Intellua
                         {
                             if (kw.Item1 == str)
                             {
-                                m_result.Add(new DeclToken(kw.Item1, kw.Item2));
+                                m_result.Add(new DeclToken(kw.Item1, kw.Item2, m_lines[sequenceStart]));
                                 m_state = State.Start;
                                 found = true;
                                 break;
@@ -229,14 +236,14 @@ namespace Intellua
                             break;
                         }
 
-                        m_result.Add(new DeclToken(str, DeclTokenType.Identifier));
+                        m_result.Add(new DeclToken(str, DeclTokenType.Identifier, m_lines[sequenceStart]));
                         m_state = State.Start;
                         break;
 
                     case State.LineComment:
                         if (match("\n") || match(EOF))
                         {
-                            addComment(m_data.Substring(sequenceStart, m_pos - sequenceStart));
+                            addComment(m_data.Substring(sequenceStart, m_pos - sequenceStart), m_lines[sequenceStart]);
 
                             if (match("\n"))
                             {
@@ -254,7 +261,7 @@ namespace Intellua
                     case State.BlockComment:
                         if (match("*/") || match(EOF))
                         {
-                            addComment(m_data.Substring(sequenceStart, m_pos - sequenceStart));
+                            addComment(m_data.Substring(sequenceStart, m_pos - sequenceStart), m_lines[sequenceStart]);
                             if (match("*/"))
                             {
                                 m_pos += 2;
@@ -281,18 +288,18 @@ namespace Intellua
                             {
                                 string sign = last.Data;
                                 m_result.RemoveAt(m_result.Count - 1);
-                                m_result.Add(new DeclToken(sign + m_data.Substring(sequenceStart, m_pos - sequenceStart), DeclTokenType.Number));
+                                m_result.Add(new DeclToken(sign + m_data.Substring(sequenceStart, m_pos - sequenceStart), DeclTokenType.Number, m_lines[sequenceStart]));
                                 m_state = State.Start;
                                 continue;
                             }
                         }
-                        m_result.Add(new DeclToken(m_data.Substring(sequenceStart, m_pos - sequenceStart), DeclTokenType.Number));
+                        m_result.Add(new DeclToken(m_data.Substring(sequenceStart, m_pos - sequenceStart), DeclTokenType.Number, m_lines[sequenceStart]));
                         m_state = State.Start;
                         break;
                 }
             }
 
-            m_result.Add(new DeclToken("", DeclTokenType.EOF));
+            m_result.Add(new DeclToken("", DeclTokenType.EOF, m_lines.Count == 0 ? 1 : m_lines[m_lines.Count - 1]+1));
         }
 
         private char peek()

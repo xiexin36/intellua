@@ -5,10 +5,14 @@ using System.Xml;
 
 namespace Intellua
 {
+    internal class FileParserResult {
+        public AutoCompleteData result;
+        public string msg;
+    }
     internal class FileParser
     {
         public AutoCompleteData result;
-
+        public string msg = "";
         private static List<string> s_extensions = new List<string>();
 
         private static Dictionary<string, FileParser> s_files = new Dictionary<string, FileParser>();
@@ -71,8 +75,11 @@ namespace Intellua
         public void doWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             parse(false);
+            FileParserResult rst = new FileParserResult();
+            rst.result = result;
+            rst.msg = msg;
 
-            e.Result = result;
+            e.Result = rst;
         }
 
         private static FileParser getFile(string filename, Intellua parent, Dictionary<string, int> required)
@@ -171,7 +178,9 @@ namespace Intellua
         {
             DeclParser dp = new DeclParser();
             dp.parse(m_source.text);
+            msg = dp.msg;
             dp.apply(result);
+            
             result.Types.removeEmptyNamespace();
             result.Variables.removeEmptyNamespace();
         }
@@ -239,9 +248,9 @@ namespace Intellua
                 if (elem == null) continue;
                 Type t = elem.getType(result);
                 if (t == null) continue;
-
+                //if (t.displa == "") continue;
                 //System.Diagnostics.Debug.Print(varName + " added");
-
+                
                 var = new Variable(varName);
                 var.IsStatic = false;
                 var.Type = t;

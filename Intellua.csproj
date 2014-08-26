@@ -110,6 +110,7 @@
     <Content Include="SciLexer.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="type.png" />
     <EmbeddedResource Include="ScintillaNET.xml" />
     <EmbeddedResource Include="function.png" />
     <EmbeddedResource Include="member.png" />
