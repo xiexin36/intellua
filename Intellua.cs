@@ -121,32 +121,7 @@ namespace Intellua
         }
 
         // Public Methods (3) 
-        public Scope parseScope(int start, int end)
-        {
-            int level = Lines[start].FoldLevel;
-            Scope rst = new Scope();
-            rst.StartPos = Lines[start].StartPosition;
-            rst.EndPos = Lines[end].EndPosition;
-
-            for (int i = start; i <= end; i++)
-            {
-                if (Lines[i].FoldLevel != level)
-                {
-                    int s = i;
-                    while (i <= end && Lines[i].FoldLevel != level)
-                    {
-                        i++;
-                    }
-                    i--;
-                    int e = i;
-                    Scope c = parseScope(s, e);
-                    c.Parent = rst;
-                    rst.Childs.Add(c);
-                }
-            }
-
-            return rst;
-        }
+        
 
         public void queueParseFile()
         {

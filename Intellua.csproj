@@ -64,6 +64,8 @@
     <Compile Include="IntelluaSource.cs" />
     <Compile Include="Keyword.cs" />
     <Compile Include="LuaLexer.cs" />
+    <Compile Include="LuaParser.cs" />
+    <Compile Include="LuaTokenizer.cs" />
     <Compile Include="MemberChain.cs" />
     <Compile Include="DoxygenXMLParser.cs" />
     <Compile Include="Function.cs" />
