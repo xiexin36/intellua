@@ -62,7 +62,7 @@ namespace Intellua
             m_source = source;
             result = new AutoCompleteData();
             result.setParent(source.m_intellua.AutoCompleteData.getParent());
-            result.Variables.scope = source.m_intellua.parseScope(0, source.m_intellua.Lines.Count - 1);
+            //result.Variables.scope = source.m_intellua.parseScope(0, source.m_intellua.Lines.Count - 1);
 
             m_lastCheckTime = System.DateTime.Now;
             if (source.FilePath.Length != 0)
@@ -212,8 +212,57 @@ namespace Intellua
                 }
             }
         }
+        private Scope parseScope(int start, int end)
+        {
+            /*int level = m_source.Lines[start].FoldLevel;
+            Scope rst = new Scope();
+            rst.StartPos = Lines[start].StartPosition;
+            rst.EndPos = Lines[end].EndPosition;
+
+            for (int i = start; i <= end; i++)
+            {
+                if (Lines[i].FoldLevel != level)
+                {
+                    int s = i;
+                    while (i <= end && Lines[i].FoldLevel != level)
+                    {
+                        i++;
+                    }
+                    i--;
+                    int e = i;
+                    Scope c = parseScope(s, e);
+                    c.Parent = rst;
+                    rst.Childs.Add(c);
+                }
+            }
+
+            return rst;*/
+            return null;
+        }
+
         private void parseVariables()
         {
+            {
+                LuaTokenizer lt = new LuaTokenizer(m_source.text, 0);
+                List<LuaToken> tokens = new List<LuaToken>();
+                while (true)
+                {
+                    LuaToken t = lt.getToken();
+                    tokens.Add(t);
+                    if (t.Type == LuaTokenType.EOF) break;
+                }
+                System.Diagnostics.Debug.Print("=========");
+                LuaParser lp = new LuaParser(tokens);
+                
+                    lp.parse().print(0);
+                
+                    if(lp.errMsg != null){
+                        msg = lp.errMsg;
+                    }
+                
+            }
+
+
             int pos = 0;
             Byte[] str = m_source.RawText;
 
@@ -250,7 +299,7 @@ namespace Intellua
                 if (t == null) continue;
                 //if (t.displa == "") continue;
                 //System.Diagnostics.Debug.Print(varName + " added");
-                
+
                 var = new Variable(varName);
                 var.IsStatic = false;
                 var.Type = t;
