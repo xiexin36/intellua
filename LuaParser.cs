@@ -1,4 +1,18 @@
-﻿using System;
+﻿/*
+using adjusted BNF to remove left recurrsion:
+value ::= nil | false | true | Number | String | '...' | function |
+tableconstructor | functioncall | var | '(' exp ')'
+exp ::= unop exp | value [binop exp]
+prefix ::= '(' exp ')' | Name
+index ::= '[' exp ']' | '.' Name
+call ::= args | ':' Name args
+suffix ::= call | index
+var ::= prefix {suffix} index | Name
+functioncall ::= prefix {suffix} call
+
+ http://lua-users.org/lists/lua-l/2010-12/msg00699.html
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

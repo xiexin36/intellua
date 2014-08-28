@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Intellua
 {
-    public abstract class IAutoCompleteItem : IComparable
+    public abstract class IAutoCompleteItem : IComparable, IEquatable<IAutoCompleteItem>
     {
         #region Methods (5)
 
@@ -23,6 +23,11 @@ namespace Intellua
             {
                 throw new ArgumentException("Object is not a IAutoCompleteItem");
             }
+        }
+        public bool Equals(IAutoCompleteItem other) {
+            if (this.GetType() != other.GetType()) return false;
+            return getName() == other.getName();
+
         }
 
         public abstract string getACString();

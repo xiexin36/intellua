@@ -369,6 +369,8 @@ namespace Intellua
             m_worker.DoWork += new System.ComponentModel.DoWorkEventHandler(fp.doWork);
             m_worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(parseFileDone);
             m_worker.RunWorkerAsync();
+            
+            
         }
 
         private void parseFileDone(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
