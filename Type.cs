@@ -15,7 +15,7 @@ namespace Intellua
         private Dictionary<string, Type> m_innerClasses;
         private string m_name;
         private Type m_outerClass;
-        
+        public bool NoAC = false;
         #endregion Fields
 
         #region Constructors (1)
@@ -26,6 +26,14 @@ namespace Intellua
             m_members = new Dictionary<string, Variable>();
             m_methods = new Dictionary<string, Function>();
             m_innerClasses = new Dictionary<string, Type>();
+        }
+        public Type(string name,bool noac)
+        {
+            DisplayName = InternalName = name;
+            m_members = new Dictionary<string, Variable>();
+            m_methods = new Dictionary<string, Function>();
+            m_innerClasses = new Dictionary<string, Type>();
+            NoAC = noac;
         }
 
         #endregion Constructors
@@ -298,9 +306,13 @@ namespace Intellua
             foreach (Type t in m_types.Values)
             {
                 if (t.OuterClass != null) continue;
+                if (t.NoAC) continue;
                 if (t.DisplayName.StartsWith(partialName,true,null))
                 {
-                    lst.Add(t);
+                    if (!lst.Contains(t))
+                    {
+                        lst.Add(t);
+                    }
                 }
             }
             if (m_parent != null) m_parent.appendList(lst, partialName);

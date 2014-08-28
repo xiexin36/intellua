@@ -428,6 +428,7 @@ namespace Intellua
             }
             else
             {
+                if (t == null) return null;
                 Variable v = t.getMember(last);
                 if (v != null)
                 {

@@ -292,9 +292,12 @@ namespace Intellua
             if (pos != -1 && m_scope != null) {
                 Scope s = m_scope.getScope(pos);
                 while (s != null) {
-                    foreach (Variable var in s.Variables) {
-                        if (var.StartPos < pos && var.Name.StartsWith(partialName,true,null)) {
-                            if (!rst.Contains(var)) {
+                    for (int i = s.Variables.Count - 1; i >= 0; i--) {
+                        Variable var = s.Variables[i];
+                        if (var.StartPos < pos && var.Name.StartsWith(partialName, true, null))
+                        {
+                            if (!rst.Contains(var))
+                            {
                                 rst.Add(var);
                             }
                         }

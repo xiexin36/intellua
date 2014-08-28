@@ -95,11 +95,20 @@ namespace Intellua
             LuaAST explist = assignExp.Components["explist"];
 
             List<LuaVariable> vl = getVariables(varlist);
-            foreach (LuaVariable var in vl) {
+            for (int i = 0; i < vl.Count; i++)
+            {
+                LuaVariable var = vl[i];
                 Variable v = new Variable(var.Name);
-                v.Type = m_ac.Types.get("object");
+                if (i >= explist.ComponentGroup.Count)
+                {
+                    v.Type = m_ac.Types.get("nil");
+                }
+                else {
+                    v.Type = getExpressionType(explist.ComponentGroup[i]);
+                }
                 v.StartPos = var.StartPos;
                 m_currentScope.addVariable(v);
+                
             }
 
         }
@@ -222,7 +231,7 @@ namespace Intellua
 
             foreach (LuaAST v in varlist.ComponentGroup) {
                 LuaVariable var = getVariable(v);
-                if (var != null) rst.Add(var);
+                rst.Add(var);
             }
             return rst;
         }
@@ -233,7 +242,7 @@ namespace Intellua
             foreach (LuaAST v in namelist.ComponentGroup)
             {
                 LuaVariable var = getVariable(v);
-                if (var != null) rst.Add(var);
+                rst.Add(var);
             }
             return rst;
         }
@@ -262,5 +271,117 @@ namespace Intellua
 
             return rst;
         }
+        
+        Type getExpressionType(LuaAST exp) {
+            if (exp == null)
+            {
+                return m_ac.Types.get("nil");
+            }
+            if (exp.Components.ContainsKey("value")) {
+                return getValueType(exp.Components["value"]);
+            }
+            return getExpressionType(exp.Components["exp"]);
+        }
+
+        Type getValueType(LuaAST value)
+        {
+            if (value.Token != null) {
+                switch (value.Token.Type) { 
+                    case LuaTokenType.KW_nil:
+                        return m_ac.Types.get("nil");
+                    case LuaTokenType.KW_false:
+                    case LuaTokenType.KW_true:
+                        return m_ac.Types.get("bool");
+                    case LuaTokenType.Number:
+                        return m_ac.Types.get("number");
+                    case LuaTokenType.StringLiteral:
+                        return m_ac.Types.get("string");
+                    case LuaTokenType.OP_ellipsis:
+                        return m_ac.Types.get("object");
+                }
+            }
+            if (value.Components.ContainsKey("function"))
+            {
+                return m_ac.Types.get("function");
+            }
+
+            if (value.Components.ContainsKey("tableconstructor"))
+            {
+                return m_ac.Types.get("table");
+            }
+
+            if (value.Components.ContainsKey("functioncall"))
+            {
+                return getFunctionCallType(value.Components["functioncall"]);
+            }
+            if (value.Components.ContainsKey("var"))
+            {
+                return getVarType(value.Components["var"]);
+            }
+            if (value.Components.ContainsKey("exp"))
+            {
+                return getExpressionType(value.Components["exp"]);
+            }
+
+            return m_ac.Types.get("nil");
+        }
+        Type getNameType(LuaAST n) {
+            string name = Encoding.UTF8.GetString(n.Token.data);
+            Variable v = m_ac.Variables.getVariable(name, n.Token.pos);
+            if (v != null) return v.Type;
+            return m_ac.Types.get(name);   
+        }
+        Type getVarType(LuaAST var) {
+            if (var.Name == "Name") {
+                return getNameType(var);
+            }
+
+            Type t = getPrefixType(var.Components["prefix"]);
+            foreach (LuaAST suffix in var.ComponentGroup)
+            {
+                t = getSuffixType(t, suffix);
+            }
+            return t;
+
+
+
+            return m_ac.Types.get("nil");
+        }
+        Type getFunctionCallType(LuaAST func) {
+            Type t = getPrefixType(func.Components["prefix"]);
+            foreach(LuaAST suffix in func.ComponentGroup){
+                t = getSuffixType(t, suffix);
+            }
+            return t;
+        }
+        Type getPrefixType(LuaAST prefix) {
+            if (prefix.Components.ContainsKey("exp")) { 
+                return getExpressionType(prefix.Components["exp"]);
+            }
+            return getNameType(prefix.Components["name"]);
+
+        }
+
+        Type getSuffixType(Type t,LuaAST suffix) {
+            if (suffix.Components.ContainsKey("index")) {
+                LuaAST index = suffix.Components["index"];
+                if(index.Components.ContainsKey("name")){
+                    LuaVariable name = getVariable(index.Components["name"]);
+                    if (t.Members.ContainsKey(name.Name)) {
+                        return t.Members[name.Name].Type;
+                    }
+                    if (t.Methods.ContainsKey(name.Name)) {
+                        return t.Methods[name.Name].ReturnType;
+                    }
+                    if(t.InnerClasses.ContainsKey(name.Name)){
+                        return t.InnerClasses[name.Name];
+                    }
+                }
+            }
+
+            return t;
+        }
+
+
     }
 }
