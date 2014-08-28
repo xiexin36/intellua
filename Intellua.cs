@@ -197,7 +197,7 @@ namespace Intellua
                 string word = chain.Elements[0].Name;
                 if (char.IsLetterOrDigit(e.Ch) && word.Length >= 3)
                 {
-                    List<IAutoCompleteItem> list = m_autoCompleteData.Variables.getList(word);
+                    List<IAutoCompleteItem> list = m_autoCompleteData.Variables.getList(word,CurrentPos);
                     m_autoCompleteData.Types.appendList(list, word);
                     m_autoCompleteData.Keywords.appendList(list, word);
 

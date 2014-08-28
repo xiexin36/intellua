@@ -12,12 +12,14 @@ namespace Intellua
         public LuaToken Token;
         public int start;
         public int end;
+
+
         string indent(int id) {
             return new string(' ', id);
         }
         public void print(int id)
         {
-            System.Diagnostics.Debug.Print(indent(id) + Name + (Token==null? "" : " " + Token.Type.ToString() + ":" + Token.data));
+            System.Diagnostics.Debug.Print(indent(id) + start + "~" + end + " " + Name + (Token == null ? "" : " " + Token.Type.ToString() + ":" + System.Text.Encoding.UTF8.GetString(Token.data)));
             id++;
             foreach(KeyValuePair<string,LuaAST> kv in Components){
                 System.Diagnostics.Debug.Print(indent(id) + kv.Key);
@@ -27,6 +29,21 @@ namespace Intellua
             for(int i=0;i<ComponentGroup.Count;i++){
                 System.Diagnostics.Debug.Print(indent(id) + i.ToString());
                 ComponentGroup[i].print(id+1);
+            }
+        }
+
+        public void transformPosition(List<LuaToken> tokens) {
+            start = tokens[start].pos;
+            end = tokens[end].pos;
+            foreach (KeyValuePair<string, LuaAST> kv in Components)
+            {
+
+                kv.Value.transformPosition(tokens);
+            }
+
+            for (int i = 0; i < ComponentGroup.Count; i++)
+            {
+                ComponentGroup[i].transformPosition(tokens);
             }
         }
     }
@@ -81,9 +98,11 @@ namespace Intellua
                     foreach (LuaAST t in partial.ComponentGroup) {
                         rst.ComponentGroup.Add(t);
                     }
+                    
                 }
             }
-
+            rst.end = m_tokens.Count-1;
+            rst.transformPosition(m_tokens);
             return rst;
         }
 
@@ -424,6 +443,12 @@ namespace Intellua
                 return rst;
 
             } while (false);
+            ps.restore();
+            //allow id-expression
+            do{
+                return parseName();
+            }while(false);
+
             ps.restore();
             return null;
         }
@@ -996,10 +1021,11 @@ namespace Intellua
                     if (peek().Type != LuaTokenType.OP_ellipsis) error("'...' expected");
                     rst.Token = peek();
                     m_pos++;
-                    rst.start = ps.pos;
-                    rst.end = m_pos;
-                    return rst;
+                   
                 }
+                rst.start = ps.pos;
+                rst.end = m_pos;
+                return rst;
             } while (false);
             ps.restore();
             if (peek().Type == LuaTokenType.OP_ellipsis)
@@ -1188,6 +1214,7 @@ namespace Intellua
 
             if (peek().Type == LuaTokenType.Identifier) {
                 LuaAST rst = new LuaAST();
+                rst.Name = "Name";
                 rst.Token = peek();
                 m_pos++;
                 rst.start = ps.pos;
