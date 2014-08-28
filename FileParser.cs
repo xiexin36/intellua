@@ -243,7 +243,7 @@ namespace Intellua
         private void parseVariables()
         {
             {
-                LuaTokenizer lt = new LuaTokenizer(m_source.text, 0);
+                LuaTokenizer lt = new LuaTokenizer(m_source.RawText, 0);
                 List<LuaToken> tokens = new List<LuaToken>();
                 while (true)
                 {
@@ -253,15 +253,22 @@ namespace Intellua
                 }
                 System.Diagnostics.Debug.Print("=========");
                 LuaParser lp = new LuaParser(tokens);
+
+                LuaAST chunk = lp.parse();
+                //chunk.print(0);
+                LuaASTWalker walker = new LuaASTWalker();
+                if (lp.errMsg != null)
+                {
+                    msg = lp.errMsg;
+                }
+
+                walker.walk(chunk, result);
                 
-                    lp.parse().print(0);
                 
-                    if(lp.errMsg != null){
-                        msg = lp.errMsg;
-                    }
                 
             }
 
+/*
 
             int pos = 0;
             Byte[] str = m_source.RawText;
@@ -306,7 +313,7 @@ namespace Intellua
                 var.StartPos = v.StartPos;
                 var.EndPos = elem.EndPos;
                 result.Variables.add(var);
-            }
+            }*/
         }
     }
 }

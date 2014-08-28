@@ -13,6 +13,10 @@ namespace Intellua
         
         private List<Variable> m_variables = new List<Variable>();
 
+        public List<Variable> Variables {
+            get { return m_variables; }
+        }
+        
         public List<Scope> Childs
         {
             get { return m_childs; }
@@ -40,12 +44,15 @@ namespace Intellua
             Scope s = getScope(var.StartPos);
             s.m_variables.Add(var);
         }
-
+        public void addChild(Scope child) {
+            Childs.Add(child);
+            child.Parent = this;
+        }
         public Scope getScope(int pos)
         {
             foreach (Scope s in m_childs)
             {
-                if (s.m_startPos <= pos && s.m_endPos > pos) return s;
+                if (s.m_startPos <= pos && s.m_endPos > pos) return s.getScope(pos);
             }
             return this;
         }
@@ -214,6 +221,7 @@ namespace Intellua
 
         public Scope scope
         {
+            get { return m_scope; }
             set { m_scope = value; }
         }
         #endregion Fields
@@ -278,9 +286,23 @@ namespace Intellua
             return null;
         }
 
-        public List<IAutoCompleteItem> getList(string partialName)
+        public List<IAutoCompleteItem> getList(string partialName,int pos)
         {
             List<IAutoCompleteItem> rst = new List<IAutoCompleteItem>();
+            if (pos != -1 && m_scope != null) {
+                Scope s = m_scope.getScope(pos);
+                while (s != null) {
+                    foreach (Variable var in s.Variables) {
+                        if (var.StartPos < pos && var.Name.StartsWith(partialName,true,null)) {
+                            if (!rst.Contains(var)) {
+                                rst.Add(var);
+                            }
+                        }
+                    }
+                    s = s.Parent;
+                }
+            }
+
             foreach (Variable var in Variables.Values)
             {
                 if (var.Name.StartsWith(partialName, true, null))
@@ -298,7 +320,7 @@ namespace Intellua
             }
             if (m_parent != null)
             {
-                List<IAutoCompleteItem> pr = m_parent.getList(partialName);
+                List<IAutoCompleteItem> pr = m_parent.getList(partialName,pos);
                 foreach (IAutoCompleteItem item in pr)
                 {
                     rst.Add(item);
@@ -307,7 +329,7 @@ namespace Intellua
 
             foreach (AutoCompleteData ac in Requires)
             {
-                var rrst = ac.Variables.getList(partialName);
+                var rrst = ac.Variables.getList(partialName,pos);
                 foreach (IAutoCompleteItem t in rrst) {
                     if (t.isPrivate()) continue;
                     rst.Add(t);

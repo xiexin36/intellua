@@ -62,10 +62,10 @@ namespace Intellua
     }
     internal class LuaToken {
         public LuaTokenType Type;
-        public string data;
+        public Byte[] data;
         public int pos;
         public int line;
-        public LuaToken(LuaTokenType t, string d, int p,int l) {
+        public LuaToken(LuaTokenType t, Byte[] d, int p,int l) {
             Type = t;
             data = d;
             pos = p;
@@ -76,6 +76,29 @@ namespace Intellua
 
     internal class LuaTokenizer
     {
+        private static Byte[] SubArray(Byte[] data, int index, int length)
+        {
+            Byte[] result = new Byte[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
+        }
+        private static Byte[] SubArray(Byte[] data, int index)
+        {
+            int length = data.Length - index;
+            Byte[] result = new Byte[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
+        }
+        private static bool equal(string s, Byte[] b) {
+            if (s.Length != b.Length) return false;
+            for (int i = 0; i < s.Length; i++) {
+                if (s[i] != b[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private static string EOF = "\0";
 
         private static TupleList<string, LuaTokenType> Keywords = new TupleList<string, LuaTokenType>
@@ -134,15 +157,21 @@ namespace Intellua
 
         private static string IdentifierChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"1234567890";
         private static string PPNumber = "01234567890.+-xXabcdefABCDEF";
-        private string m_data;
+        private Byte[] m_data;
         private int m_pos;
         private List<int> m_lines = new List<int>();
 
         private State m_state;
 
-        public LuaTokenizer(string str, int pos)
+        public LuaTokenizer(Byte[] str, int pos)
         {
-            m_data = str + EOF;
+
+            m_data = new Byte[str.Length + 1];
+            for (int i = 0; i < str.Length; i++) {
+                m_data[i] = str[i];
+            }
+            m_data[str.Length] = 0;
+
             m_pos = pos;
 
             m_state = State.Start;
@@ -183,11 +212,12 @@ namespace Intellua
 
         private bool matchChar(string str)
         {
-            return (str.Contains(m_data[m_pos]));
+            char c = Convert.ToChar(m_data[m_pos]);
+            return (str.Contains(c));
         }
         private char peek()
         {
-            return m_data[m_pos];
+            return Convert.ToChar(m_data[m_pos]);
         }
 
         private int getLongBracket() { 
@@ -250,7 +280,7 @@ namespace Intellua
                 {
                     case State.Start:
                         if (matchChar(EOF)) {
-                            return new LuaToken(LuaTokenType.EOF, "", m_data.Length,getLine(m_data.Length));
+                            return new LuaToken(LuaTokenType.EOF, new Byte[1], m_data.Length,getLine(m_data.Length));
                         }
                         if (match("\"")) {
                             m_pos++;
@@ -285,7 +315,7 @@ namespace Intellua
                         {
                             if (match(op.Item1))
                             {
-                                LuaToken rst = new LuaToken(op.Item2, op.Item1, m_pos, getLine(m_pos));
+                                LuaToken rst = new LuaToken(op.Item2, System.Text.Encoding.UTF8.GetBytes(op.Item1), m_pos, getLine(m_pos));
                                 m_pos += op.Item1.Length;
                                 return rst;
                             }
@@ -301,12 +331,12 @@ namespace Intellua
                             continue;
                         }
 
-                        string str = m_data.Substring(sequenceStart, m_pos - sequenceStart);
+                        Byte[] str = SubArray(m_data,sequenceStart, m_pos - sequenceStart);
                         foreach (Tuple<string, LuaTokenType> kw in Keywords)
                         {
-                            if (kw.Item1 == str)
+                            if (equal(kw.Item1,str))
                             {
-                                LuaToken rst = new LuaToken(kw.Item2, kw.Item1, sequenceStart,getLine(sequenceStart));
+                                LuaToken rst = new LuaToken(kw.Item2, System.Text.Encoding.UTF8.GetBytes(kw.Item1), sequenceStart, getLine(sequenceStart));
                                 m_state = State.Start;
                                 return rst;
                             }
@@ -346,14 +376,14 @@ namespace Intellua
                                      m_pos++;
                                  }
                             }
-                            string rst;
+                            Byte[] rst;
                             if (l == -1)
                             {
                                 //EOF
-                                rst = m_data.Substring(sequenceStart);
+                                rst = SubArray(m_data,sequenceStart);
                             }
                             else {
-                                rst = m_data.Substring(sequenceStart, m_pos - sequenceStart);
+                                rst = SubArray(m_data,sequenceStart, m_pos - sequenceStart);
                                 m_pos += l;
                             }
                             m_state = State.Start;
@@ -379,11 +409,11 @@ namespace Intellua
                         m_state = State.Start;
                         if (match(EOF))
                         {
-                            return new LuaToken(LuaTokenType.StringLiteral, m_data.Substring(sequenceStart), sequenceStart,getLine(sequenceStart));
+                            return new LuaToken(LuaTokenType.StringLiteral, SubArray(m_data,sequenceStart), sequenceStart,getLine(sequenceStart));
                         }
                         else {
                             m_pos++;
-                            return new LuaToken(LuaTokenType.StringLiteral, m_data.Substring(sequenceStart, m_pos - sequenceStart - 1), sequenceStart,getLine(sequenceStart));
+                            return new LuaToken(LuaTokenType.StringLiteral, SubArray(m_data, sequenceStart, m_pos - sequenceStart - 1), sequenceStart, getLine(sequenceStart));
                         }
                     case State.Number:
                         while (matchChar(PPNumber)) {
@@ -391,7 +421,7 @@ namespace Intellua
                             continue;
                         }
                         m_state = State.Start;
-                        return new LuaToken(LuaTokenType.Number, m_data.Substring(sequenceStart, m_pos - sequenceStart),sequenceStart,getLine(sequenceStart));
+                        return new LuaToken(LuaTokenType.Number, SubArray(m_data, sequenceStart, m_pos - sequenceStart), sequenceStart, getLine(sequenceStart));
                     default:
                         throw new Exception("unimplemented state!");
                 }
