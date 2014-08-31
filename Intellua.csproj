@@ -76,6 +76,7 @@
     </Compile>
     <Compile Include="Parsing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scope.cs" />
     <Compile Include="ToolTip.cs">
       <SubType>Form</SubType>
     </Compile>

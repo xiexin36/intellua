@@ -288,8 +288,12 @@ namespace Intellua
                             m_state = State.String;
                             continue;
                         }
-                        if(matchChar("--")){
+                        if(match("--")){
                             m_pos+=2;
+                            if (match("@")) {
+                                m_pos++;
+                                continue;
+                            }
                             m_state=State.Comment;
                             continue;
                         }
