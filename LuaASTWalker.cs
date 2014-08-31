@@ -153,7 +153,7 @@ namespace Intellua
             {
                 LuaVariable var = getVariable(st.Components["name"]);
                 Variable v = new Variable(var.Name);
-                v.Type = m_ac.Types.get("object");
+                v.Type = getExpressionType(st.Components["initExp"]);//m_ac.Types.get("object");
                 v.StartPos = var.StartPos;
                 m_currentScope.addVariable(v);
 
@@ -175,7 +175,7 @@ namespace Intellua
                 foreach (LuaVariable var in vl)
                 {
                     Variable v = new Variable(var.Name);
-                    v.Type = m_ac.Types.get("object");
+                    v.Type = m_ac.Types.NullType;
                     v.StartPos = var.StartPos;
                     m_currentScope.addVariable(v);
                 }
@@ -188,11 +188,34 @@ namespace Intellua
         void walkFunctionExp(LuaAST st) {
             LuaFuncName funcname = getFuncname(st.Components["funcname"]);
 
-            if (funcname.Names.Count == 1) {
-                Variable v = new Variable(funcname.Names[0]);
-                v.Type = m_ac.Types.get("function");
-                v.StartPos = st.Components["funcname"].start;
-                m_currentScope.addVariable(v);
+            if (funcname.Names.Count == 1)
+            {
+                Function f = new Function(funcname.Names[0]);
+                f.ReturnType = m_ac.Types.NullType;
+                f.StartPos = st.Components["funcname"].start;
+                
+                string param = "()";
+                LuaAST body = st.Components["funcbody"];
+                if (body.Components.ContainsKey("parlist"))
+                {
+                    param = "(";
+                    List<LuaVariable> vl = getNamelist(body.Components["parlist"].Components["namelist"]);
+                    for (int i = 0; i < vl.Count;i++ )
+                    {
+                        param += (i ==0? "" : ",") + vl[i].Name;
+                    }
+
+                    if (body.Components["parlist"].Token != null) {
+                        param += (vl.Count == 0 ? "" : ",") + "...";
+                    }
+
+                    param += ")";
+                }
+                f.Param.Add(param);
+                f.Desc.Add("");
+                f.Static = true;
+                m_currentScope.addFunction(f);
+                
             }
             walkFuncionBody(st.Components["funcbody"]);
            
@@ -215,7 +238,7 @@ namespace Intellua
                     foreach (LuaVariable var in vl)
                     {
                         Variable v = new Variable(var.Name);
-                        v.Type = m_ac.Types.get("object");
+                        v.Type = m_ac.Types.NullType;
                         v.StartPos = var.StartPos;
                         m_currentScope.addVariable(v);
                     }

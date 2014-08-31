@@ -701,9 +701,14 @@ namespace Intellua
                 rst.ComponentGroup.Add(name);
                 while (peek().Type == LuaTokenType.OP_comma)
                 {
+                    ParserState nps = new ParserState(this);
                     m_pos++;
                     name = parseName();
-                    if (name == null) error("name expected");
+                    if (name == null)
+                    {
+                        nps.restore();
+                        break;
+                    }
                     rst.ComponentGroup.Add(name);
                 }
                 rst.start = ps.pos;

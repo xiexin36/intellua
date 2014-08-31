@@ -27,6 +27,7 @@ namespace Intellua
 
         #region Properties (7)
         public bool Private = false;
+        public int StartPos = -1;
         public override bool isPrivate()
         {
             return Private;
