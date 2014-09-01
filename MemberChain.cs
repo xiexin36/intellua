@@ -376,8 +376,9 @@ namespace Intellua
 
             for (int i = 1; i < Elements.Count - 1; i++)
             {
+                if (t == null) return null;
                 string name = Elements[i].Name;
-
+                
                 if (Elements[i].IsFunction)
                 {
                     Function f = t.getMethod(name);
@@ -409,6 +410,7 @@ namespace Intellua
                     
                 }
             }
+            if (t == null) return null;
             //last
             string last = getLastElement();
 
@@ -428,7 +430,7 @@ namespace Intellua
             }
             else
             {
-                if (t == null) return null;
+                
                 Variable v = t.getMember(last);
                 if (v != null)
                 {
