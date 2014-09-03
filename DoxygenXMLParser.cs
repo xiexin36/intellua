@@ -127,7 +127,9 @@ namespace Intellua
                             string memberTypeID = null;
                             if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
-
+                            else {
+                                memberTypeID = memberType;
+                            }
                             Type mt = autoCompleteData.Types.get(memberTypeID);
                             Variable var = new Variable(memberName);
                             var.Type = mt;
@@ -149,6 +151,8 @@ namespace Intellua
                             string memberTypeID = null;
                             if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
+                            else memberTypeID = memberType;
+
                             Function f = new Function(memberName);
                             f.Param.Add(member.Element("argsstring").Value);
                             f.Desc.Add(member.Element("briefdescription").Value);
@@ -204,6 +208,7 @@ namespace Intellua
                             string memberTypeID = null;
                             if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
+                            else memberTypeID = memberType;
                             Type mt = autoCompleteData.Types.get(memberTypeID);
                             Variable var = new Variable(memberName);
                             var.Type = mt;
@@ -219,6 +224,7 @@ namespace Intellua
                             string memberTypeID = null; ;
                             if (member.Element("type").Element("ref") != null)
                                 memberTypeID = member.Element("type").Element("ref").Attribute("refid").Value;
+                            else memberTypeID = memberType;
                             Type mt = autoCompleteData.Types.get(memberTypeID);
                             Function f = new Function(memberName);
                             f.Param.Add(member.Element("argsstring").Value);

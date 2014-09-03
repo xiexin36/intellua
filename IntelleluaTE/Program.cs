@@ -50,7 +50,10 @@ namespace IntelluaTE
                              // Run the application
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
+                    Intellua.AutoCompleteData autoData = new Intellua.AutoCompleteData("autoclassdef.xml");
                     data = new Intellua.AutoCompleteData("classdef.xml");
+                    data.setParent(autoData);
+                    
                     _mainForm = new MainForm(args);
                     Application.Run(_mainForm);
                 }
