@@ -184,7 +184,7 @@ namespace Intellua
         int getLine(int p) {
             for (int i = 0; i < m_lines.Count; i++) {
                 if (m_lines[i] > p) {
-                    return i;
+                    return i + 1;
                 }
             }
             return m_lines.Count;
@@ -274,6 +274,8 @@ namespace Intellua
             int sequenceStart = -1;
             int longBracketLength = -1;
             bool isComment = false;
+            bool isHex = false;
+            bool isExp = false;
             while (true)
             {
                 switch (m_state)
@@ -300,6 +302,8 @@ namespace Intellua
                         if (Char.IsDigit(peek())) {
                             sequenceStart = m_pos;
                             m_state = State.Number;
+                            isHex = false;
+                            isExp = false;
                             continue;
                         }
                         if(Char.IsWhiteSpace(peek())){
@@ -420,9 +424,36 @@ namespace Intellua
                             return new LuaToken(LuaTokenType.StringLiteral, SubArray(m_data, sequenceStart, m_pos - sequenceStart - 1), sequenceStart, getLine(sequenceStart));
                         }
                     case State.Number:
-                        while (matchChar(PPNumber)) {
-                            m_pos++;
-                            continue;
+                        if (match("0x") || match("0X"))
+                        {
+                            m_pos += 2;
+                            while (matchChar("0123456789abcdefABCDEF"))
+                            {
+                                m_pos++;
+                            }
+                        }
+                        else {
+                            while (Char.IsDigit(peek())) {
+                                m_pos++;
+                            }
+                            if (match(".")) {
+                                m_pos++;
+                                while (Char.IsDigit(peek()))
+                                {
+                                    m_pos++;
+                                }
+                            }
+
+                            if (match("e") || match("E")) {
+                                m_pos++;
+                                if (match("+") || match("-")) {
+                                    m_pos++;
+                                }
+                                while (Char.IsDigit(peek()))
+                                {
+                                    m_pos++;
+                                }
+                            }
                         }
                         m_state = State.Start;
                         return new LuaToken(LuaTokenType.Number, SubArray(m_data, sequenceStart, m_pos - sequenceStart), sequenceStart, getLine(sequenceStart));

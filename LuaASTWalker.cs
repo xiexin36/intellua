@@ -98,22 +98,27 @@ namespace Intellua
             for (int i = 0; i < vl.Count; i++)
             {
                 LuaVariable var = vl[i];
-                Variable v = new Variable(var.Name);
-                if (i >= explist.ComponentGroup.Count)
+                if (var != null)
                 {
-                    v.Type = m_ac.Types.get("nil");
+                    Variable v = new Variable(var.Name);
+                    if (i >= explist.ComponentGroup.Count)
+                    {
+                        v.Type = m_ac.Types.get("nil");
+                    }
+                    else
+                    {
+                        v.Type = getExpressionType(explist.ComponentGroup[i]);
+                    }
+                    v.StartPos = var.StartPos;
+                    m_currentScope.addVariable(v);
                 }
-                else {
-                    v.Type = getExpressionType(explist.ComponentGroup[i]);
-                }
-                v.StartPos = var.StartPos;
-                m_currentScope.addVariable(v);
                 
             }
 
         }
         void walkLocalAssignExp(LuaAST assignExp)
         {
+            if (!assignExp.Components.ContainsKey("explist")) return;
             walkAssignExp(assignExp);
         }
         void walkFunctioncallExp(LuaAST s) { 

@@ -154,14 +154,17 @@ namespace Intellua
                 }
                 catch (Exception e) {
                     if (errMsg == null) errMsg = e.Message;
+
                     statState.restore();
-                    if (peek().Type != LuaTokenType.EOF)
-                    {
+                    int line = peek().line;
+                    while (peek().Type != LuaTokenType.EOF && peek().line <= line) {
                         m_pos++;
                     }
-                    else {
+                    if (peek().Type == LuaTokenType.EOF)
+                    {
                         break;
                     }
+                    
                 }
                 
             }
@@ -304,6 +307,8 @@ namespace Intellua
                     LuaAST elexp = parseExp();
                     if(elexp == null) error("expression expected");
                     expblock.Components.Add("exp", elexp);
+                    if (peek().Type != LuaTokenType.KW_then) error("'then' expected");
+                    m_pos++;
                     LuaAST elblock = parseBlock();
                     if (elblock == null) error("block expected");
                     expblock.Components.Add("block", elblock);
@@ -316,7 +321,8 @@ namespace Intellua
                     if (elblock == null) error("block expected");
                     rst.Components.Add("elseBlock", elblock);
                 }
-
+                if (peek().Type != LuaTokenType.KW_end) error("'end' expected");
+                m_pos++;
                 rst.start = ps.pos;
                 rst.end = m_pos;
                 return rst;
@@ -444,14 +450,20 @@ namespace Intellua
                 m_pos++;
                 LuaAST varlist = parseVarlist();
                 if (varlist == null) error("name expected"); ;
-                if (peek().Type != LuaTokenType.OP_assign) break;
-                m_pos++;
-                LuaAST explist = parseExplist();
-                if (explist == null) break;
+
                 LuaAST rst = new LuaAST();
                 rst.Name = "localAssignExp";
                 rst.Components.Add("varlist", varlist);
-                rst.Components.Add("explist", explist);
+                
+
+                if (peek().Type == LuaTokenType.OP_assign)
+                {
+                    m_pos++;
+                    LuaAST explist = parseExplist();
+                    if (explist == null) error("expression expected");
+                    rst.Components.Add("explist", explist);
+                }
+
                 rst.start = ps.pos;
                 rst.end = m_pos;
                 return rst;
@@ -662,12 +674,7 @@ namespace Intellua
         }
         LuaAST parseVar() {
             ParserState ps = new ParserState(this);
-            do
-            {
-                LuaAST name = parseName();
-                if (name != null) return name;
-            } while (false);
-            ps.restore();
+            
             do
             {
                 LuaAST prefix = parsePrefix();
@@ -680,13 +687,20 @@ namespace Intellua
                     rst.ComponentGroup.Add(suffix);
                     suffix = parseSuffix();
                 }
-                if (rst.ComponentGroup.Count == 0 || rst.ComponentGroup[rst.ComponentGroup.Count - 1].Name != "index") error("index expected");
+                if (rst.ComponentGroup.Count == 0 || !rst.ComponentGroup[rst.ComponentGroup.Count - 1].Components.ContainsKey("index")) break; //error("index expected");
                 rst.start = ps.pos;
                 rst.end = m_pos;
                 return rst;
             } while (false);
             
             ps.restore();
+            do
+            {
+                LuaAST name = parseName();
+                if (name != null) return name;
+            } while (false);
+            ps.restore();
+
             return null;
         }
         LuaAST parseNamelist() {
@@ -804,6 +818,7 @@ namespace Intellua
                 rst.end = m_pos;
                 return rst;
             } while (false);
+            ps.restore();
 
             LuaAST name = parseName();
             if (name != null)
@@ -1138,7 +1153,7 @@ namespace Intellua
             {
                 LuaAST name = parseName();
                 if (name == null) break;
-                if (peek().Type != LuaTokenType.OP_assign) error("'=' expected");
+                if (peek().Type != LuaTokenType.OP_assign) break;
                 m_pos++;
                 LuaAST exp = parseExp();
                 if ( exp == null) error("expression expected");
