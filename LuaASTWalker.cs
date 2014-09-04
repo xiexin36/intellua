@@ -204,14 +204,17 @@ namespace Intellua
                 if (body.Components.ContainsKey("parlist"))
                 {
                     param = "(";
-                    List<LuaVariable> vl = getNamelist(body.Components["parlist"].Components["namelist"]);
-                    for (int i = 0; i < vl.Count;i++ )
+                    List<LuaVariable> vl = null;
+                    if (body.Components["parlist"].Components.ContainsKey("namelist"))
                     {
-                        param += (i ==0? "" : ",") + vl[i].Name;
+                        vl = getNamelist(body.Components["parlist"].Components["namelist"]);
+                        for (int i = 0; i < vl.Count; i++)
+                        {
+                            param += (i == 0 ? "" : ",") + vl[i].Name;
+                        }
                     }
-
                     if (body.Components["parlist"].Token != null) {
-                        param += (vl.Count == 0 ? "" : ",") + "...";
+                        param += ((vl == null || vl.Count == 0) ? "" : ",") + "...";
                     }
 
                     param += ")";
@@ -239,13 +242,16 @@ namespace Intellua
             m_currentScope = s;
             {
                 if(st.Components.ContainsKey("parlist")){
-                    List<LuaVariable> vl = getNamelist(st.Components["parlist"].Components["namelist"]);
-                    foreach (LuaVariable var in vl)
+                    if (st.Components["parlist"].Components.ContainsKey("namelist"))
                     {
-                        Variable v = new Variable(var.Name);
-                        v.Type = m_ac.Types.NullType;
-                        v.StartPos = var.StartPos;
-                        m_currentScope.addVariable(v);
+                        List<LuaVariable> vl = getNamelist(st.Components["parlist"].Components["namelist"]);
+                        foreach (LuaVariable var in vl)
+                        {
+                            Variable v = new Variable(var.Name);
+                            v.Type = m_ac.Types.NullType;
+                            v.StartPos = var.StartPos;
+                            m_currentScope.addVariable(v);
+                        }
                     }
                 }
 

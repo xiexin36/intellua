@@ -155,7 +155,8 @@ namespace Intellua
             {".",LuaTokenType.OP_dot},
         };
 
-        private static string IdentifierChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_\"1234567890";
+        private static string IdentifierChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_1234567890";
+        private static string IdentifierStart = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
         private static string PPNumber = "01234567890.+-xXabcdefABCDEF";
         private Byte[] m_data;
         private int m_pos;
@@ -328,9 +329,13 @@ namespace Intellua
                                 return rst;
                             }
                         }
-
-                        m_state = State.Identifier;
-                        sequenceStart = m_pos;
+                        if (matchChar(IdentifierStart))
+                        {
+                            m_state = State.Identifier;
+                            sequenceStart = m_pos;
+                            continue;
+                        }
+                        m_pos++;
                         continue;
 
                     case State.Identifier:
