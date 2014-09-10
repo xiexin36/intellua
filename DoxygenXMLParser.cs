@@ -17,6 +17,10 @@ namespace Intellua
             //scan all classes first.
             foreach (XElement node in doc.Descendants("compounddef"))
             {
+                if (node.Attribute("kind").Value == "struct") {
+                    node.Attribute("kind").Value = "class";
+                }
+
                 if (node.Attribute("kind").Value == "class" || node.Attribute("kind").Value == "namespace")
                 {
                     string name = node.Element("compoundname").Value;
