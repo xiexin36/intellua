@@ -1134,7 +1134,7 @@ namespace Intellua
                 m_pos++;
                 LuaAST nameExp = parseExp();
                 if(nameExp == null) error("expression expected");
-                if (peek().Type != LuaTokenType.OP_lbracket) error("']' expected");
+                if (peek().Type != LuaTokenType.OP_rbracket) error("']' expected");
                 m_pos++;
                 if (peek().Type != LuaTokenType.OP_assign) error("'=' expected");
                 m_pos++;

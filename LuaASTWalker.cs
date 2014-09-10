@@ -103,14 +103,20 @@ namespace Intellua
                     Variable v = new Variable(var.Name);
                     if (i >= explist.ComponentGroup.Count)
                     {
-                        v.Type = m_ac.Types.get("nil");
+                        continue;
                     }
                     else
                     {
                         v.Type = getExpressionType(explist.ComponentGroup[i]);
+                        if (v.Type.InternalName == "(UnknownType)")
+                        {
+                            continue;
+                        }
                     }
                     v.StartPos = var.StartPos;
+                    
                     m_currentScope.addVariable(v);
+                    
                 }
                 
             }
@@ -363,6 +369,8 @@ namespace Intellua
             string name = Encoding.UTF8.GetString(n.Token.data);
             Variable v = m_ac.Variables.getVariable(name, n.Token.pos);
             if (v != null) return v.Type;
+            Function f = m_ac.Variables.getFunction(name);
+            if (f != null) return f.ReturnType;
             return m_ac.Types.get(name);   
         }
         Type getVarType(LuaAST var) {
