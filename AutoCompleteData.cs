@@ -14,8 +14,41 @@ namespace Intellua
             m_typeManager = new TypeManager();
             m_variableManager = new VariableManager();
             m_keywords = new KeywordManager();
+            addDefaultTypes();
+
+            addKeywords();
+            init();
+        }
+
+        private void addKeywords()
+        {
+            m_keywords.add(new Keyword("and"));
+            m_keywords.add(new Keyword("break"));
+            m_keywords.add(new Keyword("do"));
+            m_keywords.add(new Keyword("else"));
+            m_keywords.add(new Keyword("elseif"));
+            m_keywords.add(new Keyword("end"));
+            m_keywords.add(new Keyword("false"));
+            m_keywords.add(new Keyword("for"));
+            m_keywords.add(new Keyword("function"));
+            m_keywords.add(new Keyword("if"));
+            m_keywords.add(new Keyword("in"));
+            m_keywords.add(new Keyword("local"));
+            m_keywords.add(new Keyword("nil"));
+            m_keywords.add(new Keyword("not"));
+            m_keywords.add(new Keyword("or"));
+            m_keywords.add(new Keyword("repeat"));
+            m_keywords.add(new Keyword("return"));
+            m_keywords.add(new Keyword("then"));
+            m_keywords.add(new Keyword("true"));
+            m_keywords.add(new Keyword("until"));
+            m_keywords.add(new Keyword("while"));
+        }
+
+        private void addDefaultTypes()
+        {
             m_typeManager.add(new Type("nil", true));
-            m_typeManager.add(new Type("object",true));
+            m_typeManager.add(new Type("object", true));
             m_typeManager.add(new Type("int", true));
             m_typeManager.add(new Type("void", true));
             m_typeManager.add(new Type("char", true));
@@ -28,20 +61,6 @@ namespace Intellua
             m_typeManager.add(new Type("function", true));
             m_typeManager.add(new Type("thread", true));
             m_typeManager.add(new Type("userdata", true));
-
-            m_keywords.add(new Keyword("break"));
-            m_keywords.add(new Keyword("else"));
-            m_keywords.add(new Keyword("elseif"));
-            m_keywords.add(new Keyword("false"));
-            m_keywords.add(new Keyword("function"));
-            m_keywords.add(new Keyword("local"));
-            m_keywords.add(new Keyword("repeat"));
-            m_keywords.add(new Keyword("return"));
-            m_keywords.add(new Keyword("then"));
-            m_keywords.add(new Keyword("true"));
-            m_keywords.add(new Keyword("until"));
-            m_keywords.add(new Keyword("while"));
-            init();
         }
 
         public AutoCompleteData(AutoCompleteData parent)
@@ -49,19 +68,7 @@ namespace Intellua
             m_typeManager = new TypeManager(parent.Types);
             m_variableManager = new VariableManager(parent.Variables);
             m_keywords = new KeywordManager();
-
-            m_keywords.add(new Keyword("break"));
-            m_keywords.add(new Keyword("else"));
-            m_keywords.add(new Keyword("elseif"));
-            m_keywords.add(new Keyword("false"));
-            m_keywords.add(new Keyword("function"));
-            m_keywords.add(new Keyword("local"));
-            m_keywords.add(new Keyword("repeat"));
-            m_keywords.add(new Keyword("return"));
-            m_keywords.add(new Keyword("then"));
-            m_keywords.add(new Keyword("true"));
-            m_keywords.add(new Keyword("until"));
-            m_keywords.add(new Keyword("while"));
+            addKeywords();
 
             init();
         }

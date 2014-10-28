@@ -9,9 +9,6 @@ using System.Text;
 
 namespace Intellua
 {
-    public class StatusChangedEventArgs {
-        public string Text;
-    };
     public class Intellua : ScintillaNET.Scintilla, System.ComponentModel.ISupportInitialize
     {
         #region Fields (5)
@@ -394,7 +391,6 @@ namespace Intellua
                 str.Add(item.getACString());
             }
             AutoComplete.Show(lengthEntered, str);
-
             if (AutoComplete.SelectedIndex < 0) return;
             IntPtr hwnd = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "ListBoxX", null);
 
@@ -473,4 +469,8 @@ namespace Intellua
             // y position of lower-right corner
         }
     }
+    public class StatusChangedEventArgs
+    {
+        public string Text;
+    };
 }

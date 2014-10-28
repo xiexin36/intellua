@@ -53,11 +53,11 @@ namespace IntelluaTE
                     
                     data = new Intellua.AutoCompleteData("classdef.xml");
 
-                    if (System.IO.File.Exists(AppDomain.CurrentDomain.BaseDirectory + "autoclassdef.xml"))
+                    /*if (System.IO.File.Exists(AppDomain.CurrentDomain.BaseDirectory + "autoclassdef.xml"))
                     {
                         Intellua.AutoCompleteData autoData = new Intellua.AutoCompleteData("autoclassdef.xml");
                         data.setParent(autoData);
-                    }
+                    }*/
                     
                     _mainForm = new MainForm(args);
                     Application.Run(_mainForm);
