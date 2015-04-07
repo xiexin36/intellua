@@ -251,7 +251,7 @@ namespace Intellua
                     tokens.Add(t);
                     if (t.Type == LuaTokenType.EOF) break;
                 }
-                System.Diagnostics.Debug.Print("=========");
+                //System.Diagnostics.Debug.Print("=========");
                 LuaParser lp = new LuaParser(tokens);
 
                 LuaAST chunk = lp.parse();
