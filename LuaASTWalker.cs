@@ -420,6 +420,17 @@ namespace Intellua
                     }
                 }
             }
+            else if (suffix.Components.ContainsKey("call")) {
+                LuaAST index = suffix.Components["call"];
+                if (index.Components.ContainsKey("name"))
+                {
+                    LuaVariable name = getVariable(index.Components["name"]);
+                    if (t.Methods.ContainsKey(name.Name))
+                    {
+                        return t.Methods[name.Name].ReturnType;
+                    }
+                }
+            }
 
             return t;
         }
