@@ -46,6 +46,12 @@
             return false;
         }
 
+        public static bool isIndentifierChar(char c) {
+            if (char.IsLetterOrDigit(c)) return true;
+            if (c == '_') return true;
+
+            return false;
+        }
         #endregion Methods
     }
 }

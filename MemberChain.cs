@@ -96,10 +96,10 @@ namespace Intellua
                 {
                     case PaserState.searchWordStart:
                         if (isString) return rst;
-                        if (!char.IsLetterOrDigit(c) || isComment || pos == 0)
+                        if (!Parser.isIndentifierChar(c) || isComment || pos == 0)
                         {
                             wordStart = pos + 1;
-                            if (pos == 0 && char.IsLetterOrDigit(c)) wordStart = 0;
+                            if (pos == 0 && Parser.isIndentifierChar(c)) wordStart = 0;
                             Byte[] bword = SubArray(str, wordStart, wordEnd - wordStart + 1);
                             string word = Encoding.UTF8.GetString(bword);//str.Substring(wordStart, wordEnd - wordStart + 1);
                             //word.Trim();
@@ -146,7 +146,7 @@ namespace Intellua
                             state = PaserState.searchBracket;
                             break;
                         }
-                        if (char.IsLetterOrDigit(c))
+                        if (Parser.isIndentifierChar(c))
                         {
                             wordEnd = pos;
                             if (rst.EndPos < 0) rst.EndPos = pos;
@@ -231,7 +231,7 @@ namespace Intellua
                 {
                     case PaserState.searchWordEnd:
                         if (isString) return rst;
-                        if (!char.IsLetterOrDigit(c) || isComment || pos == str.Length - 1)
+                        if (!Parser.isIndentifierChar(c) || isComment || pos == str.Length - 1)
                         {
                             wordEnd = pos;
                             string word;
@@ -271,7 +271,7 @@ namespace Intellua
                             break;
                         }
 
-                        if (char.IsLetterOrDigit(c))
+                        if (Parser.isIndentifierChar(c))
                         {
                             wordStart = pos;
                             if (rst.StartPos < 0) rst.StartPos = pos;
