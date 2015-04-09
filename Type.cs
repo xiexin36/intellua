@@ -142,7 +142,9 @@ namespace Intellua
             }
         }
         public void addClass(Type cls) {
-            InnerClasses.Add(cls.DisplayName, cls);
+            if (!InnerClasses.ContainsKey(cls.DisplayName)) {
+                InnerClasses.Add(cls.DisplayName, cls);
+            }
         }
 
         public List<IAutoCompleteItem> getList(bool Static)
